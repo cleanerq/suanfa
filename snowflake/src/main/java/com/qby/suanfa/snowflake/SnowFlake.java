@@ -94,10 +94,10 @@ public class SnowFlake {
     }
 
     public static void main(String[] args) {
-        SnowFlake snowFlake = new SnowFlake(2, 3);
+        SnowFlake snowFlake = new SnowFlake(0, 0);
 
-        for (int i = 0; i < (1 << 12); i++) {
-            System.out.println(snowFlake.nextId());
+        for (int i = 0; i < (1 << 4); i++) {
+            System.out.println(snowFlake.nextId() + " " + i);
         }
 
     }
