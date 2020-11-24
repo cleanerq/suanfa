@@ -37,9 +37,9 @@ public class SnowFlakeDemo {
     public static void main(String[] args) {
         SnowFlakeDemo snowFlakeDemo = new SnowFlakeDemo();
         for (int i = 0; i < 20; i++) {
-            new Thread(() -> {
-                System.out.println(snowFlakeDemo.snowflakeId());
-            }, String.valueOf(i)).start();
+//            new Thread(() -> {
+//                System.out.println(snowFlakeDemo.snowflakeId());
+//            }, String.valueOf(i)).start();
         }
     }
 }
