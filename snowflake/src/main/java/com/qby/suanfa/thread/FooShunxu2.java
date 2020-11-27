@@ -1,10 +1,12 @@
 package com.qby.suanfa.thread;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class FooShunxu2 {
     private AtomicInteger firstJobDone = new AtomicInteger(0);
     private AtomicInteger secondJobDone = new AtomicInteger(0);
 
-    public Foo() {}
+    public FooShunxu2() {}
 
     public void first(Runnable printFirst) throws InterruptedException {
         // printFirst.run() outputs "first".
