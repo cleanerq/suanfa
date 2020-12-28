@@ -186,6 +186,20 @@ public class Solution {
         return i;
     }
 
+    /**
+     * 当我们遇到 nums[i] = valnums[i]=val 时，我们可以将当前元素与最后一个元素进行交换，并释放最后一个元素。这实际上使数组的大小减少了 1。
+     * <p>
+     * 请注意，被交换的最后一个元素可能是您想要移除的值。但是不要担心，在下一次迭代中，我们仍然会检查这个元素。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/remove-element/solution/yi-chu-yuan-su-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
     public int removeElement2(int[] nums, int val) {
         int i = 0;
         int n = nums.length - 1;
@@ -202,26 +216,27 @@ public class Solution {
 
     /**
      * 给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回  -1。
-     *
+     * <p>
      * 示例 1:
-     *
+     * <p>
      * 输入: haystack = "hello", needle = "ll"
      * 输出: 2
      * 示例 2:
-     *
+     * <p>
      * 输入: haystack = "aaaaa", needle = "bba"
      * 输出: -1
      * 说明:
-     *
+     * <p>
      * 当 needle 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。
-     *
+     * <p>
      * 对于本题而言，当 needle 是空字符串时我们应当返回 0 。这与C语言的 strstr() 以及 Java的 indexOf() 定义相符。
-     *
+     * <p>
      * 通过次数262,388提交次数662,665
-     *
+     * <p>
      * 来源：力扣（LeetCode）
      * 链接：https://leetcode-cn.com/problems/implement-strstr
      * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
      * @param haystack
      * @param needle
      * @return
@@ -232,16 +247,111 @@ public class Solution {
         }
         int n = haystack.length(), l = needle.length();
         for (int i = 0; i < n - l + 1; i++) {
-            if (haystack.substring(i, i + l ).equals(needle)) {
+            if (haystack.substring(i, i + l).equals(needle)) {
                 return i;
             }
         }
         return -1;
     }
 
+
+    /**
+     * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+     * <p>
+     * 你可以假设数组中无重复元素。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [1,3,5,6], 5
+     * 输出: 2
+     * 示例 2:
+     * <p>
+     * 输入: [1,3,5,6], 2
+     * 输出: 1
+     * 示例 3:
+     * <p>
+     * 输入: [1,3,5,6], 7
+     * 输出: 4
+     * 示例 4:
+     * <p>
+     * 输入: [1,3,5,6], 0
+     * 输出: 0
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/search-insert-position
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        // 穷举法
+        int i = 0;
+
+        for (; i < nums.length; i++) {
+            if (nums[i] == target) {
+                break;
+            } else if ((nums[i] < target) && ((i + 1) < nums.length) && (target < nums[i + 1])) {
+                i++;
+                break;
+            } else if (target < nums[i]) {
+                break;
+            }
+        }
+
+        return i;
+    }
+
+    /**
+     * 二分查找法
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert2(int[] nums, int target) {
+        int n = nums.length;
+        int left = 0, right = n - 1, ans = n;
+        while (left <= right) {
+            int mid = ((right - left) >> 1) + left;
+            if (target <= nums[mid]) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 二分查找法
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert3(int[] nums, int target) {
+        int n = nums.length;
+        int l = 0, r = n - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < target)
+                l = mid + 1;
+            else r = mid - 1;
+        }
+        return l;
+    }
+
+
     public static void main(String[] args) {
-        char[] sz = {'a', 'b'};
+        int mid = 0 + (3 -0) /2;
+        System.out.println(mid);
 
+        int a = (int) 1.7;
 
+        System.out.println(a);
     }
 }
