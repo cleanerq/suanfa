@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdUtil;
 
 import javax.annotation.PostConstruct;
 
+
 public class SnowFlakeDemo {
     private long workerId = 0;
     private long datacenterId = 1;
