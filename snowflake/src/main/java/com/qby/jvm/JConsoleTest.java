@@ -2,6 +2,7 @@ package com.qby.jvm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class JConsoleTest {
     /**
@@ -28,6 +29,7 @@ public class JConsoleTest {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        TimeUnit.SECONDS.sleep(5);
         fillHeap(1000);
     }
 }
