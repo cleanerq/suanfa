@@ -486,6 +486,107 @@ public class Solution {
         return (end - start);
     }
 
+    /**
+     * 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。
+     * <p>
+     * 最高位数字存放在数组的首位， 数组中每个元素只存储单个数字。
+     * <p>
+     * 你可以假设除了整数 0 之外，这个整数不会以零开头。
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：digits = [1,2,3]
+     * 输出：[1,2,4]
+     * 解释：输入数组表示数字 123。
+     * 示例 2：
+     * <p>
+     * 输入：digits = [4,3,2,1]
+     * 输出：[4,3,2,2]
+     * 解释：输入数组表示数字 4321。
+     * 示例 3：
+     * <p>
+     * 输入：digits = [0]
+     * 输出：[1]
+     *  
+     * <p>
+     * 提示：
+     * <p>
+     * 1 <= digits.length <= 100
+     * 0 <= digits[i] <= 9
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/plus-one
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        for (int i = digits.length - 1; i >= 0; i--) {
+            digits[i]++;
+            digits[i] = digits[i] % 10;
+            if (digits[i] != 0) return digits;
+        }
+        digits = new int[digits.length + 1];
+        digits[0] = 1;
+        return digits;
+    }
+
+    /**
+     * 给你两个二进制字符串，返回它们的和（用二进制表示）。
+     * <p>
+     * 输入为 非空 字符串且只包含数字 1 和 0。
+     * <p>
+     *  
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: a = "11", b = "1"
+     * 输出: "100"
+     * 示例 2:
+     * <p>
+     * 输入: a = "1010", b = "1011"
+     * 输出: "10101"
+     *  
+     * <p>
+     * 提示：
+     * <p>
+     * 每个字符串仅由字符 '0' 或 '1' 组成。
+     * 1 <= a.length, b.length <= 10^4
+     * 字符串如果不是 "0" ，就都不含前导零。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/add-binary
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+
+        return Integer.toBinaryString(Integer.parseInt(a, 2) + Integer.parseInt(b, 2));
+    }
+
+    public String addBinary1(String a, String b) {
+        StringBuilder ans = new StringBuilder();
+
+        int n = Math.max(a.length(), b.length()), carry = 0;
+        for (int i = 0; i < n; ++i) {
+            carry += i < a.length() ? (a.charAt(a.length() - 1 - i) - '0') : 0;
+            carry += i < b.length() ? (b.charAt(b.length() - 1 - i) - '0') : 0;
+            ans.append((char) (carry % 2 + '0'));
+            carry /= 2;
+        }
+
+        if (carry > 0) {
+            ans.append('1');
+        }
+        ans.reverse();
+        return ans.toString();
+    }
+
 
     public static void main(String[] args) {
 
