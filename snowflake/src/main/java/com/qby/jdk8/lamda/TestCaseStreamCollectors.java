@@ -21,7 +21,5 @@ public class TestCaseStreamCollectors {
         Map<String, Integer> collect1 = Stream.of(new Student("路飞", 22, 175),
                 new Student("红发", 40, 180),
                 new Student("白胡子", 50, 185)).collect(Collectors.toMap(Student::getName, Student::getStature));
-
-        System.out.println(collect1);
     }
 }

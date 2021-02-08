@@ -1,10 +1,12 @@
 package com.qby.jdk8.lamda;
 
+import java.util.List;
+
 public class Student {
     private String name;
     private int age;
     private int stature;
-    private SpecialityEnum specialities;
+    private List<SpecialityEnum> specialities;
 
     public Student() {
     }
@@ -39,11 +41,11 @@ public class Student {
         this.stature = stature;
     }
 
-    public SpecialityEnum getSpecialities() {
+    public List<SpecialityEnum> getSpecialities() {
         return specialities;
     }
 
-    public void setSpecialities(SpecialityEnum specialities) {
+    public void setSpecialities(List<SpecialityEnum> specialities) {
         this.specialities = specialities;
     }
 
@@ -55,5 +57,12 @@ public class Student {
                 ", stature=" + stature +
                 ", specialities=" + specialities +
                 '}';
+    }
+
+    public Student(String name, int age, int stature, List<SpecialityEnum> specialities) {
+        this.name = name;
+        this.age = age;
+        this.stature = stature;
+        this.specialities = specialities;
     }
 }

@@ -4,5 +4,5 @@ public enum SpecialityEnum {
     SING,
     DANCE,
     SWIMMING,
-    RUNNING
+    RUNNING;
 }
