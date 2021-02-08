@@ -18,6 +18,11 @@ public class TestCaseStreamMaxMin {
                 .max(Comparator.comparing(stu -> stu.getAge()));
         Optional<Student> min = students.stream()
                 .min(Comparator.comparing(stu -> stu.getAge()));
+
+        // 如果为空值则新建对象
+        Student student = max.orElse(new Student());
+        max.orElseGet(() ->new Student());
+
         //判断是否有值
         if (max.isPresent()) {
             System.out.println(max.get());

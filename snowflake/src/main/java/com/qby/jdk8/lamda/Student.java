@@ -6,6 +6,9 @@ public class Student {
     private int stature;
     private SpecialityEnum specialities;
 
+    public Student() {
+    }
+
     public Student(String name, int age, int stature) {
         this.name = name;
         this.age = age;

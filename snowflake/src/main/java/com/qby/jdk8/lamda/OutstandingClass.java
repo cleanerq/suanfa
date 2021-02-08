@@ -1,9 +1,11 @@
 package com.qby.jdk8.lamda;
 
+import java.util.List;
+
 public class OutstandingClass {
     private String name;
 
-    private Student student;
+    private List<Student> students;
 
     public String getName() {
         return name;
@@ -13,11 +15,19 @@ public class OutstandingClass {
         this.name = name;
     }
 
-    public Student getStudent() {
-        return student;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public OutstandingClass(String name, List<Student> students) {
+        this.name = name;
+        this.students = students;
+    }
+
+    public OutstandingClass() {
     }
 }
