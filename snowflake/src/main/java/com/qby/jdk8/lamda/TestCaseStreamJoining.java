@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 /**
  * 字符串拼接
  *
- * 如果将所有学生的名字拼接起来，怎么做呢？通常只能创建一个StringBuilder，循环拼接。使用Stream，使用Collectors.joining()简单容易。
+ * 如果将所有学生的名字拼接起来，怎么做呢？通常只能创建一个StringBuilder，
+ * 循环拼接。使用Stream，使用Collectors.joining()简单容易。
  */
 public class TestCaseStreamJoining {
     public static void main(String[] args) {

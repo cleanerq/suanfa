@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 常用的流操作是将其分解成两个集合，Collectors.partitioningBy帮我们实现了，接收一个Predicate函数式接口。
+ * 将示例学生分为会唱歌与不会唱歌的两个集合。
+ */
 public class TestCaseStreamPartitioning {
     public static void main(String[] args) {
 

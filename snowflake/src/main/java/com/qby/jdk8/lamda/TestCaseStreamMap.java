@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 转换功能，内部就是Function接口。惰性求值
+ */
 public class TestCaseStreamMap {
     public static void main(String[] args) {
         List<Student> students = new ArrayList<>(3);

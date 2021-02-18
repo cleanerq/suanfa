@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 数据分组是一种更自然的分割数据操作，与将数据分成 ture 和 false 两部分不同，
+ * 可以使用任意值对数据分组。Collectors.groupingBy接收一个Function做转换。
+ */
 public class TestCaseStreamGroupingBy {
     public static void main(String[] args) {
         List<Student> students1 = new ArrayList<>(3);

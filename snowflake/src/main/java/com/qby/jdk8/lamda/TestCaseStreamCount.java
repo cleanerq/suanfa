@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 及早求值
+ * 统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值
  */
 public class TestCaseStreamCount {
     public static void main(String[] args) {

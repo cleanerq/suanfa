@@ -7,6 +7,9 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
+/**
+ * 将多个Stream合并为一个Stream。惰性求值
+ */
 public class TestCaseStreamFlatMap {
     public static void main(String[] args) {
         List<Student> students = new ArrayList<>(3);

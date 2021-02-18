@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 及早求值
+ * 我们经常会在集合中求最大或最小值，使用流就很方便。及早求值。
  */
 public class TestCaseStreamMaxMin {
     public static void main(String[] args) {
