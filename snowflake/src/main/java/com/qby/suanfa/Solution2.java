@@ -57,12 +57,12 @@ public class Solution2 {
      * @return
      */
     public boolean isSameTree(TreeNode p, TreeNode q) {
-        if (p ==  null && q ==  null) {
+        if (p == null && q == null) {
             return true;
         }
-        if (p !=  null && q ==  null) {
+        if (p != null && q == null) {
             return false;
-        } else if (p ==  null && q !=  null) {
+        } else if (p == null && q != null) {
             return false;
         }
         if (p.val != q.val) {
@@ -79,9 +79,9 @@ public class Solution2 {
      * @return
      */
     public boolean isSameTree2(TreeNode p, TreeNode q) {
-        if (p ==  null && q ==  null) {
+        if (p == null && q == null) {
             return true;
-        } else if (p ==  null || q ==  null) {
+        } else if (p == null || q == null) {
             return false;
         }
         Queue<TreeNode> queue1 = new LinkedList<TreeNode>();
@@ -96,22 +96,22 @@ public class Solution2 {
                 return false;
             }
             TreeNode left1 = node1.left, right1 = node1.right, left2 = node2.left, right2 = node2.right;
-            if (left1 ==  null ^ left2 ==  null) {
+            if (left1 == null ^ left2 == null) {
                 return false;
             }
-            if (right1 ==  null ^ right2 ==  null) {
+            if (right1 == null ^ right2 == null) {
                 return false;
             }
-            if (left1 !=  null) {
+            if (left1 != null) {
                 queue1.offer(left1);
             }
-            if (right1 !=  null) {
+            if (right1 != null) {
                 queue1.offer(right1);
             }
-            if (left2 !=  null) {
+            if (left2 != null) {
                 queue2.offer(left2);
             }
-            if (right2 !=  null) {
+            if (right2 != null) {
                 queue2.offer(right2);
             }
         }
@@ -141,14 +141,14 @@ public class Solution2 {
      * 2   2
      * \   \
      * 3    3
-     *
+     * <p>
      * 递归法
      *
      * @param root
      * @return
      */
     public boolean isSymmetric(TreeNode root) {
-        if (root ==  null) return true;
+        if (root == null) return true;
         return compareTreeNode(root.left, root.right);
     }
 
@@ -162,15 +162,15 @@ public class Solution2 {
     public boolean compareTreeNode(TreeNode left, TreeNode right) {
         // 确定终止条件
         // 节点为空的情况
-        if (left ==  null && right !=  null) return false;
-        else if (left !=  null && right ==  null) return false;
-        else if (left ==  null && right ==  null) return true;
+        if (left == null && right != null) return false;
+        else if (left != null && right == null) return false;
+        else if (left == null && right == null) return true;
         else if (left.val != right.val) return false;
 
         // 此时就是：左右节点都不为空，且数值相同的情况
         // 此时才做递归，做下一层的判断
         boolean outside = compareTreeNode(left.left, right.right);   // 左子树：左、 右子树：右
-        boolean inside= compareTreeNode(left.right, right.left);    // 左子树：右、 右子树：左
+        boolean inside = compareTreeNode(left.right, right.left);    // 左子树：右、 右子树：左
         boolean isSame = outside && inside;                    // 左子树：中、 右子树：中 （逻辑处理）
         return isSame;
     }
@@ -217,7 +217,6 @@ public class Solution2 {
      * 迭代法
      * 使用堆栈
      *
-     *
      * @param root
      * @return
      */
@@ -249,5 +248,80 @@ public class Solution2 {
             stack.push(right.left);
         }
         return true;
+    }
+
+    /**
+     * 104. 二叉树的最大深度
+     * 给定一个二叉树，找出其最大深度。
+     * <p>
+     * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+     * <p>
+     * 说明: 叶子节点是指没有子节点的节点。
+     * <p>
+     * 示例：
+     * 给定二叉树 [3,9,20,null,null,15,7]，
+     * <p>
+     * 3
+     * / \
+     * 9  20
+     * /  \
+     * 15   7
+     * 返回它的最大深度 3 。
+     * 深度优先算法
+     * 如果我们知道了左子树和右子树的最大深度 ll 和 rr，那么该二叉树的最大深度即为
+     * <p>
+     * max(l,r) + 1
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int leftHeight = maxDepth(root.left);
+            int rightHeight = maxDepth(root.right);
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+    }
+
+    /**
+     * 我们也可以用「广度优先搜索」的方法来解决这道题目，但我们需要对其进行一些修改，此时我们广度优先搜索的队列里存放的是「当前层的所有节点」。
+     * 每次拓展下一层的时候，不同于广度优先搜索的每次只从队列里拿出一个节点，我们需要将队列里的所有节点都拿出来进行拓展，
+     * 这样能保证每次拓展完的时候队列里存放的是当前层的所有节点，即我们是一层一层地进行拓展，
+     * 最后我们用一个变量 \textit{ans}ans 来维护拓展的次数，该二叉树的最大深度即为 \textit{ans}ans。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/solution/er-cha-shu-de-zui-da-shen-du-by-leetcode-solution/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param p
+     * @return
+     */
+    public int maxDepth2(TreeNode p) {
+        if (p == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(p);
+
+        int ans = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size > 0) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                size--;
+            }
+            ans++;
+        }
+
+        return ans;
     }
 }
