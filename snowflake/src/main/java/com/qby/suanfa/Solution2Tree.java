@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class Solution2 {
+public class Solution2Tree {
     Random rand = new Random();
 
     public class TreeNode {
@@ -672,4 +672,6 @@ public class Solution2 {
         }
         return false;
     }
+
+
 }
