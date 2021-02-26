@@ -124,6 +124,19 @@ public class Solution {
         return i + 1;
     }
 
+    public int removeDuplicates2(int[] nums) {
+        if (nums ==null || nums.length == 0) {
+            return 0;
+        }
+        int i = 0;
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[i] != nums[j]) {
+                nums[++i] = nums[j];
+            }
+        }
+        return i + 1;
+    }
+
 
     /**
      * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
