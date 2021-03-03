@@ -535,6 +535,107 @@ public class Solution3 {
         return new int[]{};
     }
 
+    /**
+     * 169. 多数元素
+     * 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+     * <p>
+     * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[3,2,3]
+     * 输出：3
+     * 示例 2：
+     * <p>
+     * 输入：[2,2,1,1,1,2,2]
+     * 输出：2
+     * 排序法
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length / 2];
+    }
+
+    /**
+     * 哈希计数法
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement2(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+
+        // 统计每个元素出现的次数
+        for (int i = 0; i < nums.length; i++) {
+            if (!map.containsKey(nums[i])) {
+                map.put(nums[i], 1);
+            } else {
+                map.put(nums[i], map.get(nums[i]) + 1);
+            }
+        }
+
+        int target = nums.length / 2 + 1;
+
+        Set<Map.Entry<Integer, Integer>> entries = map.entrySet();
+        Iterator<Map.Entry<Integer, Integer>> iterator = entries.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> entry = iterator.next();
+            if (target <= entry.getValue()) {
+                return entry.getKey();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Boyer-Moore 投票算法
+     * 思路
+     * <p>
+     * 如果我们把众数记为 +1+1，把其他数记为 -1−1，将它们全部加起来，显然和大于 0，
+     * 从结果本身我们可以看出众数比其他数多。
+     * <p>
+     * 算法
+     * <p>
+     * Boyer-Moore 算法的本质和方法四中的分治十分类似。我们首先给出 Boyer-Moore 算法的详细步骤：
+     * <p>
+     * 我们维护一个候选众数 candidate 和它出现的次数 count。初始时 candidate 可以为任意值，count 为 0；
+     * <p>
+     * 我们遍历数组 nums 中的所有元素，对于每个元素 x，在判断 x 之前，如果 count 的值为 0，
+     * 我们先将 x 的值赋予 candidate，随后我们判断 x：
+     * <p>
+     * 如果 x 与 candidate 相等，那么计数器 count 的值增加 1；
+     * <p>
+     * 如果 x 与 candidate 不等，那么计数器 count 的值减少 1。
+     * <p>
+     * 在遍历完成后，candidate 即为整个数组的众数。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/majority-element/solution/duo-shu-yuan-su-by-leetcode-solution/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement3(int[] nums) {
+        int count = 0;
+        Integer candidate = null;
+
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            count += (num == candidate) ? 1 : -1;
+        }
+
+        return candidate;
+    }
+
 
     public static void main(String[] args) {
         System.out.println(singleNumber2(new int[]{1, 2, 4, 1, 2}));
