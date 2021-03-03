@@ -386,7 +386,7 @@ public class Solution3 {
      * <p>
      * 输入: [4,1,2,1,2]
      * 输出: 4
-     *
+     * <p>
      * 集合计数法
      *
      * @param nums
@@ -416,13 +416,12 @@ public class Solution3 {
     /**
      * 异或运算
      * 如何才能做到线性时间复杂度和常数空间复杂度呢？
-     *
+     * <p>
      * 答案是使用位运算。对于这道题，可使用异或运算 ⊕。异或运算有以下三个性质。
-     *
+     * <p>
      * 任何数和 00 做异或运算，结果仍然是原来的数，即 a⊕0=a。
      * 任何数和其自身做异或运算，结果是 00，即 a⊕a=0。
      * 异或运算满足交换律和结合律，即 a⊕b⊕a=b⊕a⊕a=b⊕(a⊕a)=b⊕0=b
-     *
      *
      * @param nums
      * @return
@@ -435,10 +434,110 @@ public class Solution3 {
         return res;
     }
 
+    /**
+     * 167. 两数之和 II - 输入有序数组
+     * 给定一个已按照 升序排列  的整数数组 numbers ，请你从数组中找出两个数满足相加之和等于目标数 target 。
+     * <p>
+     * 函数应该以长度为 2 的整数数组的形式返回这两个数的下标值。numbers 的下标 从 1 开始计数 ，
+     * 所以答案数组应当满足 1 <= answer[0] < answer[1] <= numbers.length 。
+     * <p>
+     * 你可以假设每个输入只对应唯一的答案，而且你不可以重复使用相同的元素。
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：numbers = [2,7,11,15], target = 9
+     * 输出：[1,2]
+     * 解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
+     * 示例 2：
+     * <p>
+     * 输入：numbers = [2,3,4], target = 6
+     * 输出：[1,3]
+     * 示例 3：
+     * <p>
+     * 输入：numbers = [-1,0], target = -1
+     * 输出：[1,2]
+     * <p>
+     * 哈希表解法
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.containsKey(numbers[i])) {
+                return new int[]{map.get(numbers[i]) + 1, i + 1};
+            } else {
+                map.put(target - numbers[i], i);
+            }
+        }
+        return new int[]{};
+    }
+
+    /**
+     * 方法一：二分查找方法
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum2(int[] numbers, int target) {
+        for (int i = 0; i < numbers.length; i++) {
+            int low = i + 1, high = numbers.length - 1;
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                if (numbers[mid] == target - numbers[i]) {
+                    return new int[]{i + 1, mid + 1};
+                } else if (numbers[mid] > target - numbers[i]) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            }
+        }
+        return new int[]{};
+    }
+
+    /**
+     * 方法二：双指针 最优
+     * <p>
+     * 时间复杂度：O(n)O(n)，其中 nn 是数组的长度。两个指针移动的总次数最多为 nn 次。
+     * <p>
+     * 空间复杂度：O(1)O(1)。
+     * <p>
+     * 初始时两个指针分别指向第一个元素位置和最后一个元素的位置。每次计算两个指针指向的两个元素之和，
+     * 并和目标值比较。如果两个元素之和等于目标值，则发现了唯一解。如果两个元素之和小于目标值，则将左侧指针右移一位。
+     * 如果两个元素之和大于目标值，则将右侧指针左移一位。移动指针之后，重复上述操作，直到找到答案。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/solution/liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu-by-leet-2/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum3(int[] numbers, int target) {
+        int j = 0;
+        int k = numbers.length - 1;
+        while (j <= k) {
+            if (numbers[j] + numbers[k] == target) {
+                return new int[]{j + 1, k + 1};
+            } else if (numbers[j] + numbers[k] > target) {
+                --k;
+            } else if (numbers[j] + numbers[k] < target) {
+                ++j;
+            }
+        }
+        return new int[]{};
+    }
 
 
     public static void main(String[] args) {
-        System.out.println(singleNumber2(new int[]{1,2,4,1,2}));
+        System.out.println(singleNumber2(new int[]{1, 2, 4, 1, 2}));
         System.out.println((1 ^ 3));
     }
 }
