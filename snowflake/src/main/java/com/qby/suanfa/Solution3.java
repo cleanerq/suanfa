@@ -636,9 +636,121 @@ public class Solution3 {
         return candidate;
     }
 
+    /**
+     * 171. Excel表列序号
+     * 给定一个Excel表格中的列名称，返回其相应的列序号。
+     * <p>
+     * 例如，
+     * <p>
+     * A -> 1
+     * B -> 2
+     * C -> 3
+     * ...
+     * Z -> 26
+     * AA -> 27
+     * AB -> 28
+     * ...
+     * 示例 1:
+     * <p>
+     * 输入: "A"
+     * 输出: 1
+     * 示例 2:
+     * <p>
+     * 输入: "AB"
+     * 输出: 28
+     * 示例 3:
+     * <p>
+     * 输入: "ZY"
+     * 输出: 701
+     * <p>
+     * 数学公式 求幂次方
+     *
+     * @param s
+     * @return
+     */
+    public static int titleToNumber(String s) {
+        int sum = 0;
+        char[] chars = s.toCharArray();
+        int cs = chars.length - 1;
+        for (int i = 0; i < chars.length; i++) {
+            int bcs = (int) chars[i] - 64;
+            int mul = bcs * (int) Math.pow(26, cs);
+            sum = sum + mul;
+            --cs;
+        }
+        return sum;
+    }
+
+    /**
+     * 另一种解法
+     *
+     * @param s
+     * @return
+     */
+    public static int titleToNumber2(String s) {
+        int sum = 0;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            int num = chars[i] - 'A' + 1;
+            sum = sum * 26 + num;
+        }
+
+        return sum;
+    }
+
+    /**
+     * 172. 阶乘后的零
+     * 给定一个整数 n，返回 n! 结果尾数中零的数量。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: 3
+     * 输出: 0
+     * 解释: 3! = 6, 尾数中没有零。
+     * 示例 2:
+     * <p>
+     * 输入: 5
+     * 输出: 1
+     * 解释: 5! = 120, 尾数中有 1 个零.
+     * <p>
+     * 方法一：直接计算结果 然后看最后零占几位 最慢
+     * 方法二：计算因子 5
+     * 计算5的个数
+     *
+     * @param n
+     * @return
+     */
+    public static int trailingZeroes(int n) {
+        int zeroCount = 0;
+        for (int i = 5; i <= n; i += 5) {
+            int curInt = i;
+            while (curInt % 5 == 0) {
+                zeroCount++;
+                curInt = curInt / 5;
+            }
+        }
+
+        return zeroCount;
+    }
+
+    /**
+     * 方法三：高效的计算因子 5
+     *
+     * @param n
+     * @return
+     */
+    public static int trailingZeroes2(int n) {
+        int zeroCount = 0;
+        while (n > 0) {
+            n = n / 5;
+            zeroCount = zeroCount + n;
+        }
+        return zeroCount;
+    }
 
     public static void main(String[] args) {
-        System.out.println(singleNumber2(new int[]{1, 2, 4, 1, 2}));
-        System.out.println((1 ^ 3));
+//        System.out.println((int)'A');
+//        System.out.println((int)'Z');
+        System.out.println(trailingZeroes2(10));
     }
 }
