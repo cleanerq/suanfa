@@ -13,8 +13,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.hhf</groupId>
-    <artifactId>interview1024</artifactId>
+    <groupId>com.qby</groupId>
+    <artifactId>springaop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
