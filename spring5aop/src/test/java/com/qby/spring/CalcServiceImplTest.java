@@ -22,5 +22,14 @@ public class CalcServiceImplTest {
         service.div(10, 2);
     }
 
+    @Test
+    public void testAop5() {
+        System.out.println("spring版本：" + SpringVersion.getVersion() + "\t" + "SpringBoot版本：" + SpringBootVersion.getVersion());
+
+        System.out.println();
+
+        service.div(10, 0);
+    }
+
 }
 
