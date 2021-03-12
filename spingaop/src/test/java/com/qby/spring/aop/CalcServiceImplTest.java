@@ -14,6 +14,9 @@ public class CalcServiceImplTest {
     @Autowired
     private CalcService service;
 
+    /**
+     * 正常
+     */
     @Test
     public void test01() {
         System.out.println("spring版本：" + SpringVersion.getVersion() + "\t" + "SpringBoot版本：" + SpringBootVersion.getVersion());
@@ -21,6 +24,18 @@ public class CalcServiceImplTest {
         System.out.println();
 
         service.div(10, 2);
+    }
+
+    /**
+     * 异常
+     */
+    @Test
+    public void test02() {
+        System.out.println("spring版本：" + SpringVersion.getVersion() + "\t" + "SpringBoot版本：" + SpringBootVersion.getVersion());
+
+        System.out.println();
+
+        service.div(10, 0);
     }
 
 }

@@ -7,8 +7,10 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public int div(int x, int y) {
+
+        System.out.println("=========>CalcServiceImpl被调用了");
         int result = x / y;
-        System.out.println("=========>CalcServiceImpl被调用了,我们的计算结果：" + result);
+        System.out.println("=========>我们的计算结果：" + result);
         return result;
     }
 }
