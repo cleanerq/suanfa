@@ -1,6 +1,7 @@
 package com.qby.suanfa;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Solution4 {
 
@@ -323,6 +324,20 @@ public class Solution4 {
 
     /**
      * LCP 18. 早餐组合
+     * <p>
+     * 小扣在秋日市集选择了一家早餐摊位，一维整型数组 staple 中记录了每种主食的价格，
+     * 一维整型数组 drinks 中记录了每种饮料的价格。小扣的计划选择一份主食和一款饮料，
+     * 且花费不超过 x 元。请返回小扣共有多少种购买方案。
+     * <p>
+     * 注意：答案需要以 1e9 + 7 (1000000007) 为底取模，如：计算初始结果为：1000000008，请返回 1
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/2vYnGI
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * <p>
+     * 双指针法
+     * <p>
+     * 一个i从头开始一个j从后开始，只要j符合了，j前面的全都符合
      *
      * @param staple
      * @param drinks
@@ -330,14 +345,230 @@ public class Solution4 {
      * @return
      */
     public int breakfastNumber(int[] staple, int[] drinks, int x) {
+        // 一个i从头开始一个j从后开始，只要j符合了，j前面的全都符合
+        Arrays.sort(staple);
+        Arrays.sort(drinks);
+        int cnt = 0;
+        int m = staple.length, n = drinks.length;
+        int i = 0, j = n - 1;
+        while (i < m && j >= 0) {
+            if (staple[i] + drinks[j] <= x) {
+                cnt = (cnt + j + 1) % 1000000007;
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return cnt % 1000000007;
+    }
+
+    /**
+     * 二分法
+     *
+     * @param staple
+     * @param drinks
+     * @param x
+     * @return
+     */
+    public int breakfastNumber2(int[] staple, int[] drinks, int x) {
+        Arrays.sort(staple);
+        Arrays.sort(drinks);
+        int cnt = 0;
+        int m = staple.length, n = drinks.length;
+        for (int i = 0; i < m; i++) {
+            int temp = x - staple[i];
+            int idx = binarySearch(drinks, temp);
+            if (idx == 0) {
+                break;
+            }
+            cnt = (cnt + idx) % 1000000007;
+        }
+        return cnt % 1000000007;
+    }
+
+    public int binarySearch(int[] nums, int target) {
+        int i = 0, j = nums.length;
+        while (i < j) {
+            int mid = i + (j - i) / 2;
+            if (nums[mid] > target) {
+                j = mid;
+            } else {
+                i = mid + 1;
+            }
+        }
+        return i;
+    }
 
 
-        return 0;
+    /**
+     * 插入排序
+     *
+     * @param arr
+     */
+    public static void charupaixu(int[] arr) {
+        int currentItem = 0;
+        int position = 0;
+        // 遍历数组
+        for (int i = 0; i < arr.length; i++) {
+            // 取当前值
+            currentItem = arr[i];
+            position = i;
+            // 取当前值向前查找，如果查找完毕或者找到小于等于当前值的值，停止查找
+            while (position > 0 && arr[position - 1] > currentItem) {
+                // 将查找的值后移
+                arr[position] = arr[position - 1];
+                position--;
+            }
+            // 查找停止后，插入
+            arr[position] = currentItem;
+
+            for (int j = 0; j < arr.length; j++) {
+                System.out.print(arr[j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * 859. 亲密字符串
+     * 给定两个由小写字母构成的字符串 A 和 B ，只要我们可以通过交换 A 中的两个字母得到与 B 相等的结果，
+     * 就返回 true ；否则返回 false 。
+     * <p>
+     * 交换字母的定义是取两个下标 i 和 j （下标从 0 开始），只要 i!=j 就交换 A[i] 和 A[j] 处的字符。
+     * 例如，在 "abcd" 中交换下标 0 和下标 2 的元素可以生成 "cbad" 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入： A = "ab", B = "ba"
+     * 输出： true
+     * 解释： 你可以交换 A[0] = 'a' 和 A[1] = 'b' 生成 "ba"，此时 A 和 B 相等。
+     * 示例 2：
+     * <p>
+     * 输入： A = "ab", B = "ab"
+     * 输出： false
+     * 解释： 你只能交换 A[0] = 'a' 和 A[1] = 'b' 生成 "ba"，此时 A 和 B 不相等。
+     * 示例 3:
+     * <p>
+     * 输入： A = "aa", B = "aa"
+     * 输出： true
+     * 解释： 你可以交换 A[0] = 'a' 和 A[1] = 'a' 生成 "aa"，此时 A 和 B 相等。
+     * 示例 4：
+     * <p>
+     * 输入： A = "aaaaaaabc", B = "aaaaaaacb"
+     * 输出： true
+     * 示例 5：
+     * <p>
+     * 输入： A = "", B = "aa"
+     * 输出： false
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    public static boolean buddyStrings(String A, String B) {
+        if (A.length() != B.length()) return false;
+        if (A.equals(B)) {
+            int[] count = new int[26];
+            for (int i = 0; i < A.length(); ++i)
+                count[A.charAt(i) - 'a']++;
+
+            for (int c : count)
+                if (c > 1) return true;
+            return false;
+        } else {
+            int first = -1, second = -1;
+            for (int i = 0; i < A.length(); ++i) {
+                if (A.charAt(i) != B.charAt(i)) {
+                    if (first == -1)
+                        first = i;
+                    else if (second == -1)
+                        second = i;
+                    else
+                        return false;
+                }
+            }
+
+            return (second != -1 && A.charAt(first) == B.charAt(second) &&
+                    A.charAt(second) == B.charAt(first));
+        }
+    }
+
+    /**
+     * 小扣注意到秋日市集上有一个创作黑白方格画的摊位。摊主给每个顾客提供一个固定在墙上的白色画板，
+     * 画板不能转动。画板上有 n * n 的网格。绘画规则为，小扣可以选择任意多行以及任意多列的格子涂成黑色，
+     * 所选行数、列数均可为 0。
+     * <p>
+     * 小扣希望最终的成品上需要有 k 个黑色格子，请返回小扣共有多少种涂色方案。
+     * <p>
+     * 注意：两个方案中任意一个相同位置的格子颜色不同，就视为不同的方案。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/ccw6C7
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：n = 2, k = 2
+     * <p>
+     * 输出：4
+     * <p>
+     * 解释：一共有四种不同的方案：
+     * 第一种方案：涂第一列；
+     * 第二种方案：涂第二列；
+     * 第三种方案：涂第一行；
+     * 第四种方案：涂第二行。
+     * <p>
+     * 示例 2：
+     * <p>
+     * 输入：n = 2, k = 1
+     * <p>
+     * 输出：0
+     * <p>
+     * 解释：不可行，因为第一次涂色至少会涂两个黑格。
+     * <p>
+     * 示例 3：
+     * <p>
+     * 输入：n = 2, k = 4
+     * <p>
+     * 输出：1
+     * <p>
+     * 解释：共有 2*2=4 个格子，仅有一种涂色方案。
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public int paintingPlan(int n, int k) {
+
+        if (k == n * n) return 1;
+
+        int ans = 0;
+        for (int a = 0; a < n; a++) {
+            for (int b = 0; b < n; b++) {
+                int sum = a * n + b * n - a * b;
+                if (sum == k) {
+                    int x = combination(n, a);
+                    int y = combination(n, b);
+                    ans += x * y;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    int combination(int n, int m) {
+        int ans = 1;
+        for (int i = n; i > m; i--) ans *= i;
+        for (int i = n - m; i > 0; i--) ans /= i;
+        return ans;
     }
 
     public static void main(String[] args) {
-        System.out.println(checkPossibility(new int[]{3, 4, 2, 3
-        }));
+        System.out.println(buddyStrings("aab", "aab"));
     }
 
 }
