@@ -567,8 +567,212 @@ public class Solution4 {
         return ans;
     }
 
+
+    /**
+     * 605. 种花问题
+     * 假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，
+     * 它们会争夺水源，两者都会死去。
+     * <p>
+     * 给你一个整数数组  flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没种植花，1
+     * 表示种植了花。另有一个数 n ，能否在不打破种植规则的情况下种入 n 朵花？能则返回 true ，不能则返回 false。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：flowerbed = [1,0,0,0,1], n = 1
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：flowerbed = [1,0,0,0,1], n = 2
+     * 输出：false
+     * <p>
+     * [1,0,0,0,0,1]
+     * <p>
+     * [1,0,0,0,0,0,1]
+     *
+     * @param flowerbed
+     * @param n
+     * @return
+     */
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int count = 0;
+        int m = flowerbed.length;
+        int prev = -1;
+        for (int i = 0; i < m; i++) {
+            if (flowerbed[i] == 1) {
+                if (prev < 0) {
+                    count += i / 2;
+                } else {
+                    count += (i - prev - 2) / 2;
+                }
+                if (count >= n) {
+                    return true;
+                }
+                prev = i;
+            }
+        }
+        if (prev < 0) {
+            count += (m + 1) / 2;
+        } else {
+            count += (m - prev - 1) / 2;
+        }
+        return count >= n;
+    }
+
+    /**
+     * 解法2
+     * 数学归纳法，很简单推出来
+     * <p>
+     * 统计连续的0的区间，分别有多少个连续的0即可。对于每一段0区间，都可以根据公式直接算出可以种几朵花。
+     * <p>
+     * 公式可以通过数学归纳法推出来，很简单：
+     * <p>
+     * 1）对于中间的0区间：
+     * <p>
+     * 1~2个0：可种0朵；
+     * <p>
+     * 3~4个：可种1朵；
+     * <p>
+     * 5~6个：可种2朵；
+     * <p>
+     * ...
+     * <p>
+     * count个：可种 (count-1)/2 朵
+     * <p>
+     * 2）对于两头的0区间，由于左边、右边分别没有1的限制，可种花朵数稍有不同。
+     * <p>
+     * 为了代码流程的统一，可以在数组最左边、数组最右边分别补1个0，意味着花坛左边、右边没有花。
+     * <p>
+     * 这样公式就跟1）相同了。
+     *
+     * @param flowerbed
+     * @param n
+     * @return
+     */
+    public static boolean canPlaceFlowers2(int[] flowerbed, int n) {
+        if (flowerbed == null || flowerbed.length == 0) return n == 0;
+
+        int countOfZero = 1; // 当前全0区段中连续0的数量，刚开始预设1个0，因为开头花坛的最左边没有花，可以认为存在一个虚无的0
+        int canPlace = 0; // 可以种的花的数量
+        for (int bed : flowerbed) {
+            if (bed == 0) { // 遇到0，连续0的数量+1
+                countOfZero++;
+            } else { // 遇到1，结算上一段连续的0区间，看能种下几盆花：(countOfZero-1)/2
+                canPlace += (countOfZero - 1) / 2;
+                if (canPlace >= n) return true;
+                countOfZero = 0; // 0的数量清零，开始统计下一个全0分区
+            }
+        }
+        // 最后一段0区还未结算：
+        countOfZero++; // 最后再预设1个0，因为最后花坛的最右边没有花，可以认为存在一个虚无的0
+        canPlace += (countOfZero - 1) / 2;
+
+        return canPlace >= n;
+    }
+
+    /**
+     * 剑指 Offer 10- I. 斐波那契数列
+     * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项（即 F(N)）。斐波那契数列的定义如下：
+     * <p>
+     * F(0) = 0,   F(1) = 1
+     * F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+     * 斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+     * <p>
+     * 答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：n = 2
+     * 输出：1
+     * 示例 2：
+     * <p>
+     * 输入：n = 5
+     * 输出：5
+     * <p>
+     * 递归法：
+     * 原理： 把 f(n)f(n) 问题的计算拆分成 f(n-1)f(n−1) 和 f(n-2)f(n−2) 两个子问题的计算，
+     * 并递归，以 f(0)f(0) 和 f(1)f(1) 为终止条件。
+     * 缺点： 大量重复的递归计算，例如 f(n)f(n) 和 f(n - 1)f(n−1) 两者向下递归需要
+     * 各自计算 f(n - 2)f(n−2) 的值。
+     *
+     * @param n
+     * @return
+     */
+    public static int fib(int n) {
+        int res = 0;
+        if (n == 0) {
+            return 0;
+        } else if (n == 1) {
+            return 1;
+        }
+        res = fib(n - 1) + fib(n - 2);
+
+        return res % 1000000007;
+    }
+
+    /**
+     * 记忆化递归法：
+     * 原理： 在递归法的基础上，新建一个长度为 nn 的数组，用于在递归时存储 f(0)f(0) 至 f(n)f(n) 的数字值，
+     * 重复遇到某数字则直接从数组取用，避免了重复的递归计算。
+     * 缺点： 记忆化存储需要使用 O(N)O(N) 的额外空间。
+     * <p>
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/fei-bo-na-qi-shu-lie-lcof/solution/mian-shi-ti-10-i-fei-bo-na-qi-shu-lie-dong-tai-gui/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param n
+     * @return
+     */
+    public static int fib2(int n) {
+        int[] sz = new int[n + 1];
+        int res = dtdgf(n, sz);
+
+        return res % 1000000007;
+    }
+
+    public static int dtdgf(int n, int[] sz) {
+        int res = 0;
+        if (n == 0) {
+            sz[0] = 0;
+            return 0;
+        } else if (n == 1) {
+            sz[1] = 1;
+            return 1;
+        } else if (sz[n - 1] != 0) {
+            return sz[n - 1];
+        }
+
+        res = fib(n - 1) + fib(n - 2);
+        sz[n - 1] = res;
+
+        return res;
+    }
+
+    /**
+     * 动态规划法
+     * 原理： 以斐波那契数列性质 f(n + 1) = f(n) + f(n - 1)f(n+1)=f(n)+f(n−1) 为转移方程。
+     *
+     * @param n
+     * @return
+     */
+    public static int fib3(int n) {
+        int a = 0, b = 1, sum = 0;
+
+        for (int i = 0; i < n; i++) {
+            sum = (a + b) % 1000000007;
+            a = b;
+            b = sum;
+        }
+        return a;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(buddyStrings("aab", "aab"));
+        System.out.println(fib2(0));
     }
 
 }
