@@ -770,9 +770,180 @@ public class Solution4 {
         return a;
     }
 
+    /**
+     * 414. 第三大的数
+     * 给你一个非空数组，返回此数组中 第三大的数 。如果不存在，
+     * 则返回数组中最大的数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[3, 2, 1]
+     * 输出：1
+     * 解释：第三大的数是 1 。
+     * 示例 2：
+     * <p>
+     * 输入：[1, 2]
+     * 输出：2
+     * 解释：第三大的数不存在, 所以返回最大的数 2 。
+     * 示例 3：
+     * <p>
+     * 输入：[2, 2, 3, 1]
+     * 输出：1
+     * 解释：注意，要求返回第三大的数，是指在所有不同数字中排第三大的数。
+     * 此例中存在两个值为 2 的数，它们都排第二。在所有不同数字中排第三大的数为 1 。
+     * <p>
+     * 自己写的
+     *
+     * @param nums
+     * @return
+     */
+    public static int thirdMax(int[] nums) {
+        Arrays.sort(nums);
 
-    public static void main(String[] args) {
-        System.out.println(fib2(0));
+        int xh = 1;
+        int pre = nums[nums.length - 1];
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (pre == nums[i]) {
+                continue;
+            } else {
+                pre = nums[i];
+                xh++;
+            }
+            if (xh == 3) {
+                return nums[i];
+            }
+        }
+        return nums[nums.length - 1];
     }
 
+    /**
+     * 三个数相比
+     *
+     * @param nums
+     * @return
+     */
+    public static int thirdMax2(int[] nums) {
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        if (nums.length == 2) {
+            return nums[0] > nums[1] ? nums[0] : nums[1];
+        }
+        long firM = Long.MIN_VALUE;
+        long secM = Long.MIN_VALUE;
+        long thiM = Long.MIN_VALUE;
+
+        for (int i : nums) {
+            if (i > firM) {
+                thiM = secM;
+                secM = firM;
+                firM = i;
+            } else if (firM == i) {
+                continue;
+            } else if (i > secM) {
+                thiM = secM;
+                secM = i;
+            } else if (i == secM) {
+                continue;
+            } else if (i > thiM) {
+                thiM = i;
+            }
+        }
+
+        return thiM == Long.MIN_VALUE ? (int) firM : (int) thiM;
+    }
+
+
+    /**
+     * 面试题 08.01. 三步问题
+     * 三步问题。有个小孩正在上楼梯，楼梯有n阶台阶，小孩一次可以上1阶、2阶或3阶。实现一种方法，计算小孩有多少种上楼梯的方式。结果可能很大，你需要对结果模1000000007。
+     * <p>
+     * 示例1:
+     * <p>
+     * 输入：n = 3
+     * 输出：4
+     * 说明: 有四种走法
+     * 示例2:
+     * <p>
+     * 输入：n = 5
+     * 输出：13
+     * <p>
+     * 动态规划
+     *
+     * @param n
+     * @return
+     */
+    public static int waysToStep(int n) {
+        int f1 = 1;
+        int f2 = 2;
+        int f3 = 4;
+
+        if (n == 1) {
+            return f1;
+        } else if (n == 2) {
+            return f2;
+        } else if (n == 3) {
+            return f3;
+        }
+
+        int f4 = 0;
+        for (int i = 4; i <= n; i++) {
+            f4 = (f1 + (f2 + f3) % 1000000007) % 1000000007;
+            f1 = f2;
+            f2 = f3;
+            f3 = f4;
+        }
+
+        return f4;
+    }
+
+    /**
+     * 434. 字符串中的单词数
+     * 统计字符串中的单词个数，这里的单词指的是连续的不是空格的字符。
+     * <p>
+     * 请注意，你可以假定字符串里不包括任何不可打印的字符。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: "Hello, my name is John"
+     * 输出: 5
+     * 解释: 这里的单词是指连续的不是空格的字符，所以 "Hello," 算作 1 个单词。
+     * <p>
+     * 使用语言内置函数 【通过】
+     *
+     * @param s
+     * @return
+     */
+    public int countSegments(String s) {
+        String str = s.trim();
+        if (str.length() == 0) {
+            return 0;
+        }
+
+        return str.split("\\s+").length;
+    }
+
+    /**
+     * 方法二：原地法 【通过】
+     *
+     * @param s
+     * @return
+     */
+    public int countSegments2(String s) {
+        int ans = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if ((i == 0 || s.charAt(i - 1) == ' ') && s.charAt(i) != ' ') {
+                ans++;
+            }
+        }
+
+        return ans;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(waysToStep(5));
+    }
 }
