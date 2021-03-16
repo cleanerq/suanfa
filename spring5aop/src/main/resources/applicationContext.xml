@@ -19,7 +19,7 @@
     <!--scope="prototype"代表每次都要新建一次对象-->
 
 
-    <bean id="a" class="com.qby.spring.circle.code.A" >
+    <bean id="a" class="com.qby.spring.circle.code.A">
         <property name="b" ref="b"/>
     </bean>
 
