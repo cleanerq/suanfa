@@ -942,8 +942,265 @@ public class Solution4 {
         return ans;
     }
 
+    /**
+     * 1033. 移动石子直到连续
+     * 三枚石子放置在数轴上，位置分别为 a，b，c。
+     * <p>
+     * 每一回合，你可以从两端之一拿起一枚石子（位置最大或最小），并将其放入两端之间的任一空闲位置。
+     * 形式上，假设这三枚石子当前分别位于位置 x, y, z 且 x < y < z。
+     * 那么就可以从位置 x 或者是位置 z 拿起一枚石子，并将该石子移动到某一整数位置 k 处，其中 x < k < z 且 k != y。
+     * <p>
+     * 当你无法进行任何移动时，即，这些石子的位置连续时，游戏结束。
+     * <p>
+     * 要使游戏结束，你可以执行的最小和最大移动次数分别是多少？
+     * 以长度为 2 的数组形式返回答案：answer = [minimum_moves, maximum_moves]
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：a = 1, b = 2, c = 5
+     * 输出：[1, 2]
+     * 解释：将石子从 5 移动到 4 再移动到 3，或者我们可以直接将石子移动到 3。
+     * 示例 2：
+     * <p>
+     * 输入：a = 4, b = 3, c = 2
+     * 输出：[0, 0]
+     * 解释：我们无法进行任何移动。
+     * <p>
+     * 思路：
+     * 先将最小数给a，最大数给c（用于判断相对位置）
+     * 最大移动次数很简单就是将a,c一步步向b靠拢也就是移动(c-b-1)+(b-a-1)=c-a-2 次
+     * 下面讨论最小移动次数即可：
+     * 情况I 若a,b,c相邻则无法移动 返回[0,0]
+     * 情况II 若a,b,c中有两个相邻 最少移动一次 返回[1,c-a-2]
+     * 情况III 若a,b,c中有两个想近（隔一位，也就是a_b或b_c）,最少移动一次，填在空中即可。返回[1,c-a-2]
+     * 其他情况都是最少移动两次，先创造一个相近的位置，达到情况III然后填空。返回[2,c-a-2]
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
+    public int[] numMovesStones(int a, int b, int c) {
+        int t;
+        if (a > b) {
+            t = a;
+            a = b;
+            b = t;
+        }
+        if (a > c) {
+            t = a;
+            a = c;
+            c = t;
+        }
+        if (b > c) {
+            t = b;
+            b = c;
+            c = t;
+        }   //将最小值给a，最大值给c
+        if (a == b - 1 && a == c - 2) { //a，b，c相邻无法移动
+            return new int[]{0, 0};
+        }
+        if (b == a + 1 || c == b + 1 || b == a + 2 || b == c - 2) {
+            //有两个数相邻或相近（隔一位）注意我们上面已经排除了3个数相邻情况
+            return new int[]{1, c - a - 2};
+        }
+        return new int[]{2, c - a - 2};  //其他情况
+    }
+
+    /**
+     * 914. 卡牌分组
+     * 给定一副牌，每张牌上都写着一个整数。
+     * <p>
+     * 此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：
+     * <p>
+     * 每组都有 X 张牌。
+     * 组内所有的牌上都写着相同的整数。
+     * 仅当你可选的 X >= 2 时返回 true。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[1,2,3,4,4,3,2,1]
+     * 输出：true
+     * 解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]
+     * 示例 2：
+     * <p>
+     * 输入：[1,1,1,2,2,2,3,3]
+     * 输出：false
+     * 解释：没有满足要求的分组。
+     * 示例 3：
+     * <p>
+     * 输入：[1]
+     * 输出：false
+     * 解释：没有满足要求的分组。
+     * 示例 4：
+     * <p>
+     * 输入：[1,1]
+     * 输出：true
+     * 解释：可行的分组是 [1,1]
+     * 示例 5：
+     * <p>
+     * 输入：[1,1,2,2,2,2]
+     * 输出：true
+     * 解释：可行的分组是 [1,1]，[2,2]，[2,2]
+     * <p>
+     * 暴力法
+     * <p>
+     * 我们从 22 开始，从小到大枚举 XX。
+     * <p>
+     * 由于每一组都有 XX 张牌，那么 XX 必须是卡牌总数 NN 的约数。
+     * <p>
+     * 其次，对于写着数字 ii 的牌，如果有 \textit{count}_icount
+     * i
+     * ​
+     * 张，由于题目要求「组内所有的牌上都写着相同的整数」，那么 XX 也必须是 \textit{count}_icount
+     * i
+     * ​
+     * 的约数，即：
+     * <p>
+     * \textit{count}_i \bmod X == 0
+     * count
+     * i
+     * ​
+     * modX==0
+     * <p>
+     * 所以对于每一个枚举到的 XX，我们只要先判断 XX 是否为 NN 的约数，然后遍历所有牌中存在的数字 ii，
+     * 看它们对应牌的数量 \textit{count}_icount
+     * i
+     * ​
+     * 是否满足上述要求。如果都满足等式，则 XX 为符合条件的解，否则需要继续令 XX 增大，枚举下一个数字。
+     *
+     * @param deck
+     * @return
+     */
+    public boolean hasGroupsSizeX(int[] deck) {
+        int N = deck.length;
+        int[] count = new int[10000];
+        for (int c : deck) {
+            count[c]++;
+        }
+
+        List<Integer> values = new ArrayList<Integer>();
+        for (int i = 0; i < 10000; ++i) {
+            if (count[i] > 0) {
+                values.add(count[i]);
+            }
+        }
+
+        for (int X = 2; X <= N; ++X) {
+            if (N % X == 0) {
+                boolean flag = true;
+                for (int v : values) {
+                    if (v % X != 0) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 求解最大公约数
+     *
+     * @param deck
+     * @return
+     */
+    public boolean hasGroupsSizeX2(int[] deck) {
+        int[] count = new int[10000];
+        for (int c : deck) {
+            count[c]++;
+        }
+
+        int g = -1;
+        for (int i = 0; i < 10000; ++i) {
+            if (count[i] > 0) {
+                if (g == -1) {
+                    g = count[i];
+                } else {
+                    g = gcd(g, count[i]);
+                }
+            }
+        }
+        return g >= 2;
+    }
+
+    /**
+     * 求解最大公约数
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public int gcd(int x, int y) {
+
+        return x == 0 ? y : gcd(y % x, x);
+    }
+
+
+    /**
+     * 925. 长按键入
+     * 你的朋友正在使用键盘输入他的名字 name。偶尔，在键入字符 c 时，按键可能会被长按，
+     * 而字符可能被输入 1 次或多次。
+     * <p>
+     * 你将会检查键盘输入的字符 typed。如果它对应的可能是你的朋友的名字（其中一些字符可能被长按），
+     * 那么就返回 True。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：name = "alex", typed = "aaleex"
+     * 输出：true
+     * 解释：'alex' 中的 'a' 和 'e' 被长按。
+     * 示例 2：
+     * <p>
+     * 输入：name = "saeed", typed = "ssaaedd"
+     * 输出：false
+     * 解释：'e' 一定需要被键入两次，但在 typed 的输出中不是这样。
+     * 示例 3：
+     * <p>
+     * 输入：name = "leelee", typed = "lleeelee"
+     * 输出：true
+     * 示例 4：
+     * <p>
+     * 输入：name = "laiden", typed = "laiden"
+     * 输出：true
+     * 解释：长按名字中的字符并不是必要的。
+     *
+     * 双指针法
+     *
+     * @param name
+     * @param typed
+     * @return
+     */
+    public static boolean isLongPressedName(String name, String typed) {
+        int i = 0;
+        int j = 0;
+
+        while (j < typed.length()) {
+            if (i < name.length() && name.charAt(i) == typed.charAt(j)) {
+                j++;
+                i++;
+            } else if (j > 0 && typed.charAt(j) == typed.charAt(j - 1)) {
+                j++;
+            } else {
+                return false;
+            }
+        }
+
+        return i == name.length();
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(waysToStep(5));
+        System.out.println(isLongPressedName("vtkgn",
+                "vttkgnn"));
     }
 }
