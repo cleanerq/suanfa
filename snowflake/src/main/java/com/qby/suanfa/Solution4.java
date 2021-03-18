@@ -1,7 +1,6 @@
 package com.qby.suanfa;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Solution4 {
 
@@ -1173,7 +1172,7 @@ public class Solution4 {
      * 输入：name = "laiden", typed = "laiden"
      * 输出：true
      * 解释：长按名字中的字符并不是必要的。
-     *
+     * <p>
      * 双指针法
      *
      * @param name
@@ -1198,9 +1197,157 @@ public class Solution4 {
         return i == name.length();
     }
 
+    /**
+     * 941. 有效的山脉数组
+     * 给定一个整数数组 arr，如果它是有效的山脉数组就返回 true，否则返回 false。
+     * <p>
+     * 让我们回顾一下，如果 A 满足下述条件，那么它是一个山脉数组：
+     * <p>
+     * arr.length >= 3
+     * 在 0 < i < arr.length - 1 条件下，存在 i 使得：
+     * arr[0] < arr[1] < ... arr[i-1] < arr[i]
+     * arr[i] > arr[i+1] > ... > arr[arr.length - 1]
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：arr = [2,1]
+     * 输出：false
+     * 示例 2：
+     * <p>
+     * 输入：arr = [3,5,5]
+     * 输出：false
+     * 示例 3：
+     * <p>
+     * 输入：arr = [0,3,2,1]
+     * 输出：true
+     * <p>
+     * 线性扫描
+     *
+     * @param arr
+     * @return
+     */
+    public static boolean validMountainArray(int[] arr) {
+        int n = arr.length;
+        int i = 0;
+        while (i + 1 < n && arr[i + 1] > arr[i]) {
+            i++;
+        }
+        if (i == n - 1 || i == 0) {
+            return false;
+        }
+
+        // 递减扫描
+        while (i + 1 < n && arr[i] > arr[i + 1]) {
+            i++;
+        }
+
+        return i == n - 1;
+    }
+
+
+    /**
+     * 507. 完美数
+     * 对于一个 正整数，如果它和除了它自身以外的所有 正因子 之和相等，我们称它为 「完美数」。
+     * <p>
+     * 给定一个 整数 n， 如果是完美数，返回 true，否则返回 false
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：28
+     * 输出：True
+     * 解释：28 = 1 + 2 + 4 + 7 + 14
+     * 1, 2, 4, 7, 和 14 是 28 的所有正因子。
+     * 示例 2：
+     * <p>
+     * 输入：num = 6
+     * 输出：true
+     * 示例 3：
+     * <p>
+     * 输入：num = 496
+     * 输出：true
+     * 示例 4：
+     * <p>
+     * 输入：num = 8128
+     * 输出：true
+     * 示例 5：
+     * <p>
+     * 输入：num = 2
+     * 输出：false
+     * <p>
+     * 1 枚举法
+     * <p>
+     * 我们枚举 n 的所有因数，并计算它们的和。
+     * <p>
+     * 在枚举时，我们只需要从 1 到 sqrt(n) 进行枚举即可。这是因为如果 n 有一个大于 sqrt(n) 的因数 x，
+     * 那么它一定有一个小于 sqrt(n) 的因数 n/x。因此我们可以从 1 到 sqrt(n) 枚举 n 的因数，
+     * 当出现一个 n 的因数 x 时，我们还需要算上 n/x。此外还需要考虑特殊情况，即 x = n/x，这时我们不能重复计算。
+     *
+     * @param num
+     * @return
+     */
+    public boolean checkPerfectNumber(int num) {
+        if (num <= 0) {
+            return false;
+        }
+        int sum = 0;
+        for (int i = 1; i * i <= num; i++) {
+            if (num % i == 0) {
+                sum += i;
+                if (i * i != num) {
+                    sum += num / i;
+                }
+
+            }
+        }
+        return sum - num == num;
+    }
+
+    /**
+     * 680. 验证回文字符串 Ⅱ
+     * 给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: "aba"
+     * 输出: True
+     * 示例 2:
+     * <p>
+     * 输入: "abca"
+     * 输出: True
+     * 解释: 你可以删除c字符。
+     *
+     * @param s
+     * @return
+     */
+    public static boolean validPalindrome(String s) {
+        int i = 0;
+        int j = s.length() - 1;
+
+        while (i < j) {
+            if (s.charAt(i) == s.charAt(j)) {
+                i++;
+                j--;
+            } else {
+                return validPalindrome(s, i + 1, j) || validPalindrome(s, i, j - 1);
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validPalindrome(String s, int l, int h) {
+        for (int i = l, j = h; i < j; i++, j--) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void main(String[] args) {
-        System.out.println(isLongPressedName("vtkgn",
-                "vttkgnn"));
+        System.out.println(validPalindrome("bddb"));
     }
 }
