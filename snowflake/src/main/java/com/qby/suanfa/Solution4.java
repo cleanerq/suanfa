@@ -1347,7 +1347,80 @@ public class Solution4 {
         return true;
     }
 
+    /**
+     * 1784. 检查二进制字符串字段
+     * 给你一个二进制字符串 s ，该字符串 不含前导零 。
+     * <p>
+     * 如果 s 最多包含 一个由连续的 '1' 组成的字段 ，返回 true​​​ 。否则，返回 false 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：s = "1001"
+     * 输出：false
+     * 解释：字符串中的 1 没有形成一个连续字段。
+     * 示例 2：
+     * <p>
+     * 输入：s = "110"
+     * 输出：true
+     *
+     * @param s
+     * @return
+     */
+    public static boolean checkOnesSegment(String s) {
+        return !s.contains("01");
+    }
+
+    /**
+     * 1736. 替换隐藏数字得到的最晚时间
+     * 给你一个字符串 time ，格式为 hh:mm（小时：分钟），其中某几位数字被隐藏（用 ? 表示）。
+     * <p>
+     * 有效的时间为 00:00 到 23:59 之间的所有时间，包括 00:00 和 23:59 。
+     * <p>
+     * 替换 time 中隐藏的数字，返回你可以得到的最晚有效时间。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：time = "2?:?0"
+     * 输出："23:50"
+     * 解释：以数字 '2' 开头的最晚一小时是 23 ，以 '0' 结尾的最晚一分钟是 50 。
+     * 示例 2：
+     * <p>
+     * 输入：time = "0?:3?"
+     * 输出："09:39"
+     * 示例 3：
+     * <p>
+     * 输入：time = "1?:22"
+     * 输出："19:22"
+     *
+     * 贪心算法
+     *
+     * @param time
+     * @return
+     */
+    public static String maximumTime(String time) {
+        String[] st = new String[]{"2", "3", ":", "5", "9"};
+        StringBuilder stb = new StringBuilder();
+        for (int i = 0; i < time.length(); i++) {
+            if (time.charAt(i) == '?') {
+                if (i == 0 && time.charAt(1) != '?' && time.charAt(1) >= '4') {
+                    stb.append("1");
+                } else if (i == 1 && stb.toString().charAt(i - 1) != '2') {
+                    stb.append("9");
+                } else {
+                    stb.append(st[i]);
+                }
+            } else {
+                stb.append(time.charAt(i));
+            }
+        }
+        return stb.toString();
+    }
+
     public static void main(String[] args) {
-        System.out.println(validPalindrome("bddb"));
+        System.out.println(maximumTime("?4:03"));
     }
 }
