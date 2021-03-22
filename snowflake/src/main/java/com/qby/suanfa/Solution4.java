@@ -1477,6 +1477,12 @@ public class Solution4 {
         return false;
     }
 
+    /**
+     * 数组每一位n是前面n-1位想加的结果
+     *
+     * @param arr
+     * @return
+     */
     public static boolean canThreePartsEqualSum1(int[] arr) {
         int len = arr.length - 1;
         for (int i = 1; i <= len; ++i) {
@@ -1492,7 +1498,168 @@ public class Solution4 {
         return times == 3;
     }
 
+    /**
+     * 面试题 05.03. 翻转数位
+     * 给定一个32位整数 num，你可以将一个数位从0变为1。请编写一个程序，找出你能够获得的最长的一串1的长度。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入: num = 1775(110111011112)
+     * 输出: 8
+     * 示例 2：
+     * <p>
+     * 输入: num = 7(01112)
+     * 输出: 4
+     *
+     * @param num
+     * @return
+     */
+    public int reverseBits(int num) {
+        String s = Integer.toBinaryString(num);
+        String[] arr = s.split("0");
+        if (num == -1) {
+            return 32;
+        }
+        if (arr.length < 1) {
+            return arr.length + 1;
+        }
+        int max = arr[0].length();
+        int res = max + 1;
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i - 1].length() + arr[i].length() > max) {
+                max = arr[i - 1].length() + arr[i].length();
+                res = max + 1;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 747. 至少是其他数字两倍的最大数
+     * 在一个给定的数组nums中，总是存在一个最大元素 。
+     * <p>
+     * 查找数组中的最大元素是否至少是数组中每个其他数字的两倍。
+     * <p>
+     * 如果是，则返回最大元素的索引，否则返回-1。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: nums = [3, 6, 1, 0]
+     * 输出: 1
+     * 解释: 6是最大的整数, 对于数组中的其他整数,
+     * 6大于数组中其他元素的两倍。6的索引是1, 所以我们返回1.
+     * <p>
+     * <p>
+     * 示例 2:
+     * <p>
+     * 输入: nums = [1, 2, 3, 4]
+     * 输出: -1
+     * 解释: 4没有超过3的两倍大, 所以我们返回 -1.
+     *
+     * @param nums
+     * @return
+     */
+    public static int dominantIndex(int[] nums) {
+        int maxIndex = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            if (nums[i] > nums[maxIndex])
+                maxIndex = i;
+        }
+        for (int i = 0; i < nums.length; ++i) {
+            if (maxIndex != i && nums[maxIndex] < 2 * nums[i])
+                return -1;
+        }
+        return maxIndex;
+    }
+
+
+    /**
+     * 874. 模拟行走机器人
+     * 机器人在一个无限大小的 XY 网格平面上行走，从点 (0, 0) 处开始出发，面向北方。
+     * 该机器人可以接收以下三种类型的命令 commands ：
+     * <p>
+     * -2 ：向左转 90 度
+     * -1 ：向右转 90 度
+     * 1 <= x <= 9 ：向前移动 x 个单位长度
+     * 在网格上有一些格子被视为障碍物 obstacles 。第 i 个障碍物位于网格点  obstacles[i] = (xi, yi) 。
+     * <p>
+     * 机器人无法走到障碍物上，它将会停留在障碍物的前一个网格方块上，但仍然可以继续尝试进行该路线的其余部分。
+     * <p>
+     * 返回从原点到机器人所有经过的路径点（坐标为整数）的最大欧式距离的平方。（即，如果距离为 5 ，则返回 25 ）
+     * <p>
+     * <p>
+     * 注意：
+     * <p>
+     * 北表示 +Y 方向。
+     * 东表示 +X 方向。
+     * 南表示 -Y 方向。
+     * 西表示 -X 方向。
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：commands = [4,-1,3], obstacles = []
+     * 输出：25
+     * 解释：
+     * 机器人开始位于 (0, 0)：
+     * 1. 向北移动 4 个单位，到达 (0, 4)
+     * 2. 右转
+     * 3. 向东移动 3 个单位，到达 (3, 4)
+     * 距离原点最远的是 (3, 4) ，距离为 32 + 42 = 25
+     * 示例 2：
+     * <p>
+     * 输入：commands = [4,-1,4,-2,4], obstacles = [[2,4]]
+     * 输出：65
+     * 解释：机器人开始位于 (0, 0)：
+     * 1. 向北移动 4 个单位，到达 (0, 4)
+     * 2. 右转
+     * 3. 向东移动 1 个单位，然后被位于 (2, 4) 的障碍物阻挡，机器人停在 (1, 4)
+     * 4. 左转
+     * 5. 向北走 4 个单位，到达 (1, 8)
+     * 距离原点最远的是 (1, 8) ，距离为 12 + 82 = 65
+     *
+     * @param commands
+     * @param obstacles
+     * @return
+     */
+    public static int robotSim(int[] commands, int[][] obstacles) {
+        int[] dx = new int[]{0, 1, 0, -1};
+        int[] dy = new int[]{1, 0, -1, 0};
+        int x = 0, y = 0, di = 0;
+
+        // Encode obstacles (x, y) as (x+30000) * (2^16) + (y+30000)
+        Set<Long> obstacleSet = new HashSet();
+        for (int[] obstacle : obstacles) {
+            long ox = (long) obstacle[0] + 30000;
+            long oy = (long) obstacle[1] + 30000;
+            obstacleSet.add((ox << 16) + oy);
+        }
+
+        int ans = 0;
+        for (int cmd : commands) {
+            if (cmd == -2)  //left
+                di = (di + 3) % 4;
+            else if (cmd == -1)  //right
+                di = (di + 1) % 4;
+            else {
+                for (int k = 0; k < cmd; ++k) {
+                    int nx = x + dx[di];
+                    int ny = y + dy[di];
+                    long code = (((long) nx + 30000) << 16) + ((long) ny + 30000);
+                    if (!obstacleSet.contains(code)) {
+                        x = nx;
+                        y = ny;
+                        ans = Math.max(ans, x * x + y * y);
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(canThreePartsEqualSum(new int[]{1, -1, 1, -1}));
+        System.out.println(robotSim(new int[]{-2, 1, -1, 1}, new int[][]{}));
     }
 }
