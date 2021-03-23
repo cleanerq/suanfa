@@ -8,26 +8,54 @@ import redis.clients.jedis.JedisPoolConfig;
 
 @Component
 public class RedisUtils {
-    @Value("${server.port}")
-    private static int serverPort;
+    @Value("${spring.redis.port}")
+    private int serverPort;
 
     @Value("${spring.redis.host}")
-    private static String serverHost;
+    private String serverHost;
 
     private static JedisPool jedisPool;
 
-    static {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(20);
-        jedisPoolConfig.setMaxIdle(10);
 
-        jedisPool = new JedisPool(jedisPoolConfig, serverHost, serverPort, 100000);
+    public JedisPool getJedisPool() {
+        if (jedisPool == null) {
+            synchronized (JedisPool.class) {
+                if (jedisPool == null) {
+                    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+                    jedisPoolConfig.setMaxTotal(20);
+                    jedisPoolConfig.setMaxIdle(10);
+                    jedisPool = new JedisPool(jedisPoolConfig, getServerHost(), getServerPort(), 100000);
+                }
+            }
+        }
+        return jedisPool;
     }
 
-    public static Jedis getJedis() throws Exception {
+
+    public Jedis getJedis() throws Exception {
+        if (jedisPool == null) {
+            getJedisPool();
+        }
+
         if (null != jedisPool) {
             return jedisPool.getResource();
         }
         throw new Exception("Jedispool is not ok");
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    public void setServerHost(String serverHost) {
+        this.serverHost = serverHost;
     }
 }
