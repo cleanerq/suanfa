@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.Jedis;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -20,11 +21,14 @@ public class GoodController {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     @Value("${server.port}")
     private String serverPort;
 
     @GetMapping("/buy_goods")
-    public String buy_Goods() {
+    public String buy_Goods() throws Exception {
 
         String value = UUID.randomUUID().toString() + Thread.currentThread().getName();
 
@@ -49,20 +53,21 @@ public class GoodController {
                 return "商品已经售罄/活动结束/调用超时，欢迎下次光临" + "\t 服务器端口: " + serverPort;
             }
         } finally {
-            while (true) {
-                stringRedisTemplate.watch(REDIS_LOCK_KEY); //加事务，乐观锁
-                if (value.equalsIgnoreCase(stringRedisTemplate.opsForValue().get(REDIS_LOCK_KEY))) {
-                    stringRedisTemplate.setEnableTransactionSupport(true);
-                    stringRedisTemplate.multi();//开始事务
-                    stringRedisTemplate.delete(REDIS_LOCK_KEY);
-                    List<Object> list = stringRedisTemplate.exec();
-                    if (list == null) {  //如果等于null，就是没有删掉，删除失败，再回去while循环那再重新执行删除
-                        continue;
-                    }
+            Jedis jedis = redisUtils.getJedis();
+
+            String script = "if redis.call('get', KEYS[1]) == ARGV[1]" + "then "
+                    + "return redis.call('del', KEYS[1])" + "else " + "  return 0 " + "end";
+            try {
+                Object result = jedis.eval(script, Collections.singletonList(REDIS_LOCK_KEY), Collections.singletonList(value));
+                if ("1".equals(result.toString())) {
+                    System.out.println("------del REDIS_LOCK_KEY success");
+                } else {
+                    System.out.println("------del REDIS_LOCK_KEY error");
                 }
-                //如果删除成功，释放监控器，并且breank跳出当前循环
-                stringRedisTemplate.unwatch();
-                break;
+            } finally {
+                if (null != jedis) {
+                    jedis.close();
+                }
             }
         }
 
