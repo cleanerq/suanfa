@@ -1658,8 +1658,302 @@ public class Solution4 {
         return ans;
     }
 
+    /**
+     * 219. 存在重复元素 II
+     * 给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，
+     * 使得 nums [i] = nums [j]，并且 i 和 j 的差的 绝对值 至多为 k。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: nums = [1,2,3,1], k = 3
+     * 输出: true
+     * 示例 2:
+     * <p>
+     * 输入: nums = [1,0,1,1], k = 1
+     * 输出: true
+     * 示例 3:
+     * <p>
+     * 输入: nums = [1,2,3,1,2,3], k = 2
+     * 输出: false
+     * <p>
+     * 线性检索
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static boolean containsNearbyDuplicate(int[] nums, int k) {
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 1; j <= k && i + j < nums.length; j++) {
+                if (nums[i + j] == nums[i]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 平衡二叉树
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate2(int[] nums, int k) {
+        Set<Integer> set = new TreeSet<>();
+        for (int i = 0; i < nums.length; ++i) {
+            if (set.contains(nums[i])) return true;
+            set.add(nums[i]);
+            if (set.size() > k) {
+                set.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 散列表
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate3(int[] nums, int k) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; ++i) {
+            if (set.contains(nums[i])) return true;
+            set.add(nums[i]);
+            if (set.size() > k) {
+                set.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 482. 密钥格式化
+     * 有一个密钥字符串 S ，只包含字母，数字以及 '-'（破折号）。其中， N 个 '-' 将字符串分成了 N+1 组。
+     * <p>
+     * 给你一个数字 K，请你重新格式化字符串，使每个分组恰好包含 K 个字符。特别地，
+     * 第一个分组包含的字符个数必须小于等于 K，但至少要包含 1 个字符。两个分组之间需要用 '-'（破折号）隔开，
+     * 并且将所有的小写字母转换为大写字母。
+     * <p>
+     * 给定非空字符串 S 和数字 K，按照上面描述的规则进行格式化。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：S = "5F3Z-2e-9-w", K = 4
+     * 输出："5F3Z-2E9W"
+     * 解释：字符串 S 被分成了两个部分，每部分 4 个字符；
+     * 注意，两个额外的破折号需要删掉。
+     * 示例 2：
+     * <p>
+     * 输入：S = "2-5g-3-J", K = 2
+     * 输出："2-5G-3J"
+     * 解释：字符串 S 被分成了 3 个部分，按照前面的规则描述，第一部分的字符可以少于给定的数量，
+     * 其余部分皆为 2 个字符。
+     *
+     * @param S
+     * @param K
+     * @return
+     */
+    public static String licenseKeyFormatting(String S, int K) {
+        StringBuilder sb = new StringBuilder();
+        String t = S.replaceAll("-", "");
+        int s = t.length() % K;
+        int i = 0;
+        while (i < t.length() && i + K <= t.length()) {
+            sb.append("-");
+            if (i == 0 && s != 0) {
+                sb.append(t.substring(i, s).toUpperCase());
+                i = i + s;
+            } else {
+                sb.append(t.substring(i, i + K).toUpperCase());
+                i = i + K;
+            }
+        }
+        if (sb.toString().equals("")) {
+            if (!"".equals(t)) {
+                sb.append(S);
+            }
+            return sb.toString();
+        }
+
+        return sb.toString().substring(1);
+    }
+
+    /**
+     * 倒序遍历
+     *
+     * @param S
+     * @param K
+     * @return
+     */
+    public String licenseKeyFormatting2(String S, int K) {
+        StringBuilder s = new StringBuilder();
+        // 统计已打印字符个数
+        int count = 0;
+        // 倒序遍历字符串
+        for (int i = S.length() - 1; i >= 0; i--) {
+            if (S.charAt(i) != '-') {
+                // 计算什么时候打印分隔符
+                if (count != 0 && count % K == 0) {
+                    s.append('-');
+                }
+                // 转为大写字母添加
+                s.append(Character.toUpperCase(S.charAt(i)));
+                count++;
+            }
+        }
+        // 反转字符串
+        return s.reverse().toString();
+    }
+
+    /**
+     * 使用char数组
+     *
+     * @param S
+     * @param K
+     * @return
+     */
+    public String licenseKeyFormatting3(String S, int K) {
+        char[] array = S.toCharArray();
+        // 统计字符的个数
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != '-') {
+                // 将小写字符转为大写字符
+                if (array[i] > 'Z') {
+                    array[i] -= 32;
+                }
+                count++;
+            }
+        }
+        // 没有字符返回空串
+        if (count == 0) {
+            return "";
+        }
+        // 计算分隔符的个数
+        int separator = count / K;
+        // 如果正好整除，分隔符个数 - 1
+        separator = count % K == 0 ? separator - 1 : separator;
+        // 存储结果的数组
+        char[] result = new char[count + separator];
+        // 指向结果数组的下标，倒序赋值
+        int index = result.length - 1;
+        // 统计已打印字符个数
+        int letter = 0;
+        for (int i = S.length() - 1; i >= 0; i--) {
+            if (array[i] != '-') {
+                // 计算什么时候打印分隔符
+                if (letter != 0 && letter % K == 0) {
+                    result[index--] = '-';
+                }
+                result[index--] = array[i];
+                letter++;
+            }
+        }
+        return new String(result);
+    }
+
+
+    /**
+     * 819. 最常见的单词
+     * 给定一个段落 (paragraph) 和一个禁用单词列表 (banned)。返回出现次数最多，同时不在禁用列表中的单词。
+     * <p>
+     * 题目保证至少有一个词不在禁用列表中，而且答案唯一。
+     * <p>
+     * 禁用列表中的单词用小写字母表示，不含标点符号。段落中的单词不区分大小写。答案都是小写字母。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入:
+     * paragraph = "Bob hit a ball, the hit BALL flew far after it was hit."
+     * banned = ["hit"]
+     * 输出: "ball"
+     * 解释:
+     * "hit" 出现了3次，但它是一个禁用的单词。
+     * "ball" 出现了2次 (同时没有其他单词出现2次)，所以它是段落里出现次数最多的，且不在禁用列表中的单词。
+     * 注意，所有这些单词在段落里不区分大小写，标点符号需要忽略（即使是紧挨着单词也忽略， 比如 "ball,"），
+     * "hit"不是最终的答案，虽然它出现次数更多，但它在禁用单词列表中。
+     *
+     * @param paragraph
+     * @param banned
+     * @return
+     */
+    public String mostCommonWord(String paragraph, String[] banned) {
+        paragraph += ".";
+
+        Set<String> banset = new HashSet();
+        for (String word : banned) banset.add(word);
+        Map<String, Integer> count = new HashMap();
+
+        String ans = "";
+        int ansfreq = 0;
+
+        StringBuilder word = new StringBuilder();
+        for (char c : paragraph.toCharArray()) {
+            if (Character.isLetter(c)) {
+                word.append(Character.toLowerCase(c));
+            } else if (word.length() > 0) {
+                String finalword = word.toString();
+                if (!banset.contains(finalword)) {
+                    count.put(finalword, count.getOrDefault(finalword, 0) + 1);
+                    if (count.get(finalword) > ansfreq) {
+                        ans = finalword;
+                        ansfreq = count.get(finalword);
+                    }
+                }
+                word = new StringBuilder();
+            }
+        }
+
+        return ans;
+    }
+
+    public static String mostCommonWord2(String paragraph, String[] banned) {
+
+        paragraph += ".";
+        Set<String> banSet = new HashSet<>();
+        for (String s : banned) {
+            banSet.add(s);
+        }
+
+        Map<String, Integer> count = new HashMap<>();
+        String ans = "";
+        int ansfreq = 0;
+
+        StringBuilder word = new StringBuilder();
+        for (char c : paragraph.toCharArray()) {
+            if (Character.isLetter(c)) {
+                word.append(Character.toLowerCase(c));
+            } else if (word.length() > 0) {
+                String finalWord = word.toString();
+                if (!banSet.contains(finalWord)) {
+                    count.put(finalWord, count.getOrDefault(finalWord, 0) + 1);
+                    if (count.get(finalWord) > ansfreq) {
+                        ans = finalWord;
+                        ansfreq = count.get(finalWord);
+                    }
+                }
+                word = new StringBuilder();
+            }
+        }
+
+
+        return ans;
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(robotSim(new int[]{-2, 1, -1, 1}, new int[][]{}));
+        System.out.println(mostCommonWord2("Bob", new String[]{}));
+
     }
 }
