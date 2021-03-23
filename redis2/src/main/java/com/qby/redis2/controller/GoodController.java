@@ -3,6 +3,8 @@ package com.qby.redis2.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.Jedis;
@@ -53,23 +55,10 @@ public class GoodController {
                 return "商品已经售罄/活动结束/调用超时，欢迎下次光临" + "\t 服务器端口: " + serverPort;
             }
         } finally {
-            Jedis jedis = redisUtils.getJedis();
-
             String script = "if redis.call('get', KEYS[1]) == ARGV[1]" + "then "
                     + "return redis.call('del', KEYS[1])" + "else " + "  return 0 " + "end";
-            try {
-                Object result = jedis.eval(script, Collections.singletonList(REDIS_LOCK_KEY), Collections.singletonList(value));
-                if ("1".equals(result.toString())) {
-                    System.out.println("------del REDIS_LOCK_KEY success");
-                } else {
-                    System.out.println("------del REDIS_LOCK_KEY error");
-                }
-            } finally {
-                if (null != jedis) {
-                    jedis.close();
-                }
-            }
+            RedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
+            stringRedisTemplate.execute(redisScript, Collections.singletonList(REDIS_LOCK_KEY), value);
         }
-
     }
 }
