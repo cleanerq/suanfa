@@ -1,6 +1,7 @@
 package com.qby.suanfa;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Solution4 {
 
@@ -1952,8 +1953,159 @@ public class Solution4 {
     }
 
 
-    public static void main(String[] args) {
-        System.out.println(mostCommonWord2("Bob", new String[]{}));
+    /**
+     * 441. 排列硬币
+     * 你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。
+     * <p>
+     * 给定一个数字 n，找出可形成完整阶梯行的总行数。
+     * <p>
+     * n 是一个非负整数，并且在32位有符号整型的范围内。
+     * <p>
+     * 示例 1:
+     * <p>
+     * n = 5
+     * <p>
+     * 硬币可排列成以下几行:
+     * ¤
+     * ¤ ¤
+     * ¤ ¤
+     * <p>
+     * 因为第三行不完整，所以返回2.
+     * 示例 2:
+     * <p>
+     * n = 8
+     * <p>
+     * 硬币可排列成以下几行:
+     * ¤
+     * ¤ ¤
+     * ¤ ¤ ¤
+     * ¤ ¤
+     * <p>
+     * 因为第四行不完整，所以返回3.
+     * <p>
+     * 二分法
+     *
+     * @param n
+     * @return
+     */
+    public static int arrangeCoins(int n) {
+        int l = 0, h = n;
+        while (l <= h) {
+            long mid = (h - l) / 2 + l;
+            long sum = (mid + 1) * mid / 2;
+            if (sum == n) {
+                return (int) mid;
+            } else if (sum > n) {
+                h = (int) mid - 1;
+            } else {
+                l = (int) mid + 1;
+            }
+        }
 
+        return h;
+    }
+
+    /**
+     * 645. 错误的集合
+     * 集合 s 包含从 1 到 n 的整数。不幸的是，因为数据错误，
+     * 导致集合里面某一个数字复制了成了集合里面的另外一个数字的值，
+     * 导致集合 丢失了一个数字 并且 有一个数字重复 。
+     * <p>
+     * 给定一个数组 nums 代表了集合 S 发生错误后的结果。
+     * <p>
+     * 请你找出重复出现的整数，再找到丢失的整数，将它们以数组的形式返回。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1,2,2,4]
+     * 输出：[2,3]
+     * 示例 2：
+     * <p>
+     * 输入：nums = [1,1]
+     * 输出：[1,2]
+     * <p>
+     * 线性遍历
+     *
+     * @param nums
+     * @return
+     */
+    public static int[] findErrorNums(int[] nums) {
+        Set<Integer> setE = new HashSet<>();
+        int cf = 0;
+        for (int num : nums) {
+            if (setE.contains(num)) {
+                cf = num;
+            }
+            setE.add(num);
+        }
+
+        for (int i = 1; i <= nums.length; i++) {
+            if (!setE.contains(i)) {
+                return new int[]{cf, i};
+            }
+        }
+
+        return new int[]{};
+    }
+
+    /**
+     * 排序 numsnums 数组后，相等的两个数字将会连续出现。此外，检查相邻的两个数字是否只相差 1 可以找到缺失数字。
+     *
+     * @param nums
+     * @return
+     */
+    public static int[] findErrorNums2(int[] nums) {
+        Arrays.sort(nums);
+        int dup = -1, missing = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1])
+                dup = nums[i];
+            else if (nums[i] > nums[i - 1] + 1)
+                missing = nums[i - 1] + 1;
+        }
+        return new int[]{dup, nums[nums.length - 1] != nums.length ? nums.length : missing};
+    }
+
+    /**
+     * 278. 第一个错误的版本
+     * 你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。
+     * 由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。
+     *
+     * 假设你有 n 个版本 [1, 2, ..., n]，你想找出导致之后所有版本出错的第一个错误的版本。
+     *
+     * 你可以通过调用 bool isBadVersion(version) 接口来判断版本号 version 是否在单元测试中出错。
+     * 实现一个函数来查找第一个错误的版本。你应该尽量减少对调用 API 的次数。
+     *
+     * 示例:
+     *
+     * 给定 n = 5，并且 version = 4 是第一个错误的版本。
+     *
+     * 调用 isBadVersion(3) -> false
+     * 调用 isBadVersion(5) -> true
+     * 调用 isBadVersion(4) -> true
+     *
+     * 所以，4 是第一个错误的版本。
+     *
+     * 二分查找
+     *
+     * @param n
+     * @return
+     */
+    public int firstBadVersion(int n) {
+        int l = 1, h = n;
+        int mid = 0;
+        while (l < h) {
+            mid = (h - l) / 2 + l;
+//            if (isBadVersion(mid)) {
+//                h = mid;
+//            } else {
+//                l = mid + 1;
+//            }
+        }
+        return l;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(findErrorNums2(new int[]{3,2, 2}));
     }
 }
