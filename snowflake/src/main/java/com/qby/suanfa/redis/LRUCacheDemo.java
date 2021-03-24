@@ -13,7 +13,9 @@ public class LRUCacheDemo<K, V> extends LinkedHashMap<K, V> {
     private int capacity;//缓存坑位
 
     public LRUCacheDemo(int capacity) {
-        super(capacity, 0.75F, false);
+        // accessOrder – the ordering mode - true for access-order, false for insertion-order
+        // LRU 要用 访问顺序 true
+        super(capacity, 0.75F, true);
         this.capacity = capacity;
     }
 
@@ -53,3 +55,21 @@ public class LRUCacheDemo<K, V> extends LinkedHashMap<K, V> {
         System.out.println(lruCacheDemo.keySet());
     }
 }
+/**
+ * true
+ * [1, 2, 3]
+ * [2, 3, 4]
+ * [2, 4, 3]
+ * [2, 4, 3]
+ * [2, 4, 3]
+ * [4, 3, 5]
+ * */
+
+/**
+ [1, 2, 3]
+ [2, 3, 4]
+ [2, 3, 4]
+ [2, 3, 4]
+ [2, 3, 4]
+ [3, 4, 5]
+ */
