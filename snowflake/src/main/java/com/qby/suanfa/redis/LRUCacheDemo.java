@@ -22,6 +22,16 @@ public class LRUCacheDemo<K, V> extends LinkedHashMap<K, V> {
         return super.size() > capacity;
     }
 
+    /**
+     * [1, 2, 3]
+     * [2, 3, 4]
+     * [2, 3, 4]
+     * [2, 3, 4]
+     * [2, 3, 4]
+     * [3, 4, 5]
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         LRUCacheDemo lruCacheDemo = new LRUCacheDemo(3);
 
