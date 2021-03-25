@@ -2070,22 +2070,22 @@ public class Solution4 {
      * 278. 第一个错误的版本
      * 你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。
      * 由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。
-     *
+     * <p>
      * 假设你有 n 个版本 [1, 2, ..., n]，你想找出导致之后所有版本出错的第一个错误的版本。
-     *
+     * <p>
      * 你可以通过调用 bool isBadVersion(version) 接口来判断版本号 version 是否在单元测试中出错。
      * 实现一个函数来查找第一个错误的版本。你应该尽量减少对调用 API 的次数。
-     *
+     * <p>
      * 示例:
-     *
+     * <p>
      * 给定 n = 5，并且 version = 4 是第一个错误的版本。
-     *
+     * <p>
      * 调用 isBadVersion(3) -> false
      * 调用 isBadVersion(5) -> true
      * 调用 isBadVersion(4) -> true
-     *
+     * <p>
      * 所以，4 是第一个错误的版本。
-     *
+     * <p>
      * 二分查找
      *
      * @param n
@@ -2105,7 +2105,140 @@ public class Solution4 {
         return l;
     }
 
+
+    /**
+     * 1668. 最大重复子字符串
+     * 给你一个字符串 sequence ，如果字符串 word 连续重复 k 次形成的字符串是 sequence 的一个子字符串，
+     * 那么单词 word 的 重复值为 k 。单词 word 的 最大重复值 是单词 word 在 sequence 中最大的重复值。
+     * 如果 word 不是 sequence 的子串，那么重复值 k 为 0 。
+     * <p>
+     * 给你一个字符串 sequence 和 word ，请你返回 最大重复值 k 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：sequence = "ababc", word = "ab"
+     * 输出：2
+     * 解释："abab" 是 "ababc" 的子字符串。
+     * 示例 2：
+     * <p>
+     * 输入：sequence = "ababc", word = "ba"
+     * 输出：1
+     * 解释："ba" 是 "ababc" 的子字符串，但 "baba" 不是 "ababc" 的子字符串。
+     * 示例 3：
+     * <p>
+     * 输入：sequence = "ababc", word = "ac"
+     * 输出：0
+     * 解释："ac" 不是 "ababc" 的子字符串。
+     *
+     * @param sequence
+     * @param word
+     * @return
+     */
+    public int maxRepeating(String sequence, String word) {
+        int count = 0;
+        StringBuilder st = new StringBuilder(word);
+        while (sequence.contains(st.toString())) {
+            count++;
+            st.append(word);
+        }
+        return count;
+    }
+
+    /**
+     * 剑指 Offer 10- II. 青蛙跳台阶问题
+     * 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+     * <p>
+     * 答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：n = 2
+     * 输出：2
+     * 示例 2：
+     * <p>
+     * 输入：n = 7
+     * 输出：21
+     * 示例 3：
+     * <p>
+     * 输入：n = 0
+     * 输出：1
+     * <p>
+     * 动态规划 fn = fn-1 + fn-2
+     *
+     * @param n
+     * @return
+     */
+    public static int numWays(int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int f1 = 1, f2 = 1;
+        int sum = 0;
+        for (int i = 2; i <= n; i++) {
+            sum = (f1 + f2) % 1000000007;
+            f1 = f2;
+            f2 = sum;
+        }
+        return sum;
+    }
+
+    /**
+     * 724. 寻找数组的中心下标
+     * 给你一个整数数组 nums，请编写一个能够返回数组 “中心下标” 的方法。
+     * <p>
+     * 数组 中心下标 是数组的一个下标，其左侧所有元素相加的和等于右侧所有元素相加的和。
+     * <p>
+     * 如果数组不存在中心下标，返回 -1 。如果数组有多个中心下标，应该返回最靠近左边的那一个。
+     * <p>
+     * 注意：中心下标可能出现在数组的两端。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1, 7, 3, 6, 5, 6]
+     * 输出：3
+     * 解释：
+     * 中心下标是 3 。
+     * 左侧数之和 (1 + 7 + 3 = 11)，
+     * 右侧数之和 (5 + 6 = 11) ，二者相等。
+     * 示例 2：
+     * <p>
+     * 输入：nums = [1, 2, 3]
+     * 输出：-1
+     * 解释：
+     * 数组中不存在满足此条件的中心下标。
+     * 示例 3：
+     * <p>
+     * 输入：nums = [2, 1, -1]
+     * 输出：0
+     * 解释：
+     * 中心下标是 0 。
+     * 下标 0 左侧不存在元素，视作和为 0 ；
+     * 右侧数之和为 1 + (-1) = 0 ，二者相等。
+     *
+     * @param nums
+     * @return
+     */
+    public static int pivotIndex(int[] nums) {
+        int total = Arrays.stream(nums).sum();
+        int sum = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            if ((sum * 2 + nums[i]) == total) {
+                return i;
+            }
+            sum = sum + nums[i];
+        }
+        return -1;
+    }
+
     public static void main(String[] args) {
-        System.out.println(findErrorNums2(new int[]{3,2, 2}));
+        System.out.println(pivotIndex(new int[]{1, 2, 3}));
     }
 }
