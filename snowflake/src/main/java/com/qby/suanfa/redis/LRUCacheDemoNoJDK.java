@@ -23,7 +23,6 @@ public class LRUCacheDemoNoJDK {
             this.value = value;
             this.prev = this.next = null;
         }
-
     }
 
     //2 构建一个虚拟的双向链表,,里面安放的就是我们的Node
@@ -42,14 +41,20 @@ public class LRUCacheDemoNoJDK {
         public void addHead(Node<K, V> node) {
             node.next = head.next;
             node.prev = head;
-            head.next.prev = node;
+            if (head.next != null) {
+                head.next.prev = node;
+            }
             head.next = node;
         }
 
         //4.删除节点
         public void removeNode(Node<K, V> node) {
-            node.next.prev = node.prev;
-            node.prev.next = node.next;
+            if (node.next != null) {
+                node.next.prev = node.prev;
+            }
+            if (node.prev != null) {
+                node.prev.next = node.next;
+            }
             node.prev = null;
             node.next = null;
         }
@@ -102,30 +107,45 @@ public class LRUCacheDemoNoJDK {
             Node<Integer, Integer> newNode = new Node<>(key, value);
             map.put(key, newNode);
             doubleLinkedList.addHead(newNode);
-
         }
     }
 
     public static void main(String[] args) {
 
-        LRUCacheDemoNoJDK lruCacheDemo = new LRUCacheDemoNoJDK(3);
+//        LRUCacheDemoNoJDK lruCacheDemo = new LRUCacheDemoNoJDK(3);
+//
+//        lruCacheDemo.put(1, 1);
+//        lruCacheDemo.put(2, 2);
+//        lruCacheDemo.put(3, 3);
+//        System.out.println(lruCacheDemo.map.keySet());
+//
+//        lruCacheDemo.put(4, 1);
+//        System.out.println(lruCacheDemo.map.keySet());
+//
+//        lruCacheDemo.put(3, 1);
+//        System.out.println(lruCacheDemo.map.keySet());
+//        lruCacheDemo.put(3, 1);
+//        System.out.println(lruCacheDemo.map.keySet());
+//        lruCacheDemo.put(3, 1);
+//        System.out.println(lruCacheDemo.map.keySet());
+//        lruCacheDemo.put(5, 1);
+//        System.out.println(lruCacheDemo.map.keySet());
 
-        lruCacheDemo.put(1, 1);
-        lruCacheDemo.put(2, 2);
-        lruCacheDemo.put(3, 3);
-        System.out.println(lruCacheDemo.map.keySet());
+        /**
+         * ["LRUCache","put","put","get","put","get","put","get","get","get"]
+         * [[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]
+         */
 
-        lruCacheDemo.put(4, 1);
-        System.out.println(lruCacheDemo.map.keySet());
-
-        lruCacheDemo.put(3, 1);
-        System.out.println(lruCacheDemo.map.keySet());
-        lruCacheDemo.put(3, 1);
-        System.out.println(lruCacheDemo.map.keySet());
-        lruCacheDemo.put(3, 1);
-        System.out.println(lruCacheDemo.map.keySet());
-        lruCacheDemo.put(5, 1);
-        System.out.println(lruCacheDemo.map.keySet());
+        LRUCacheDemoNoJDK lruCacheDemo2 = new LRUCacheDemoNoJDK(2);
+        lruCacheDemo2.put(1, 1);
+        lruCacheDemo2.put(2, 2);
+        System.out.println(lruCacheDemo2.get(1));
+        lruCacheDemo2.put(3, 3);
+        System.out.println(lruCacheDemo2.get(2));
+        lruCacheDemo2.put(4, 4);
+        System.out.println(lruCacheDemo2.get(1));
+        System.out.println(lruCacheDemo2.get(3));
+        System.out.println(lruCacheDemo2.get(4));
 
     }
 
