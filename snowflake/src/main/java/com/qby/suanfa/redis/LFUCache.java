@@ -63,14 +63,14 @@ import java.util.TreeSet;
 public class LFUCache {
     // 缓存容量，时间戳
     int capacity, time;
-    Map<Integer, com.qby.suanfa.redis.lfu2.Node> key_table;
-    TreeSet<com.qby.suanfa.redis.lfu2.Node> S;
+    Map<Integer, Node> key_table;
+    TreeSet<Node> S;
 
     public LFUCache(int capacity) {
         this.capacity = capacity;
         this.time = 0;
-        key_table = new HashMap<Integer, com.qby.suanfa.redis.lfu2.Node>();
-        S = new TreeSet<com.qby.suanfa.redis.lfu2.Node>();
+        key_table = new HashMap<Integer, Node>();
+        S = new TreeSet<Node>();
     }
 
     public int get(int key) {
@@ -82,7 +82,7 @@ public class LFUCache {
             return -1;
         }
         // 从哈希表中得到旧的缓存
-        com.qby.suanfa.redis.lfu2.Node cache = key_table.get(key);
+        Node cache = key_table.get(key);
         // 从平衡二叉树中删除旧的缓存
         S.remove(cache);
         // 将旧缓存更新
@@ -108,13 +108,13 @@ public class LFUCache {
                 S.remove(S.first());
             }
             // 创建新的缓存
-            com.qby.suanfa.redis.lfu2.Node cache = new com.qby.suanfa.redis.lfu2.Node(1, ++time, key, value);
+            Node cache = new Node(1, ++time, key, value);
             // 将新缓存放入哈希表和平衡二叉树中
             key_table.put(key, cache);
             S.add(cache);
         } else {
             // 这里和 get() 函数类似
-            com.qby.suanfa.redis.lfu2.Node cache = key_table.get(key);
+            Node cache = key_table.get(key);
             S.remove(cache);
             cache.cnt += 1;
             cache.time = ++time;
@@ -125,7 +125,7 @@ public class LFUCache {
     }
 }
 
-class Node implements Comparable<com.qby.suanfa.redis.lfu2.Node> {
+class Node implements Comparable<Node> {
     int cnt, time, key, value;
 
     Node(int cnt, int time, int key, int value) {
@@ -139,14 +139,14 @@ class Node implements Comparable<com.qby.suanfa.redis.lfu2.Node> {
         if (this == anObject) {
             return true;
         }
-        if (anObject instanceof com.qby.suanfa.redis.lfu2.Node) {
-            com.qby.suanfa.redis.lfu2.Node rhs = (com.qby.suanfa.redis.lfu2.Node) anObject;
+        if (anObject instanceof Node) {
+            Node rhs = (Node) anObject;
             return this.cnt == rhs.cnt && this.time == rhs.time;
         }
         return false;
     }
 
-    public int compareTo(com.qby.suanfa.redis.lfu2.Node rhs) {
+    public int compareTo(Node rhs) {
         return cnt == rhs.cnt ? time - rhs.time : cnt - rhs.cnt;
     }
 
