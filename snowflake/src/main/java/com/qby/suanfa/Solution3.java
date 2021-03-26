@@ -849,7 +849,7 @@ public class Solution3 {
         int ans = 0;
 
         while (n != 0) {
-            n &= n -1;
+            n &= n - 1;
             System.out.println(n);
             ans++;
         }
@@ -860,18 +860,18 @@ public class Solution3 {
     /**
      * 202. 快乐数
      * 编写一个算法来判断一个数 n 是不是快乐数。
-     *
+     * <p>
      * 「快乐数」定义为：
-     *
+     * <p>
      * 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
      * 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
      * 如果 可以变为  1，那么这个数就是快乐数。
      * 如果 n 是快乐数就返回 true ；不是，则返回 false 。
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * 示例 1：
-     *
+     * <p>
      * 输入：19
      * 输出：true
      * 解释：
@@ -880,7 +880,7 @@ public class Solution3 {
      * 62 + 82 = 100
      * 12 + 02 + 02 = 1
      * 示例 2：
-     *
+     * <p>
      * 输入：n = 2
      * 输出：false
      *
@@ -901,15 +901,15 @@ public class Solution3 {
         int totalNum = 0;
         while (n > 0) {
             int sInt = n % 10;
-            n = n/ 10;
-            totalNum = totalNum + sInt* sInt;
+            n = n / 10;
+            totalNum = totalNum + sInt * sInt;
         }
         return totalNum;
     }
 
     /**
      * 快指针 慢指针 方法
-     *
+     * <p>
      * 快指针 一次走两步
      * 慢指针 一次走一步
      *
@@ -932,9 +932,9 @@ public class Solution3 {
 
     /**
      * 如果这样做，您会发现只有一个循环：4 \rightarrow 16 \rightarrow 37 \rightarrow 58 \rightarrow 89 \rightarrow 145 \rightarrow 42 \rightarrow 20 \rightarrow 44→16→37→58→89→145→42→20→4。所有其他数字都在进入这个循环的链上，或者在进入 11 的链上。
-     *
+     * <p>
      * 因此，我们可以硬编码一个包含这些数字的散列集，如果我们达到其中一个数字，那么我们就知道在循环中。
-     *
+     * <p>
      * 作者：LeetCode-Solution
      * 链接：https://leetcode-cn.com/problems/happy-number/solution/kuai-le-shu-by-leetcode-solution/
      * 来源：力扣（LeetCode）
@@ -950,10 +950,261 @@ public class Solution3 {
         return n == 1;
     }
 
+    /**
+     * 367. 有效的完全平方数
+     * 给定一个 正整数 num ，编写一个函数，如果 num 是一个完全平方数，则返回 true ，否则返回 false 。
+     * <p>
+     * 进阶：不要 使用任何内置的库函数，如  sqrt 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：num = 16
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：num = 14
+     * 输出：false
+     *
+     * @param num
+     * @return
+     */
+    public static boolean isPerfectSquare(int num) {
+        if (num < 2) {
+            return true;
+        }
+
+        long l = 2, h = num / 2, m = 0, pf = 0;
+        while (l <= h) {
+            m = (h - l) / 2 + l;
+            pf = m * m;
+            if (pf == num) {
+                return true;
+            } else if (pf > num) {
+                h = m - 1;
+            } else if (pf < num) {
+                l = m + 1;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 解法二 官方解法 二分法
+     *
+     * @param num
+     * @return
+     */
+    public static boolean isPerfectSquare2(int num) {
+        if (num < 2) {
+            return true;
+        }
+
+        long left = 2, right = num / 2, x, guessSquared;
+        while (left <= right) {
+            x = left + (right - left) / 2;
+            guessSquared = x * x;
+            if (guessSquared == num) {
+                return true;
+            }
+            if (guessSquared > num) {
+                right = x - 1;
+            } else {
+                left = x + 1;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 1346. 检查整数及其两倍数是否存在
+     * 给你一个整数数组 arr，请你检查是否存在两个整数 N 和 M，满足 N 是 M 的两倍（即，N = 2 * M）。
+     * <p>
+     * 更正式地，检查是否存在两个下标 i 和 j 满足：
+     * <p>
+     * i != j
+     * 0 <= i, j < arr.length
+     * arr[i] == 2 * arr[j]
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：arr = [10,2,5,3]
+     * 输出：true
+     * 解释：N = 10 是 M = 5 的两倍，即 10 = 2 * 5 。
+     * 示例 2：
+     * <p>
+     * 输入：arr = [7,1,14,11]
+     * 输出：true
+     * 解释：N = 14 是 M = 7 的两倍，即 14 = 2 * 7 。
+     * 示例 3：
+     * <p>
+     * 输入：arr = [3,1,7,11]
+     * 输出：false
+     * 解释：在该情况下不存在 N 和 M 满足 N = 2 * M 。
+     *
+     * @param arr
+     * @return
+     */
+    public static boolean checkIfExist(int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < arr.length; i++) {
+            map.put(arr[i], i);
+        }
+
+        int p = 0;
+        for (int i = 0; i < arr.length; i++) {
+            p = arr[i] * 2;
+            if (map.containsKey(p)) {
+                Integer j = map.get(p);
+                if (i != j.intValue()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 排序及双指针法
+     *
+     * @param arr
+     * @return
+     */
+    public boolean checkIfExist2(int[] arr) {
+        if (arr == null || arr.length == 0) return false;
+
+        Arrays.sort(arr);
+        int len = arr.length;
+        int pointer = 0;
+        int num = 0;
+
+
+        for (int i = 0; i < len; i++) {
+            num = arr[i] * 2;
+            while (pointer < len && num > arr[pointer]) pointer++;
+            if (pointer < len && pointer != i && num == arr[pointer]) return true;
+            else if (pointer == len) break;
+        }
+        return false;
+    }
+
+    /**
+     * 剑指 Offer 58 - I. 翻转单词顺序
+     * 输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。
+     * 为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入: "the sky is blue"
+     * 输出: "blue is sky the"
+     * 示例 2：
+     * <p>
+     * 输入: "  hello world!  "
+     * 输出: "world! hello"
+     * 解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+     * 示例 3：
+     * <p>
+     * 输入: "a good   example"
+     * 输出: "example good a"
+     * 解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+     *
+     * @param s
+     * @return
+     */
+    public static String reverseWords(String s) {
+        if ("".equals(s.trim())) {
+            return "";
+        }
+
+        StringBuilder st = new StringBuilder();
+        String[] sz = s.split(" ");
+        for (int i = sz.length - 1; i >= 0; i--) {
+            if (!" ".equals(sz[i]) && !"".equals(sz[i])) {
+                st.append(" ");
+                st.append(sz[i]);
+            }
+        }
+        return st.toString().substring(1);
+    }
+
+    /**
+     * 1566. 重复至少 K 次且长度为 M 的模式
+     * 给你一个正整数数组 arr，请你找出一个长度为 m 且在数组中至少重复 k 次的模式。
+     *
+     * 模式 是由一个或多个值组成的子数组（连续的子序列），连续 重复多次但 不重叠 。 模式由其长度和重复次数定义。
+     *
+     * 如果数组中存在至少重复 k 次且长度为 m 的模式，则返回 true ，否则返回  false 。
+     *
+     *
+     *
+     * 示例 1：
+     *
+     * 输入：arr = [1,2,4,4,4,4], m = 1, k = 3
+     * 输出：true
+     * 解释：模式 (4) 的长度为 1 ，且连续重复 4 次。注意，模式可以重复 k 次或更多次，但不能少于 k 次。
+     * 示例 2：
+     *
+     * 输入：arr = [1,2,1,2,1,1,1,3], m = 2, k = 2
+     * 输出：true
+     * 解释：模式 (1,2) 长度为 2 ，且连续重复 2 次。另一个符合题意的模式是 (2,1) ，同样重复 2 次。
+     * 示例 3：
+     *
+     * 输入：arr = [1,2,1,2,1,3], m = 2, k = 3
+     * 输出：false
+     * 解释：模式 (1,2) 长度为 2 ，但是只连续重复 2 次。不存在长度为 2 且至少重复 3 次的模式。
+     * 示例 4：
+     *
+     * 输入：arr = [1,2,3,1,2], m = 2, k = 2
+     * 输出：false
+     * 解释：模式 (1,2) 出现 2 次但并不连续，所以不能算作连续重复 2 次。
+     * 示例 5：
+     *
+     * 输入：arr = [2,2,2,2], m = 2, k = 3
+     * 输出：false
+     * 解释：长度为 2 的模式只有 (2,2) ，但是只连续重复 2 次。注意，不能计算重叠的重复次数。
+     *
+     * 枚举法
+     * 思路与算法
+     *
+     * 题目要求我们找到一个连续出现 kk 次且长度为 mm 的子数组。也就是说如果这个子数组的左端点是 ll，
+     * 那么对于任意 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
+     * 都有 a[l + {\rm offset}] = a[l + ({\rm offset} \bmod m)]a[l+offset]=a[l+(offsetmodm)]。
+     * 因此，我们可以枚举左端点 ll，对于每个 ll 枚举 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
+     * 判断是否满足条件即可。
+     *
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/detect-pattern-of-length-m-repeated-k-or-more-times/solution/zhong-fu-zhi-shao-k-ci-qie-chang-du-wei-m-de-mo-2/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * @param arr
+     * @param m
+     * @param k
+     * @return
+     */
+    public boolean containsPattern(int[] arr, int m, int k) {
+        int n = arr.length;
+        for (int l = 0; l <= n - m * k; ++l) {
+            int offset;
+            for (offset = 0; offset < m * k; ++offset) {
+                if (arr[l + offset] != arr[l + offset % m]) {
+                    break;
+                }
+            }
+            if (offset == m * k) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
-//        System.out.println((int)'A');
-//        System.out.println((int)'Z');
-        System.out.println(hammingWeight3(932132132));
+        System.out.println(reverseWords("a good   example"));
     }
 }
