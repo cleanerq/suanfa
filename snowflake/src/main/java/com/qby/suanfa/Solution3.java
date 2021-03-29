@@ -1137,52 +1137,53 @@ public class Solution3 {
     /**
      * 1566. 重复至少 K 次且长度为 M 的模式
      * 给你一个正整数数组 arr，请你找出一个长度为 m 且在数组中至少重复 k 次的模式。
-     *
+     * <p>
      * 模式 是由一个或多个值组成的子数组（连续的子序列），连续 重复多次但 不重叠 。 模式由其长度和重复次数定义。
-     *
+     * <p>
      * 如果数组中存在至少重复 k 次且长度为 m 的模式，则返回 true ，否则返回  false 。
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * 示例 1：
-     *
+     * <p>
      * 输入：arr = [1,2,4,4,4,4], m = 1, k = 3
      * 输出：true
      * 解释：模式 (4) 的长度为 1 ，且连续重复 4 次。注意，模式可以重复 k 次或更多次，但不能少于 k 次。
      * 示例 2：
-     *
+     * <p>
      * 输入：arr = [1,2,1,2,1,1,1,3], m = 2, k = 2
      * 输出：true
      * 解释：模式 (1,2) 长度为 2 ，且连续重复 2 次。另一个符合题意的模式是 (2,1) ，同样重复 2 次。
      * 示例 3：
-     *
+     * <p>
      * 输入：arr = [1,2,1,2,1,3], m = 2, k = 3
      * 输出：false
      * 解释：模式 (1,2) 长度为 2 ，但是只连续重复 2 次。不存在长度为 2 且至少重复 3 次的模式。
      * 示例 4：
-     *
+     * <p>
      * 输入：arr = [1,2,3,1,2], m = 2, k = 2
      * 输出：false
      * 解释：模式 (1,2) 出现 2 次但并不连续，所以不能算作连续重复 2 次。
      * 示例 5：
-     *
+     * <p>
      * 输入：arr = [2,2,2,2], m = 2, k = 3
      * 输出：false
      * 解释：长度为 2 的模式只有 (2,2) ，但是只连续重复 2 次。注意，不能计算重叠的重复次数。
-     *
+     * <p>
      * 枚举法
      * 思路与算法
-     *
+     * <p>
      * 题目要求我们找到一个连续出现 kk 次且长度为 mm 的子数组。也就是说如果这个子数组的左端点是 ll，
      * 那么对于任意 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
      * 都有 a[l + {\rm offset}] = a[l + ({\rm offset} \bmod m)]a[l+offset]=a[l+(offsetmodm)]。
      * 因此，我们可以枚举左端点 ll，对于每个 ll 枚举 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
      * 判断是否满足条件即可。
-     *
+     * <p>
      * 作者：LeetCode-Solution
      * 链接：https://leetcode-cn.com/problems/detect-pattern-of-length-m-repeated-k-or-more-times/solution/zhong-fu-zhi-shao-k-ci-qie-chang-du-wei-m-de-mo-2/
      * 来源：力扣（LeetCode）
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
      * @param arr
      * @param m
      * @param k
@@ -1203,6 +1204,233 @@ public class Solution3 {
         }
         return false;
     }
+
+    /**
+     * 剑指 Offer 59 - I. 滑动窗口的最大值
+     * 给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+     * 输出: [3,3,5,5,6,7]
+     * 解释:
+     * <p>
+     * 滑动窗口的位置                最大值
+     * ---------------               -----
+     * [1  3  -1] -3  5  3  6  7       3
+     * 1 [3  -1  -3] 5  3  6  7       3
+     * 1  3 [-1  -3  5] 3  6  7       5
+     * 1  3  -1 [-3  5  3] 6  7       5
+     * 1  3  -1  -3 [5  3  6] 7       6
+     * 1  3  -1  -3  5 [3  6  7]      7
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 你可以假设 k 总是有效的，在输入数组不为空的情况下，1 ≤ k ≤ 输入数组的大小。
+     * <p>
+     * <p>
+     * 算法流程：
+     * 初始化： 双端队列 dequedeque ，结果列表 resres ，数组长度 nn ；
+     * 滑动窗口： 左边界范围 i \in [1 - k, n - k]i∈[1−k,n−k] ，右边界范围 j \in [0, n - 1]j∈[0,n−1] ；
+     * 若 i > 0i>0 且 队首元素 deque[0]deque[0] == 被删除元素 nums[i - 1]nums[i−1] ：则队首元素出队；
+     * 删除 dequedeque 内所有 < nums[j]<nums[j] 的元素，以保持 dequedeque 递减；
+     * 将 nums[j]nums[j] 添加至 dequedeque 尾部；
+     * 若已形成窗口（即 i \geq 0i≥0 ）：将窗口最大值（即队首元素 deque[0]deque[0] ）添加至列表 resres ；
+     * <p>
+     * dequedeque 内 仅包含窗口内的元素 \Rightarrow⇒ 每轮窗口滑动移除了元素 nums[i - 1]nums[i−1] ，需将 dequedeque 内的对应元素一起删除。
+     * dequedeque 内的元素 非严格递减 \Rightarrow⇒ 每轮窗口滑动添加了元素 nums[j + 1]nums[j+1] ，需将 dequedeque 内所有 < nums[j + 1]<nums[j+1] 的元素删除。
+     * <p>
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/solution/mian-shi-ti-59-i-hua-dong-chuang-kou-de-zui-da-1-6/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) return new int[0];
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[nums.length - k + 1];
+        for (int j = 0, i = 1 - k; j < nums.length; i++, j++) {
+            // 删除 deque 中对应的 nums[i-1]
+            if (i > 0 && deque.peekFirst() == nums[i - 1])
+                deque.removeFirst();
+            // 保持 deque 递减
+            while (!deque.isEmpty() && deque.peekLast() < nums[j])
+                deque.removeLast();
+            deque.addLast(nums[j]);
+            // 记录窗口最大值
+            if (i >= 0)
+                res[i] = deque.peekFirst();
+        }
+        return res;
+    }
+
+
+    /**
+     * 面试题 16.11. 跳水板
+     * 你正在使用一堆木板建造跳水板。有两种类型的木板，其中长度较短的木板长度为shorter，
+     * 长度较长的木板长度为longer。你必须正好使用k块木板。编写一个方法，生成跳水板所有可能的长度。
+     * <p>
+     * 返回的长度需要从小到大排列。
+     * <p>
+     * 示例 1
+     * <p>
+     * 输入：
+     * shorter = 1
+     * longer = 2
+     * k = 3
+     * 输出： [3,4,5,6]
+     * 解释：
+     * 可以使用 3 次 shorter，得到结果 3；使用 2 次 shorter 和 1 次 longer，得到结果 4 。以此类推，得到最终结果。
+     *
+     * @param shorter
+     * @param longer
+     * @param k
+     * @return
+     */
+    public int[] divingBoard(int shorter, int longer, int k) {
+        if (k == 0) {
+            return new int[]{};
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+
+        int[] lengths = new int[k + 1];
+        for (int i = 0; i <= k; i++) {
+            lengths[i] = shorter * (k - i) + longer * i;
+        }
+
+        return lengths;
+    }
+
+    /**
+     * 剑指 Offer 29. 顺时针打印矩阵
+     * 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * 输出：[1,2,3,6,9,8,7,4,5]
+     * 示例 2：
+     * <p>
+     * 输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+     * 输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new int[0];
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        boolean[][] visited = new boolean[rows][columns];
+        int total = rows * columns;
+        int[] order = new int[total];
+        int row = 0, column = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int directionIndex = 0;
+        for (int i = 0; i < total; i++) {
+            order[i] = matrix[row][column];
+            visited[row][column] = true;
+            int nextRow = row + directions[directionIndex][0], nextColumn = column + directions[directionIndex][1];
+            if (nextRow < 0 || nextRow >= rows || nextColumn < 0 || nextColumn >= columns || visited[nextRow][nextColumn]) {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+            row += directions[directionIndex][0];
+            column += directions[directionIndex][1];
+        }
+        return order;
+    }
+
+    /**
+     * 直接法
+     * 空值处理： 当 matrix 为空时，直接返回空列表 [] 即可。
+     * 初始化： 矩阵 左、右、上、下 四个边界 l , r , t , b ，用于打印的结果列表 res 。
+     * 循环打印： “从左向右、从上向下、从右向左、从下向上” 四个方向循环，每个方向打印中做以下三件事 （各方向的具体信息见下表） ；
+     * 根据边界打印，即将元素按顺序添加至列表 res 尾部；
+     * 边界向内收缩 11 （代表已被打印）；
+     * 判断是否打印完毕（边界是否相遇），若打印完毕则跳出。
+     * <p>
+     * 打印方向	1. 根据边界打印	2. 边界向内收缩	3. 是否打印完毕
+     * 从左向右	左边界l ，右边界 r	上边界 t 加 11	是否 t > b
+     * 从上向下	上边界 t ，下边界b	右边界 r 减 11	是否 l > r
+     * 从右向左	右边界 r ，左边界l	下边界 b 减 11	是否 t > b
+     * 从下向上	下边界 b ，上边界t	左边界 l 加 11	是否 l > r
+     * <p>
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/solution/mian-shi-ti-29-shun-shi-zhen-da-yin-ju-zhen-she-di/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] spiralOrder2(int[][] matrix) {
+        if (matrix.length == 0) return new int[0];
+        int l = 0, r = matrix[0].length - 1, t = 0, b = matrix.length - 1, x = 0;
+        int[] res = new int[(r + 1) * (b + 1)];
+        while (true) {
+            for (int i = l; i <= r; i++) res[x++] = matrix[t][i]; // left to right.
+            if (++t > b) break;
+            for (int i = t; i <= b; i++) res[x++] = matrix[i][r]; // top to bottom.
+            if (l > --r) break;
+            for (int i = r; i >= l; i--) res[x++] = matrix[b][i]; // right to left.
+            if (t > --b) break;
+            for (int i = b; i >= t; i--) res[x++] = matrix[i][l]; // bottom to top.
+            if (++l > r) break;
+        }
+        return res;
+    }
+
+
+    /**
+     * 1037. 有效的回旋镖
+     * 回旋镖定义为一组三个点，这些点各不相同且不在一条直线上。
+     * <p>
+     * 给出平面上三个点组成的列表，判断这些点是否可以构成回旋镖。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[[1,1],[2,3],[3,2]]
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：[[1,1],[2,2],[3,3]]
+     * 输出：false
+     * <p>
+     * 计算斜率
+     * 判断三点是否同直线，直接思路就是判断斜率。
+     * 假设三点分别为a(x1, y1), b(x2, y2), c(x3,y3),
+     * a、b两点的斜率为 k1 = (y2 - y1) / (x2 - x1)
+     * a、c两点的斜率为 k2 = (y3 - y1) / (x3 - x1)
+     * 如果在同一直线，则k1 = k2，考虑到分母为0 的情况，可以直接交叉相乘，省去判断0的情况，直接判断
+     * (y2 - y1) * (x3 - x1) 与 (y3 - y1) * (x2 - x1)
+     * 不相等即为不在同一直线上
+     * <p>
+     * 作者：huangyt
+     * 链接：https://leetcode-cn.com/problems/valid-boomerang/solution/qiao-miao-xie-lu-bian-hua-miao-yong-yi-xing-dai-ma/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param points
+     * @return
+     */
+    public boolean isBoomerang(int[][] points) {
+
+        return (points[1][1] - points[0][1]) * (points[2][0] - points[0][0])
+                != (points[2][1] - points[0][1]) * (points[1][0] - points[0][0]);
+    }
+
 
     public static void main(String[] args) {
         System.out.println(reverseWords("a good   example"));
