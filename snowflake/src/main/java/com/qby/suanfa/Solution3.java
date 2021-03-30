@@ -1432,7 +1432,206 @@ public class Solution3 {
     }
 
 
+    /**
+     * 剑指 Offer 53 - II. 0～n-1中缺失的数字
+     * 一个长度为n-1的递增排序数组中的所有数字都是唯一的，
+     * 并且每个数字都在范围0～n-1之内。
+     * 在范围0～n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [0,1,3]
+     * 输出: 2
+     * 示例 2:
+     * <p>
+     * 输入: [0,1,2,3,4,5,6,7,9]
+     * 输出: 8
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber(int[] nums) {
+        int i = 0, j = nums.length - 1;
+        while (i <= j) {
+            int m = (i + j) / 2;
+            if (nums[m] == m) i = m + 1;
+            else j = m - 1;
+        }
+        return i;
+    }
+
+
+    /**
+     * 1592. 重新排列单词间的空格
+     * 给你一个字符串 text ，该字符串由若干被空格包围的单词组成。
+     * 每个单词由一个或者多个小写英文字母组成，并且两个单词之间至少存在一个空格。
+     * 题目测试用例保证 text 至少包含一个单词 。
+     * <p>
+     * 请你重新排列空格，使每对相邻单词之间的空格数目都 相等 ，并尽可能 最大化 该数目。
+     * 如果不能重新平均分配所有空格，请 将多余的空格放置在字符串末尾 ，
+     * 这也意味着返回的字符串应当与原 text 字符串的长度相等。
+     * <p>
+     * 返回 重新排列空格后的字符串 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：text = "  this   is  a sentence "
+     * 输出："this   is   a   sentence"
+     * 解释：总共有 9 个空格和 4 个单词。可以将 9 个空格平均分配到相邻单词之间，
+     * 相邻单词间空格数为：9 / (4-1) = 3 个。
+     * 示例 2：
+     * <p>
+     * 输入：text = " practice   makes   perfect"
+     * 输出："practice   makes   perfect "
+     * 解释：总共有 7 个空格和 3 个单词。7 / (3-1) = 3 个空格加上 1 个多余的空格。
+     * 多余的空格需要放在字符串的末尾。
+     * 示例 3：
+     * <p>
+     * 输入：text = "hello   world"
+     * 输出："hello   world"
+     * 示例 4：
+     * <p>
+     * 输入：text = "  walks  udp package   into  bar a"
+     * 输出："walks  udp  package  into  bar  a "
+     * 示例 5：
+     * <p>
+     * 输入：text = "a"
+     * 输出："a"
+     *
+     * @param text
+     * @return
+     */
+    public static String reorderSpaces(String text) {
+        // trim去除头尾空格 在JDK11中加入了strip
+        String[] splited = text.trim().split("\\s+");
+        // String[] splited = text.strip().split("\\s+");
+        // System.out.println(Arrays.toString(splited));
+        // 记录多少个单词
+        int wordCnt = splited.length;
+        // 记录单词总长
+        int wordLen = 0;
+        for (String word : splited) {
+            wordLen += word.length();
+        }
+        // 空格数量
+        int spaceCnt = text.length() - wordLen;
+        StringBuilder sb = new StringBuilder();
+
+        StringBuilder sbKg = new StringBuilder();
+        if (wordCnt > 1) {
+            for (int j = 0; j < spaceCnt / (wordCnt - 1); j++) {
+                sbKg.append(" ");
+            }
+        }
+        // 只用在前n-1个单词后面加空格
+        for (int i = 0; i < splited.length - 1; i++) {
+            sb.append(splited[i]);
+            sb.append(sbKg.toString());
+        }
+        // 最后一个单词直接加上去
+        sb.append(splited[splited.length - 1]);
+        // 补齐剩余的空格
+        while (sb.length() < text.length()) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 643. 子数组最大平均数 I
+     * 给定 n 个整数，找出平均数最大且长度为 k 的连续子数组，并输出该最大平均数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：[1,12,-5,-6,50,3], k = 4
+     * 输出：12.75
+     * 解释：最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 1 <= k <= n <= 30,000。
+     * 所给数据范围 [-10,000，10,000]。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static double findMaxAverage(int[] nums, int k) {
+        int sum = 0;
+        for (int i = 0; i < k; i++) {
+            sum = sum + nums[i];
+        }
+        int maxSum = sum;
+        for (int i = k; i < nums.length; i++) {
+            sum = sum - nums[i - k] + nums[i];
+            maxSum = Math.max(sum, maxSum);
+        }
+
+        return 1.0 * maxSum / k;
+    }
+
+    /**
+     * 剑指 Offer 61. 扑克牌中的顺子
+     * 从扑克牌中随机抽5张牌，判断是不是一个顺子，
+     * 即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，
+     * 可以看成任意数字。A 不能视为 14。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [1,2,3,4,5]
+     * 输出: True
+     * <p>
+     * <p>
+     * 示例 2:
+     * <p>
+     * 输入: [0,0,1,2,5]
+     * 输出: True
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight(int[] nums) {
+        Set<Integer> repeat = new HashSet<>();
+        int max = 0, min = 14;
+        for (int num : nums) {
+            if (num == 0) continue;
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+            if (repeat.contains(num)) return false;
+            repeat.add(num);
+        }
+        return max - min < 5;
+    }
+
+    /**
+     * 排序 遍历
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight2(int[] nums) {
+        int joker = 0;
+        Arrays.sort(nums); // 数组排序
+        for (int i = 0; i < 4; i++) {
+            if (nums[i] == 0) joker++; // 统计大小王数量
+            else if (nums[i] == nums[i + 1]) return false; // 若有重复，提前返回 false
+        }
+        return nums[4] - nums[joker] < 5; // 最大牌 - 最小牌 < 5 则可构成顺子
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(reverseWords("a good   example"));
+        System.out.println(findMaxAverage(new int[]{1, 12, -5, -6, 50, 3
+        }, 4));
     }
 }
