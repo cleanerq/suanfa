@@ -1,5 +1,7 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.TreeNode;
+
 import java.util.*;
 
 /**
@@ -1664,7 +1666,7 @@ public class Solution3 {
      * 链接：https://leetcode-cn.com/problems/reverse-linked-list/solution/dong-hua-yan-shi-206-fan-zhuan-lian-biao-by-user74/
      * 来源：力扣（LeetCode）
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-     *
+     * <p>
      * 递归解法
      *
      * @param head
@@ -1691,25 +1693,25 @@ public class Solution3 {
     /**
      * 217. 存在重复元素
      * 给定一个整数数组，判断是否存在重复元素。
-     *
+     * <p>
      * 如果存在一值在数组中出现至少两次，函数返回 true 。
      * 如果数组中每个元素都不相同，则返回 false 。
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * 示例 1:
-     *
+     * <p>
      * 输入: [1,2,3,1]
      * 输出: true
      * 示例 2:
-     *
+     * <p>
      * 输入: [1,2,3,4]
      * 输出: false
      * 示例 3:
-     *
+     * <p>
      * 输入: [1,1,1,3,3,4,3,2,4,2]
      * 输出: true
-     *
+     * <p>
      * 排序迭代
      *
      * @param nums
@@ -1718,7 +1720,7 @@ public class Solution3 {
     public boolean containsDuplicate(int[] nums) {
         Arrays.sort(nums);
         for (int i = 1; i < nums.length; i++) {
-            if (nums[i] == nums[i - 1]){
+            if (nums[i] == nums[i - 1]) {
                 return true;
             }
         }
@@ -1739,6 +1741,99 @@ public class Solution3 {
             }
         }
         return false;
+    }
+
+
+    /**
+     * 226. 翻转二叉树
+     * 翻转一棵二叉树。
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：
+     * <p>
+     * 4
+     * /   \
+     * 2     7
+     * / \   / \
+     * 1   3 6   9
+     * 输出：
+     * <p>
+     * 4
+     * /   \
+     * 7     2
+     * / \   / \
+     * 9   6 3   1
+     * <p>
+     * 递归
+     * <p>
+     * 递归实现也就是深度优先遍历的方式，那么对应的就是广度优先遍历。
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        //递归函数的终止条件，节点为空时返回
+        if (root == null) {
+            return null;
+        }
+        //下面三句是将当前节点的左右子树交换
+        TreeNode tmp = root.right;
+        root.right = root.left;
+        root.left = tmp;
+        //递归交换当前节点的 左子树
+        invertTree(root.left);
+        //递归交换当前节点的 右子树
+        invertTree(root.right);
+        //函数返回时就表示当前这个节点，以及它的左右子树
+        //都已经交换完了
+        return root;
+    }
+
+    /**
+     * 广度优先
+     * <p>
+     * 递归实现也就是深度优先遍历的方式，那么对应的就是广度优先遍历。
+     * 广度优先遍历需要额外的数据结构--队列，来存放临时遍历到的元素。
+     * 深度优先遍历的特点是一竿子插到底，不行了再退回来继续；而广度优先遍历的特点是层层扫荡。
+     * 所以，我们需要先将根节点放入到队列中，然后不断的迭代队列中的元素。
+     * 对当前元素调换其左右子树的位置，然后：
+     * <p>
+     * 判断其左子树是否为空，不为空就放入队列中
+     * 判断其右子树是否为空，不为空就放入队列中
+     * <p>
+     * 作者：wang_ni_ma
+     * 链接：https://leetcode-cn.com/problems/invert-binary-tree/solution/dong-hua-yan-shi-liang-chong-shi-xian-226-fan-zhua/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree2(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        //将二叉树中的节点逐层放入队列中，再迭代处理队列中的元素
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            //每次都从队列中拿一个节点，并交换这个节点的左右子树
+            TreeNode tmp = queue.poll();
+            TreeNode left = tmp.left;
+            tmp.left = tmp.right;
+            tmp.right = left;
+            //如果当前节点的左子树不为空，则放入队列等待后续处理
+            if (tmp.left != null) {
+                queue.add(tmp.left);
+            }
+            //如果当前节点的右子树不为空，则放入队列等待后续处理
+            if (tmp.right != null) {
+                queue.add(tmp.right);
+            }
+        }
+        //返回处理完的根节点
+        return root;
     }
 
 
