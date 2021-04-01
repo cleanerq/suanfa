@@ -2238,7 +2238,89 @@ public class Solution4 {
         return -1;
     }
 
+    /**
+     * 228. 汇总区间
+     * 给定一个无重复元素的有序整数数组 nums 。
+     * <p>
+     * 返回 恰好覆盖数组中所有数字 的 最小有序 区间范围列表。
+     * 也就是说，nums 的每个元素都恰好被某个区间范围所覆盖，并且不存在属于某个范围但不属于 nums 的数字 x 。
+     * <p>
+     * 列表中的每个区间范围 [a,b] 应该按如下格式输出：
+     * <p>
+     * "a->b" ，如果 a != b
+     * "a" ，如果 a == b
+     *
+     * @param nums
+     * @return
+     */
+    public static List<String> summaryRanges(int[] nums) {
+        List<String> ret = new ArrayList<String>();
+        int i = 0;
+        int n = nums.length;
+
+        StringBuilder sb = null;
+
+        while (i < n) {
+            int low = i;
+            i++;
+            while (i < n && nums[i] == nums[i - 1] + 1) {
+                i++;
+            }
+            int high = i - 1;
+            sb = new StringBuilder(Integer.toString(nums[low]));
+            if (low < high) {
+                sb.append("->");
+                sb.append(nums[high]);
+            }
+            ret.add(sb.toString());
+        }
+        return ret;
+    }
+
+    /**
+     * 231. 2的幂
+     * 给定一个整数，编写一个函数来判断它是否是 2 的幂次方。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: 1
+     * 输出: true
+     * 解释: 20 = 1
+     * 示例 2:
+     * <p>
+     * 输入: 16
+     * 输出: true
+     * 解释: 24 = 16
+     * 示例 3:
+     * <p>
+     * 输入: 218
+     * 输出: false
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        if (n == 0) return false;
+        long x = (long) n;
+        return (x & (-x)) == x;
+    }
+
+    /**
+     * 2 的幂二进制表示只含有一个 1。
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo2(int n) {
+        if (n == 0) return false;
+        long x = (long) n;
+        return (x & (x - 1)) == 0;
+    }
+
+
+
+
     public static void main(String[] args) {
-        System.out.println(pivotIndex(new int[]{1, 2, 3}));
+        System.out.println(summaryRanges(new int[]{0, 1, 2, 4, 5, 7}));
     }
 }
