@@ -298,9 +298,173 @@ public class Solution5 {
         return true;
     }
 
+    /**
+     * 257. 二叉树的所有路径
+     * 给定一个二叉树，返回所有从根节点到叶子节点的路径。
+     * <p>
+     * 说明: 叶子节点是指没有子节点的节点。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入:
+     * <p>
+     * 1
+     * /   \
+     * 2     3
+     * \
+     * 5
+     * <p>
+     * 输出: ["1->2->5", "1->3"]
+     * <p>
+     * 解释: 所有根节点到叶子节点的路径为: 1->2->5, 1->3
+     * <p>
+     * 深度优先
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> paths = new ArrayList<>();
+        constructPaths(root, "", paths);
+        return paths;
+    }
+
+    public void constructPaths(TreeNode root, String path, List<String> paths) {
+        if (root != null) {
+            StringBuilder st = new StringBuilder(path);
+            st.append(root.val);
+            if (root.left == null && root.right == null) {
+                paths.add(st.toString());
+            } else {
+                st.append("->");
+                constructPaths(root.left, st.toString(), paths);
+                constructPaths(root.right, st.toString(), paths);
+            }
+        }
+    }
+
+    /**
+     * 广度优先
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths2(TreeNode root) {
+        List<String> paths = new ArrayList<String>();
+        if (root == null) {
+            return paths;
+        }
+        Queue<TreeNode> nodeQueue = new LinkedList<TreeNode>();
+        Queue<String> pathQueue = new LinkedList<String>();
+
+        nodeQueue.offer(root);
+        pathQueue.offer(Integer.toString(root.val));
+
+        while (!nodeQueue.isEmpty()) {
+            TreeNode treeNode = nodeQueue.poll();
+            String path = pathQueue.poll();
+
+            if (treeNode.left == null && treeNode.right == null) {
+                paths.add(path);
+            } else {
+                if (treeNode.left != null) {
+                    nodeQueue.offer(treeNode.left);
+                    pathQueue.offer(new StringBuffer(path)
+                            .append("->").append(treeNode.left.val).toString());
+                }
+                if (treeNode.right != null) {
+                    nodeQueue.offer(treeNode.right);
+                    pathQueue.offer(new StringBuffer(path)
+                            .append("->").append(treeNode.right.val).toString());
+                }
+            }
+        }
+
+        return paths;
+    }
+
+    /**
+     * 258. 各位相加
+     * 给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: 38
+     * 输出: 2
+     * 解释: 各位相加的过程为：3 + 8 = 11, 1 + 1 = 2。 由于 2 是一位数，所以返回 2。
+     *
+     * @param num
+     * @return
+     */
+    public static int addDigits(int num) {
+        if (num < 10) {
+            return num;
+        }
+
+        int res = 0;
+        while (num >= 10) {
+            res = 0;
+            String n = Integer.toString(num);
+            int size = n.length();
+            for (int i = 0; i < size; i++) {
+                res = res + num % 10;
+                num = num / 10;
+            }
+            num = res;
+        }
+
+        return res;
+    }
+
+    /**
+     * 能够被9整除的整数，各位上的数字加起来也必然能被9整除，
+     * 所以，连续累加起来，最终必然就是9。
+     * 不能被9整除的整数，各位上的数字加起来，结果对9取模，和初始数对9取摸，是一样的，所以，
+     * 连续累加起来，最终必然就是初始数对9取摸。
+     *
+     * @param num
+     * @return
+     */
+    public static int addDigits2(int num) {
+        return (num - 1) % 9 + 1;
+    }
+
+    /**
+     * 263. 丑数
+     * 编写一个程序判断给定的数是否为丑数。
+     *
+     * 丑数就是只包含质因数 2, 3, 5 的正整数。
+     *
+     * 示例 1:
+     *
+     * 输入: 6
+     * 输出: true
+     * 解释: 6 = 2 × 3
+     * 示例 2:
+     *
+     * 输入: 8
+     * 输出: true
+     * 解释: 8 = 2 × 2 × 2
+     * 示例 3:
+     *
+     * 输入: 14
+     * 输出: false
+     * 解释: 14 不是丑数，因为它包含了另外一个质因数 7。
+     *
+     * @param n
+     * @return
+     */
+    public boolean isUgly(int n) {
+        if (n < 1) return false;
+        while (n % 2 == 0) n = n / 2;
+        while (n % 3 == 0) n = n / 3;
+        while (n % 5 == 0) n = n / 5;
+        return n == 1;
+    }
+
 
     public static void main(String[] args) {
-
+        System.out.println(addDigits(10));
     }
 
 }
