@@ -432,21 +432,21 @@ public class Solution5 {
     /**
      * 263. 丑数
      * 编写一个程序判断给定的数是否为丑数。
-     *
+     * <p>
      * 丑数就是只包含质因数 2, 3, 5 的正整数。
-     *
+     * <p>
      * 示例 1:
-     *
+     * <p>
      * 输入: 6
      * 输出: true
      * 解释: 6 = 2 × 3
      * 示例 2:
-     *
+     * <p>
      * 输入: 8
      * 输出: true
      * 解释: 8 = 2 × 2 × 2
      * 示例 3:
-     *
+     * <p>
      * 输入: 14
      * 输出: false
      * 解释: 14 不是丑数，因为它包含了另外一个质因数 7。
@@ -462,9 +462,231 @@ public class Solution5 {
         return n == 1;
     }
 
+    /**
+     * 268. 丢失的数字
+     * 给定一个包含 [0, n] 中 n 个数的数组 nums ，找出 [0, n] 这个范围内没有出现在数组中的那个数。
+     * <p>
+     * <p>
+     * <p>
+     * 进阶：
+     * <p>
+     * 你能否实现线性时间复杂度、仅使用额外常数空间的算法解决此问题?
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [3,0,1]
+     * 输出：2
+     * 解释：n = 3，因为有 3 个数字，所以所有的数字都在范围 [0,3] 内。2 是丢失的数字，因为它没有出现在 nums 中。
+     * 示例 2：
+     * <p>
+     * 输入：nums = [0,1]
+     * 输出：2
+     * 解释：n = 2，因为有 2 个数字，所以所有的数字都在范围 [0,2] 内。2 是丢失的数字，因为它没有出现在 nums 中。
+     * 示例 3：
+     * <p>
+     * 输入：nums = [9,6,4,2,3,5,7,0,1]
+     * 输出：8
+     * 解释：n = 9，因为有 9 个数字，所以所有的数字都在范围 [0,9] 内。8 是丢失的数字，因为它没有出现在 nums 中。
+     * 示例 4：
+     * <p>
+     * 输入：nums = [0]
+     * 输出：1
+     * 解释：n = 1，因为有 1 个数字，所以所有的数字都在范围 [0,1] 内。1 是丢失的数字，因为它没有出现在 nums 中。
+     * <p>
+     * 排序
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber(int[] nums) {
+        Arrays.sort(nums);
+
+        // 判断 n 是否出现在末位
+        if (nums[nums.length - 1] != nums.length) {
+            return nums.length;
+        }
+        // 判断 0 是否出现在首位
+        else if (nums[0] != 0) {
+            return 0;
+        }
+
+        // 此时缺失的数字一定在 (0, n) 中
+        for (int i = 1; i < nums.length; i++) {
+            int expectedNum = nums[i - 1] + 1;
+            if (nums[i] != expectedNum) {
+                return expectedNum;
+            }
+        }
+
+        // 未缺失任何数字（保证函数有返回值）
+        return -1;
+    }
+
+    /**
+     * 哈希法
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber2(int[] nums) {
+        Set<Integer> numSet = new HashSet<Integer>();
+        for (int num : nums) numSet.add(num);
+
+        int expectedNumCount = nums.length + 1;
+        for (int number = 0; number < expectedNumCount; number++) {
+            if (!numSet.contains(number)) {
+                return number;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 异或法
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber3(int[] nums) {
+        int missing = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            missing ^= i ^ nums[i];
+        }
+        return missing;
+    }
+
+    /**
+     * 数学方法
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber4(int[] nums) {
+        int expectedSum = nums.length * (nums.length + 1) / 2;
+        int actualSum = 0;
+        for (int num : nums) actualSum += num;
+        return expectedSum - actualSum;
+    }
+
+    /**
+     * 283. 移动零
+     * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: [0,1,0,3,12]
+     * 输出: [1,3,12,0,0]
+     * 说明:
+     * <p>
+     * 必须在原数组上操作，不能拷贝额外的数组。
+     * 尽量减少操作次数。
+     *
+     * @param nums
+     */
+    public static void moveZeroes(int[] nums) {
+        int n = nums.length, left = 0, right = 0;
+        while (right < n) {
+            if (nums[right] != 0) {
+                swap(nums, left, right);
+                left++;
+            }
+            right++;
+        }
+    }
+
+    public static void swap(int[] nums, int left, int right) {
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
+
+    /**
+     * 290. 单词规律
+     * 给定一种规律 pattern 和一个字符串 str ，判断 str 是否遵循相同的规律。
+     * <p>
+     * 这里的 遵循 指完全匹配，例如， pattern 里的每个字母和字符串 str 中的
+     * 每个非空单词之间存在着双向连接的对应规律。
+     * <p>
+     * 示例1:
+     * <p>
+     * 输入: pattern = "abba", str = "dog cat cat dog"
+     * 输出: true
+     * 示例 2:
+     * <p>
+     * 输入:pattern = "abba", str = "dog cat cat fish"
+     * 输出: false
+     * 示例 3:
+     * <p>
+     * 输入: pattern = "aaaa", str = "dog cat cat dog"
+     * 输出: false
+     * 示例 4:
+     * <p>
+     * 输入: pattern = "abba", str = "dog dog dog dog"
+     * 输出: false
+     *
+     * @param pattern
+     * @param str
+     * @return
+     */
+    public boolean wordPattern(String pattern, String str) {
+        Map<String, Character> str2ch = new HashMap<String, Character>();
+        Map<Character, String> ch2str = new HashMap<Character, String>();
+        int m = str.length();
+        int i = 0;
+        for (int p = 0; p < pattern.length(); ++p) {
+            char ch = pattern.charAt(p);
+            if (i >= m) {
+                return false;
+            }
+            int j = i;
+            while (j < m && str.charAt(j) != ' ') {
+                j++;
+            }
+            String tmp = str.substring(i, j);
+            if (str2ch.containsKey(tmp) && str2ch.get(tmp) != ch) {
+                return false;
+            }
+            if (ch2str.containsKey(ch) && !tmp.equals(ch2str.get(ch))) {
+                return false;
+            }
+            str2ch.put(tmp, ch);
+            ch2str.put(ch, tmp);
+            i = j + 1;
+        }
+        return i >= m;
+    }
+
+    public static boolean wordPattern2(String pattern, String str) {
+        Map<String, Character> str2ch = new HashMap<String, Character>();
+        Map<Character, String> ch2str = new HashMap<Character, String>();
+
+        String[] sz = str.split("\\s+");
+
+        if (sz.length != pattern.length()) {
+            return false;
+        }
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            if (str2ch.containsKey(sz[i]) && str2ch.get(sz[i]) != ch) {
+                return false;
+            }
+            if (ch2str.containsKey(ch) && !sz[i].equals(ch2str.get(ch))) {
+                return false;
+            }
+            str2ch.put(sz[i], ch);
+            ch2str.put(ch, sz[i]);
+        }
+
+        return true;
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(addDigits(10));
+//        int[] sz = new int[]{1, 2, 3, 0, 0, 1, 3, 4};
+//        moveZeroes(sz);
+        System.out.println(wordPattern2("abba",
+                "dog cat cat dog"));
     }
 
 }
