@@ -710,6 +710,7 @@ public class Solution5 {
      * 输入：n = 2
      * 输出：true
      *
+     * 要想获胜，在你的回合中，必须避免石头堆中的石子数为 4 的情况。
      * @param n
      * @return
      */
