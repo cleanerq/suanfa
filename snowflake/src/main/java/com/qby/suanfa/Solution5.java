@@ -709,13 +709,200 @@ public class Solution5 {
      * <p>
      * 输入：n = 2
      * 输出：true
+     * <p>
+     * 要想获胜，在你的回合中，必须避免石头堆中的石子数为 4 的情况。不能被4整除
      *
-     * 要想获胜，在你的回合中，必须避免石头堆中的石子数为 4 的情况。
      * @param n
      * @return
      */
     public boolean canWinNim(int n) {
         return (n % 4 != 0);
+    }
+
+
+    /**
+     * 326. 3的幂
+     * 给定一个整数，写一个函数来判断它是否是 3 的幂次方。如果是，返回 true ；否则，返回 false 。
+     * <p>
+     * 整数 n 是 3 的幂次方需满足：存在整数 x 使得 n == 3x
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：n = 27
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：n = 0
+     * 输出：false
+     * 示例 3：
+     * <p>
+     * 输入：n = 9
+     * 输出：true
+     * 示例 4：
+     * <p>
+     * 输入：n = 45
+     * 输出：false
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfThree(int n) {
+        if (n < 1) {
+            return false;
+        }
+        while (n % 3 == 0) {
+            n = n / 3;
+        }
+
+        return n == 1;
+    }
+
+    /**
+     * 方法四：整数限制
+     * 在 Java 中说明了该变量是四个字节，他的最大值为 2147483647。有三种方法可以计算出该最大值。
+     * <p>
+     * <p>
+     * 知道了 n 的限制，我们现在可以推断出 n 的最大值，也就是 3 的幂，是 1162261467。我们计算如下：
+     * <p>
+     * 因此，我们应该返回 true 的 n 的可能值是 3^03
+     * 0
+     * ，3^13
+     * 1
+     * …3 ^ {19}3
+     * 19
+     * 。因为 3 是质数，所以 3^{19}3
+     * 19
+     * 的除数只有 3^03
+     * 0
+     * ，3^13
+     * 1
+     * …3 ^{19}3
+     * 19
+     * ，因此我们只需要将 3^{19}3
+     * 19
+     * 除以 n。若余数为 0 意味着 n 是 3^{19}3
+     * 19
+     * 的除数，因此是 3 的幂。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/power-of-three/solution/3de-mi-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * <p>
+     * 一个重要的信息可以从函数名中推导出来。
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfThree2(int n) {
+        return n > 0 && 1162261467 % n == 0;
+    }
+
+    /**
+     * 342. 4的幂
+     * 给定一个整数，写一个函数来判断它是否是 4 的幂次方。如果是，返回 true ；否则，返回 false 。
+     * <p>
+     * 整数 n 是 4 的幂次方需满足：存在整数 x 使得 n == 4x
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：n = 16
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：n = 5
+     * 输出：false
+     * 示例 3：
+     * <p>
+     * 输入：n = 1
+     * 输出：true
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfFour(int n) {
+        if (n < 1) return false;
+        while (n % 4 == 0) n = n / 4;
+        return n == 1;
+    }
+
+    /**
+     * 位运算
+     * 我们首先检查 num 是否为 2 的幂：x > 0 and x & (x - 1) == 0。
+     * <p>
+     * 现在的问题是区分 2 的偶数幂（当 xx 是 4 的幂时）和 2 的奇数幂（当 xx 不是 4 的幂时）。
+     * 在二进制表示中，这两种情况都只有一位为 1，其余为 0。
+     * <p>
+     * 有什么区别？在第一种情况下（4 的幂），1 处于偶数位置：第 0 位、第 2 位、第 4 位等；
+     * 在第二种情况下，1 处于奇数位置。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/power-of-four/solution/4de-mi-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param num
+     * @return
+     */
+    public boolean isPowerOfFour2(int num) {
+        return (num > 0) && ((num & (num - 1)) == 0) && ((num & 0xaaaaaaaa) == 0);
+    }
+
+    /**
+     * 若 xx 为 2 的幂且 x%3 == 1，则 xx 为 4 的幂。
+     * 我们首先检车 xx 是否为 2 的幂：x > 0 and x & (x - 1) == 0。然后可以确定 x = 2^ax=2
+     * a
+     * ，若 xx 为 4 的幂则 aa 为偶数。
+     *
+     * @param num
+     * @return
+     */
+    public boolean isPowerOfFour3(int num) {
+        return (num > 0) && ((num & (num - 1)) == 0) && (num % 3 == 1);
+    }
+
+
+    /**
+     * 345. 反转字符串中的元音字母
+     * 编写一个函数，以字符串作为输入，反转该字符串中的元音字母。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入："hello"
+     * 输出："holle"
+     * 示例 2：
+     * <p>
+     * 输入："leetcode"
+     * 输出："leotcede"
+     *
+     * @param s
+     * @return
+     */
+    public String reverseVowels(String s) {
+        HashSet<Character> vowels = new HashSet<>(
+                Arrays.asList('a', 'e', 'i', 'o', 'u', 'A',
+                        'E', 'I', 'O', 'U'));
+
+        if (s == null) return null;
+        int low = 0, high = s.length() - 1;
+        char[] c = new char[s.length()];
+        while (low <= high) {
+            char cl = s.charAt(low);
+            char ch = s.charAt(high);
+            if (!vowels.contains(cl)) {
+                c[low++] = cl;
+            } else if (!vowels.contains(ch)) {
+                c[high--] = ch;
+            } else {
+                c[low++] = ch;
+                c[high--] = cl;
+            }
+        }
+        return new String(c);
     }
 
 
