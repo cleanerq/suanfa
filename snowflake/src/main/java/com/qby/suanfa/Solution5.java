@@ -905,12 +905,222 @@ public class Solution5 {
         return new String(c);
     }
 
+    /**
+     * 349. 两个数组的交集
+     * 给定两个数组，编写一个函数来计算它们的交集。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums1 = [1,2,2,1], nums2 = [2,2]
+     * 输出：[2]
+     * 示例 2：
+     * <p>
+     * 输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+     * 输出：[9,4]
+     * <p>
+     * 说明：
+     * <p>
+     * 输出结果中的每个元素一定是唯一的。
+     * 我们可以不考虑输出结果的顺序。
+     * <p>
+     * 方法一：两个集合
+     * <p>
+     * 如果使用哈希集合存储元素，则可以在 O(1)的时间内判断一个元素是否在集合中，从而降低时间复杂度。
+     * <p>
+     * 首先使用两个集合分别存储两个数组中的元素，然后遍历较小的集合，判断其中的每个元素是否在另一个集合中，
+     * 如果元素也在另一个集合中，则将该元素添加到返回值。该方法的时间复杂度可以降低到 O(m+n)。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/solution/liang-ge-shu-zu-de-jiao-ji-by-leetcode-solution/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] intersection(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = new HashSet<Integer>();
+        Set<Integer> set2 = new HashSet<Integer>();
+        for (int num : nums1) {
+            set1.add(num);
+        }
+        for (int num : nums2) {
+            set2.add(num);
+        }
+        return getIntersection(set1, set2);
+    }
+
+    public int[] getIntersection(Set<Integer> set1, Set<Integer> set2) {
+        if (set1.size() > set2.size()) {
+            return getIntersection(set2, set1);
+        }
+        Set<Integer> intersectionSet = new HashSet<Integer>();
+        for (int num : set1) {
+            if (set2.contains(num)) {
+                intersectionSet.add(num);
+            }
+        }
+        int[] intersection = new int[intersectionSet.size()];
+        int index = 0;
+        for (int num : intersectionSet) {
+            intersection[index++] = num;
+        }
+        return intersection;
+    }
+
+    /**
+     * 方法二：排序 + 双指针
+     * 如果两个数组是有序的，则可以使用双指针的方法得到两个数组的交集。
+     * <p>
+     * 初始时，两个指针分别指向两个数组的头部。每次比较两个指针指向的两个数组中的数字，如果两个数字不相等，
+     * 则将指向较小数字的指针右移一位，如果两个数字相等，且该数字不等于 \textit{pre}pre ，
+     * 将该数字添加到答案并更新 \textit{pre}pre 变量，同时将两个指针都右移一位。
+     * 当至少有一个指针超出数组范围时，遍历结束。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/solution/liang-ge-shu-zu-de-jiao-ji-by-leetcode-solution/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] intersection2(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+
+        int length1 = nums1.length, length2 = nums2.length;
+        int[] intersection = new int[length1 + length2];
+        int index = 0, index1 = 0, index2 = 0;
+        while (index1 < length1 && index2 < length2) {
+            int num1 = nums1[index1], num2 = nums2[index2];
+            if (num1 == num2) {
+                // 保证加入元素的唯一性
+                if (index == 0 || num1 != intersection[index - 1]) {
+                    intersection[index++] = num1;
+                }
+                index1++;
+                index2++;
+            } else if (num1 < num2) {
+                index1++;
+            } else {
+                index2++;
+            }
+        }
+        return Arrays.copyOfRange(intersection, 0, index);
+    }
+
+    /**
+     * 350. 两个数组的交集 II
+     * 给定两个数组，编写一个函数来计算它们的交集。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums1 = [1,2,2,1], nums2 = [2,2]
+     * 输出：[2,2]
+     * 示例 2:
+     * <p>
+     * 输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+     * 输出：[4,9]
+     * <p>
+     * <p>
+     * 说明：
+     * <p>
+     * 输出结果中每个元素出现的次数，应与元素在两个数组中出现次数的最小值一致。
+     * 我们可以不考虑输出结果的顺序。
+     * 进阶：
+     * <p>
+     * 如果给定的数组已经排好序呢？你将如何优化你的算法？
+     * 如果 nums1 的大小比 nums2 小很多，哪种方法更优？
+     * 如果 nums2 的元素存储在磁盘上，内存是有限的，并且你不能一次加载所有的元素到内存中，你该怎么办？
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] intersect(int[] nums1, int[] nums2) {
+        if (nums1.length > nums2.length) {
+            return intersect(nums2, nums1);
+        }
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (int num : nums1) {
+            int count = map.getOrDefault(num, 0) + 1;
+            map.put(num, count);
+        }
+        int[] intersection = new int[nums1.length];
+        int index = 0;
+        for (int num : nums2) {
+            int count = map.getOrDefault(num, 0);
+            if (count > 0) {
+                intersection[index++] = num;
+                count--;
+                if (count > 0) {
+                    map.put(num, count);
+                } else {
+                    map.remove(num);
+                }
+            }
+        }
+        return Arrays.copyOfRange(intersection, 0, index);
+    }
+
+
+    /**
+     * 383. 赎金信
+     * 给定一个赎金信 (ransom) 字符串和一个杂志(magazine)字符串，判断第一个字符串 ransom
+     * 能不能由第二个字符串 magazines 里面的字符构成。如果可以构成，返回 true ；否则返回 false。
+     * <p>
+     * (题目说明：为了不暴露赎金信字迹，要从杂志上搜索各个需要的字母，组成单词来表达意思。
+     * 杂志字符串中的每个字符只能在赎金信字符串中使用一次。)
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：ransomNote = "a", magazine = "b"
+     * 输出：false
+     * 示例 2：
+     * <p>
+     * 输入：ransomNote = "aa", magazine = "ab"
+     * 输出：false
+     * 示例 3：
+     * <p>
+     * 输入：ransomNote = "aa", magazine = "aab"
+     * 输出：true
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 你可以假设两个字符串均只含有小写字母。
+     *
+     * @param ransomNote
+     * @param magazine
+     * @return
+     */
+    public static boolean canConstruct(String ransomNote, String magazine) {
+        int[] cnt = new int[26];
+        for (char c : magazine.toCharArray()) {
+            cnt[c - 'a']++;
+        }
+        for (char c : ransomNote.toCharArray()) {
+            cnt[c - 'a']--;
+            if (cnt[c - 'a'] < 0) return false;
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
 //        int[] sz = new int[]{1, 2, 3, 0, 0, 1, 3, 4};
 //        moveZeroes(sz);
-        System.out.println(wordPattern2("abba",
-                "dog cat cat dog"));
+        System.out.println(canConstruct("bg",
+                "efjbdfbdgfjhhaiigfhbaejahgfbbgbjagbddfgdiaigdadhcfcj"));
     }
 
 }
