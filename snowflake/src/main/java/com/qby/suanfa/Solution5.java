@@ -1609,9 +1609,225 @@ public class Solution5 {
         return ans;
     }
 
+    /**
+     * 412. Fizz Buzz
+     * 写一个程序，输出从 1 到 n 数字的字符串表示。
+     * <p>
+     * 1. 如果 n 是3的倍数，输出“Fizz”；
+     * <p>
+     * 2. 如果 n 是5的倍数，输出“Buzz”；
+     * <p>
+     * 3.如果 n 同时是3和5的倍数，输出 “FizzBuzz”。
+     * <p>
+     * 示例：
+     * <p>
+     * n = 15,
+     * <p>
+     * 返回:
+     * [
+     * "1",
+     * "2",
+     * "Fizz",
+     * "4",
+     * "Buzz",
+     * "Fizz",
+     * "7",
+     * "8",
+     * "Fizz",
+     * "Buzz",
+     * "11",
+     * "Fizz",
+     * "13",
+     * "14",
+     * "FizzBuzz"
+     * ]
+     *
+     * @param n
+     * @return
+     */
+    public static List<String> fizzBuzz(int n) {
+        List<String> list = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            if (i % 3 == 0 && i % 5 == 0) {
+                list.add("FizzBuzz");
+            } else if (i % 3 == 0) {
+                list.add("Fizz");
+            } else if (i % 5 == 0) {
+                list.add("Buzz");
+            } else {
+                list.add(Integer.toString(i));
+            }
+        }
 
-    public static void main(String[] args) {
-        System.out.println(5 / 2 * 2);
+        return list;
     }
 
+    public List<String> fizzBuzz2(int n) {
+        // ans list
+        List<String> ans = new ArrayList<String>();
+
+        for (int num = 1; num <= n; num++) {
+
+            boolean divisibleBy3 = (num % 3 == 0);
+            boolean divisibleBy5 = (num % 5 == 0);
+
+            String numAnsStr = "";
+
+            if (divisibleBy3) {
+                // Divides by 3, add Fizz
+                numAnsStr += "Fizz";
+            }
+
+            if (divisibleBy5) {
+                // Divides by 5, add Buzz
+                numAnsStr += "Buzz";
+            }
+
+            if (numAnsStr.equals("")) {
+                // Not divisible by 3 or 5, add the number
+                numAnsStr += Integer.toString(num);
+            }
+
+            // Append the current answer str to the ans list
+            ans.add(numAnsStr);
+        }
+
+        return ans;
+    }
+
+    public List<String> fizzBuzz3(int n) {
+
+        // ans list
+        List<String> ans = new ArrayList<String>();
+
+        // Hash map to store all fizzbuzz mappings.
+        HashMap<Integer, String> fizzBizzDict =
+                new HashMap<Integer, String>() {
+                    {
+                        put(3, "Fizz");
+                        put(5, "Buzz");
+                    }
+                };
+
+        for (int num = 1; num <= n; num++) {
+
+            String numAnsStr = "";
+
+            for (Integer key : fizzBizzDict.keySet()) {
+
+                // If the num is divisible by key,
+                // then add the corresponding string mapping to current numAnsStr
+                if (num % key == 0) {
+                    numAnsStr += fizzBizzDict.get(key);
+                }
+            }
+
+            if (numAnsStr.equals("")) {
+                // Not divisible by 3 or 5, add the number
+                numAnsStr += Integer.toString(num);
+            }
+
+            // Append the current answer str to the ans list
+            ans.add(numAnsStr);
+        }
+
+        return ans;
+    }
+
+    /**
+     * 415. 字符串相加
+     * 给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和。
+     * <p>
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * num1 和num2 的长度都小于 5100
+     * num1 和num2 都只包含数字 0-9
+     * num1 和num2 都不包含任何前导零
+     * 你不能使用任何內建 BigInteger 库， 也不能直接将输入的字符串转换为整数形式
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public static String addStrings(String num1, String num2) {
+        StringBuilder st = new StringBuilder();
+        int i = num1.length() - 1, j = num2.length() - 1, add = 0;
+        char[] char1 = num1.toCharArray();
+        char[] char2 = num2.toCharArray();
+        while (i >= 0 || j >= 0) {
+            int intI = i >= 0 ? char1[i] - '0' : 0;
+            int intJ = j >= 0 ? char2[j] - '0' : 0;
+            int res = intI + intJ + add;
+            st.append(res % 10);
+            add = res / 10;
+            i--;
+            j--;
+        }
+        if (add != 0) {
+            st.append(add);
+        }
+        return st.reverse().toString();
+    }
+
+    /**
+     * 448. 找到所有数组中消失的数字
+     * 给定一个范围在  1 ≤ a[i] ≤ n ( n = 数组大小 ) 的 整型数组，数组中的元素一些出现了两次，另一些只出现一次。
+     * <p>
+     * 找到所有在 [1, n] 范围之间没有出现在数组中的数字。
+     * <p>
+     * 您能在不使用额外空间且时间复杂度为O(n)的情况下完成这个任务吗? 你可以假定返回的数组不算在额外空间内。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入:
+     * [4,3,2,7,8,2,3,1]
+     * <p>
+     * 输出:
+     * [5,6]
+     *
+     * 我们可以用一个哈希表记录数组 \textit{nums}nums 中的数字，由于数字范围均在 [1,n][1,n] 中，记录数字后我们再利用哈希表检查 [1,n][1,n] 中的每一个数是否出现，从而找到缺失的数字。
+     *
+     * 由于数字范围均在 [1,n][1,n] 中，我们也可以用一个长度为 nn 的数组来代替哈希表。这一做法的空间复杂度是 O(n)O(n) 的。我们的目标是优化空间复杂度到 O(1)O(1)。
+     *
+     * 注意到 \textit{nums}nums 的长度恰好也为 nn，能否让 \textit{nums}nums 充当哈希表呢？
+     *
+     * 由于 \textit{nums}nums 的数字范围均在 [1,n][1,n] 中，我们可以利用这一范围之外的数字，来表达「是否存在」的含义。
+     *
+     * 具体来说，遍历 \textit{nums}nums，每遇到一个数 xx，就让 \textit{nums}[x-1]nums[x−1] 增加 nn。由于 \textit{nums}nums 中所有数均在 [1,n][1,n] 中，增加以后，这些数必然大于 nn。最后我们遍历 \textit{nums}nums，若 \textit{nums}[i]nums[i] 未大于 nn，就说明没有遇到过数 i+1i+1。这样我们就找到了缺失的数字。
+     *
+     * 注意，当我们遍历到某个位置时，其中的数可能已经被增加过，因此需要对 nn 取模来还原出它本来的值。
+     *
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/solution/zhao-dao-suo-you-shu-zu-zhong-xiao-shi-d-mabl/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     *
+     * @param nums
+     * @return
+     */
+    public static List<Integer> findDisappearedNumbers(int[] nums) {
+        int n = nums.length;
+        List<Integer> res = new LinkedList<>();
+        int x;
+        for (int i = 0; i < n; i++) {
+            x = (nums[i] - 1) % n;//还原x，得到x的下标
+            nums[x] += n;//此时x的位置上的值大于n，表明x出现过至少一次
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] <= n) {//
+                res.add(i + 1);//i位置上的值i+1未曾出现过
+            } else {
+                nums[i] %= n;//还原该位置上的值
+            }
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+
+    }
 }
