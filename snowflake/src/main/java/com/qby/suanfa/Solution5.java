@@ -3,6 +3,7 @@ package com.qby.suanfa;
 import com.qby.suanfa.basic.TreeNode;
 
 import java.util.*;
+import java.util.function.IntBinaryOperator;
 
 public class Solution5 {
 
@@ -1786,24 +1787,23 @@ public class Solution5 {
      * <p>
      * 输出:
      * [5,6]
-     *
+     * <p>
      * 我们可以用一个哈希表记录数组 \textit{nums}nums 中的数字，由于数字范围均在 [1,n][1,n] 中，记录数字后我们再利用哈希表检查 [1,n][1,n] 中的每一个数是否出现，从而找到缺失的数字。
-     *
+     * <p>
      * 由于数字范围均在 [1,n][1,n] 中，我们也可以用一个长度为 nn 的数组来代替哈希表。这一做法的空间复杂度是 O(n)O(n) 的。我们的目标是优化空间复杂度到 O(1)O(1)。
-     *
+     * <p>
      * 注意到 \textit{nums}nums 的长度恰好也为 nn，能否让 \textit{nums}nums 充当哈希表呢？
-     *
+     * <p>
      * 由于 \textit{nums}nums 的数字范围均在 [1,n][1,n] 中，我们可以利用这一范围之外的数字，来表达「是否存在」的含义。
-     *
+     * <p>
      * 具体来说，遍历 \textit{nums}nums，每遇到一个数 xx，就让 \textit{nums}[x-1]nums[x−1] 增加 nn。由于 \textit{nums}nums 中所有数均在 [1,n][1,n] 中，增加以后，这些数必然大于 nn。最后我们遍历 \textit{nums}nums，若 \textit{nums}[i]nums[i] 未大于 nn，就说明没有遇到过数 i+1i+1。这样我们就找到了缺失的数字。
-     *
+     * <p>
      * 注意，当我们遍历到某个位置时，其中的数可能已经被增加过，因此需要对 nn 取模来还原出它本来的值。
-     *
+     * <p>
      * 作者：LeetCode-Solution
      * 链接：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/solution/zhao-dao-suo-you-shu-zu-zhong-xiao-shi-d-mabl/
      * 来源：力扣（LeetCode）
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-     *
      *
      * @param nums
      * @return
@@ -1826,8 +1826,428 @@ public class Solution5 {
         return res;
     }
 
+    /**
+     * 453. 最小操作次数使数组元素相等
+     * 给定一个长度为 n 的 非空 整数数组，每次操作将会使 n - 1 个元素增加 1。
+     * 找出让数组所有元素相等的最小操作次数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：
+     * [1,2,3]
+     * 输出：
+     * 3
+     * 解释：
+     * 只需要3次操作（注意每次操作会增加两个元素的值）：
+     * [1,2,3]  =>  [2,3,3]  =>  [3,4,3]  =>  [4,4,4]
+     * <p>
+     * 排序方法
+     *
+     * @param nums
+     * @return
+     */
+    public int minMoves(int[] nums) {
+        Arrays.sort(nums);
+        int count = 0;
+        for (int i = nums.length - 1; i > 0; i--) {
+            count += nums[i] - nums[0];
+        }
+        return count;
+    }
+
+
+    /**
+     * 动态规划
+     *
+     * @param nums
+     * @return
+     */
+    public static int minMoves2(int[] nums) {
+        Arrays.sort(nums);
+        int moves = 0;
+        for (int i = 1; i < nums.length; i++) {
+            int diff = (moves + nums[i]) - nums[i - 1];
+            nums[i] += moves;
+            moves += diff;
+        }
+        return moves;
+    }
+
+    /**
+     * 先找到最小值 然后用每个数减去最小值
+     *
+     * @param nums
+     * @return
+     */
+    public int minMoves3(int[] nums) {
+        int moves = 0, min = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            min = Math.min(min, nums[i]);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            moves += nums[i] - min;
+        }
+        return moves;
+    }
+
+    /**
+     * 455. 分发饼干
+     * 假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。
+     * <p>
+     * 对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，
+     * 都有一个尺寸 s[j] 。如果 s[j] >= g[i]，我们可以将这个饼干 j 分配给孩子 i ，这个孩子会得到满足。
+     * 你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: g = [1,2,3], s = [1,1]
+     * 输出: 1
+     * 解释:
+     * 你有三个孩子和两块小饼干，3个孩子的胃口值分别是：1,2,3。
+     * 虽然你有两块小饼干，由于他们的尺寸都是1，你只能让胃口值是1的孩子满足。
+     * 所以你应该输出1。
+     * 示例 2:
+     * <p>
+     * 输入: g = [1,2], s = [1,2,3]
+     * 输出: 2
+     * 解释:
+     * 你有两个孩子和三块小饼干，2个孩子的胃口值分别是1,2。
+     * 你拥有的饼干数量和尺寸都足以让所有孩子满足。
+     * 所以你应该输出2.
+     *
+     * @param g
+     * @param s
+     * @return
+     */
+    public int findContentChildren(int[] g, int[] s) {
+        Arrays.sort(g);
+        Arrays.sort(s);
+        int numOfChildren = g.length, numOfCookies = s.length;
+        int count = 0;
+        for (int i = 0, j = 0; i < numOfChildren && j < numOfCookies; i++, j++) {
+            while (j < numOfCookies && g[i] > s[j]) {
+                j++;
+            }
+            if (j < numOfCookies) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 459. 重复的子字符串
+     * 给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。
+     * 给定的字符串只含有小写英文字母，并且长度不超过10000。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: "abab"
+     * <p>
+     * 输出: True
+     * <p>
+     * 解释: 可由子字符串 "ab" 重复两次构成。
+     * 示例 2:
+     * <p>
+     * 输入: "aba"
+     * <p>
+     * 输出: False
+     * 示例 3:
+     * <p>
+     * 输入: "abcabcabcabc"
+     * <p>
+     * 输出: True
+     * <p>
+     * 解释: 可由子字符串 "abc" 重复四次构成。 (或者子字符串 "abcabc" 重复两次构成。)
+     *
+     * @param s
+     * @return
+     */
+    public static boolean repeatedSubstringPattern(String s) {
+        return (s + s).indexOf(s, 1) != s.length();
+    }
+
+    /**
+     * kmp 算法
+     *
+     * @param s
+     * @return
+     */
+    public boolean repeatedSubstringPattern2(String s) {
+        return kmp(s + s, s);
+    }
+
+    public boolean kmp(String query, String pattern) {
+        int n = query.length();
+        int m = pattern.length();
+        int[] fail = new int[m];
+        Arrays.fill(fail, -1);
+        for (int i = 1; i < m; ++i) {
+            int j = fail[i - 1];
+            while (j != -1 && pattern.charAt(j + 1) != pattern.charAt(i)) {
+                j = fail[j];
+            }
+            if (pattern.charAt(j + 1) == pattern.charAt(i)) {
+                fail[i] = j + 1;
+            }
+        }
+        int match = -1;
+        for (int i = 1; i < n - 1; ++i) {
+            while (match != -1 && pattern.charAt(match + 1) != query.charAt(i)) {
+                match = fail[match];
+            }
+            if (pattern.charAt(match + 1) == query.charAt(i)) {
+                ++match;
+                if (match == m - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 461. 汉明距离
+     * 两个整数之间的汉明距离指的是这两个数字对应二进制位不同的位置的数目。
+     * <p>
+     * 给出两个整数 x 和 y，计算它们之间的汉明距离。
+     * <p>
+     * 注意：
+     * 0 ≤ x, y < 231.
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: x = 1, y = 4
+     * <p>
+     * 输出: 2
+     * <p>
+     * 解释:
+     * 1   (0 0 0 1)
+     * 4   (0 1 0 0)
+     * ↑   ↑
+     * <p>
+     * 上面的箭头指出了对应二进制位不同的位置。
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public int hammingDistance(int x, int y) {
+        return Integer.bitCount(x ^ y);
+    }
+
+    /**
+     * 为了计算等于 1 的位数，可以将每个位移动到最左侧或最右侧，然后检查该位是否为 1。
+     * <p>
+     * 更准确的说，应该进行逻辑移位，移入零替换丢弃的位。
+     * <p>
+     * <p>
+     * <p>
+     * 这里采用右移位，每个位置都会被移动到最右边。移位后检查最右位的位是否为 1 即可。检查最右位是否为 1，
+     * 可以使用取模运算（i % 2）或者 AND 操作（i & 1），这两个操作都会屏蔽最右位以外的其他位。
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public int hammingDistance2(int x, int y) {
+        int xor = x ^ y;
+        int distance = 0;
+        while (xor != 0) {
+            if (xor % 2 == 1)
+                distance += 1;
+            xor = xor >> 1;
+        }
+        return distance;
+    }
+
+    /**
+     * 思路
+     * <p>
+     * 方法二是逐位移动，逐位比较边缘位置是否为 1。寻找一种更快的方法找出等于 1 的位数。
+     * <p>
+     * 是否可以像人类直观的计数比特为 1 的位数，跳过两个 1 之间的 0。例如：10001000。
+     * <p>
+     * 上面例子中，遇到最右边的 1 后，如果可以跳过中间的 0，直接跳到下一个 1，效率会高很多。
+     * <p>
+     * 这是布赖恩·克尼根位计数算法的基本思想。该算法使用特定比特位和算术运算移除等于 1 的最右比特位。
+     * <p>
+     * 当我们在 number 和 number-1 上做 AND 位运算时，原数字 number 的最右边等于 1 的比特会被移除。
+     * <p>
+     * <p>
+     * <p>
+     * 基于以上思路，通过 2 次迭代就可以知道 10001000 中 1 的位数，而不需要 8 次。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/hamming-distance/solution/yi-ming-ju-chi-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public int hammingDistance3(int x, int y) {
+        int xor = x ^ y;
+        int distance = 0;
+        while (xor != 0) {
+            distance += 1;
+            // remove the rightmost bit of '1'
+            xor = xor & (xor - 1);
+        }
+        return distance;
+    }
+
+    /**
+     * 463. 岛屿的周长
+     * 给定一个 row x col 的二维网格地图 grid ，其中：grid[i][j] = 1 表示陆地， grid[i][j] = 0 表示水域。
+     * <p>
+     * 网格中的格子 水平和垂直 方向相连（对角线方向不相连）。整个网格被水完全包围，
+     * 但其中恰好有一个岛屿（或者说，一个或多个表示陆地的格子相连组成的岛屿）。
+     * <p>
+     * 岛屿中没有“湖”（“湖” 指水域在岛屿内部且不和岛屿周围的水相连）。格子是边长为 1 的正方形。
+     * 网格为长方形，且宽度和高度均不超过 100 。计算这个岛屿的周长。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * <p>
+     * 输入：grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+     * 输出：16
+     * 解释：它的周长是上面图片中的 16 个黄色的边
+     * 示例 2：
+     * <p>
+     * 输入：grid = [[1]]
+     * 输出：4
+     * 示例 3：
+     * <p>
+     * 输入：grid = [[1,0]]
+     * 输出：4
+     *
+     * @param grid
+     * @return
+     */
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
+
+    public static int islandPerimeter(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (grid[i][j] == 1) {
+                    int cnt = 0;
+                    for (int k = 0; k < 4; ++k) {
+                        int tx = i + dx[k];
+                        int ty = j + dy[k];
+                        if (tx < 0 || tx >= n || ty < 0 || ty >= m || grid[tx][ty] == 0) {
+                            cnt += 1;
+                        }
+                    }
+                    ans += cnt;
+                }
+            }
+        }
+        return ans;
+    }
+
+    public int islandPerimeter2(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (grid[i][j] == 1) {
+                    ans += dfs(i, j, grid, n, m);
+                }
+            }
+        }
+        return ans;
+    }
+
+    public int dfs(int x, int y, int[][] grid, int n, int m) {
+        if (x < 0 || x >= n || y < 0 || y >= m || grid[x][y] == 0) {
+            return 1;
+        }
+        if (grid[x][y] == 2) {
+            return 0;
+        }
+        grid[x][y] = 2;
+        int res = 0;
+        for (int i = 0; i < 4; ++i) {
+            int tx = x + dx[i];
+            int ty = y + dy[i];
+            res += dfs(tx, ty, grid, n, m);
+        }
+        return res;
+    }
+
+    /**
+     * 476. 数字的补数
+     * 给你一个 正 整数 num ，输出它的补数。补数是对该数的二进制表示取反。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：num = 5
+     * 输出：2
+     * 解释：5 的二进制表示为 101（没有前导零位），其补数为 010。所以你需要输出 2 。
+     * 示例 2：
+     * <p>
+     * 输入：num = 1
+     * 输出：0
+     * 解释：1 的二进制表示为 1（没有前导零位），其补数为 0。所以你需要输出 0 。
+     *
+     * @param num
+     * @return
+     */
+    public static int findComplement(int num) {
+        int maxBitNum = 0;
+        int tmpNum = num;
+        while (tmpNum > 0) {
+            maxBitNum += 1;
+            tmpNum >>= 1;
+        }
+        return num ^ ((1 << maxBitNum) - 1);
+    }
+
+    /**
+     * 485. 最大连续 1 的个数
+     * 给定一个二进制数组， 计算其中最大连续 1 的个数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：[1,1,0,1,1,1]
+     * 输出：3
+     * 解释：开头的两位和最后的三位都是连续 1 ，所以最大连续 1 的个数是 3.
+     *
+     * @param nums
+     * @return
+     */
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int maxCount = 0, count = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                count++;
+            } else {
+                maxCount = Math.max(maxCount, count);
+                count = 0;
+            }
+        }
+        maxCount = Math.max(maxCount, count);
+        return maxCount;
+    }
+
 
     public static void main(String[] args) {
-
+        System.out.println(findComplement(33));
     }
 }
