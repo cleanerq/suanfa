@@ -1,5 +1,7 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.TreeNode;
+
 import java.util.*;
 
 /**
@@ -849,7 +851,7 @@ public class Solution3 {
         int ans = 0;
 
         while (n != 0) {
-            n &= n -1;
+            n &= n - 1;
             System.out.println(n);
             ans++;
         }
@@ -860,18 +862,18 @@ public class Solution3 {
     /**
      * 202. 快乐数
      * 编写一个算法来判断一个数 n 是不是快乐数。
-     *
+     * <p>
      * 「快乐数」定义为：
-     *
+     * <p>
      * 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
      * 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
      * 如果 可以变为  1，那么这个数就是快乐数。
      * 如果 n 是快乐数就返回 true ；不是，则返回 false 。
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * 示例 1：
-     *
+     * <p>
      * 输入：19
      * 输出：true
      * 解释：
@@ -880,7 +882,7 @@ public class Solution3 {
      * 62 + 82 = 100
      * 12 + 02 + 02 = 1
      * 示例 2：
-     *
+     * <p>
      * 输入：n = 2
      * 输出：false
      *
@@ -901,15 +903,15 @@ public class Solution3 {
         int totalNum = 0;
         while (n > 0) {
             int sInt = n % 10;
-            n = n/ 10;
-            totalNum = totalNum + sInt* sInt;
+            n = n / 10;
+            totalNum = totalNum + sInt * sInt;
         }
         return totalNum;
     }
 
     /**
      * 快指针 慢指针 方法
-     *
+     * <p>
      * 快指针 一次走两步
      * 慢指针 一次走一步
      *
@@ -932,9 +934,9 @@ public class Solution3 {
 
     /**
      * 如果这样做，您会发现只有一个循环：4 \rightarrow 16 \rightarrow 37 \rightarrow 58 \rightarrow 89 \rightarrow 145 \rightarrow 42 \rightarrow 20 \rightarrow 44→16→37→58→89→145→42→20→4。所有其他数字都在进入这个循环的链上，或者在进入 11 的链上。
-     *
+     * <p>
      * 因此，我们可以硬编码一个包含这些数字的散列集，如果我们达到其中一个数字，那么我们就知道在循环中。
-     *
+     * <p>
      * 作者：LeetCode-Solution
      * 链接：https://leetcode-cn.com/problems/happy-number/solution/kuai-le-shu-by-leetcode-solution/
      * 来源：力扣（LeetCode）
@@ -950,10 +952,901 @@ public class Solution3 {
         return n == 1;
     }
 
+    /**
+     * 367. 有效的完全平方数
+     * 给定一个 正整数 num ，编写一个函数，如果 num 是一个完全平方数，则返回 true ，否则返回 false 。
+     * <p>
+     * 进阶：不要 使用任何内置的库函数，如  sqrt 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：num = 16
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：num = 14
+     * 输出：false
+     *
+     * @param num
+     * @return
+     */
+    public static boolean isPerfectSquare(int num) {
+        if (num < 2) {
+            return true;
+        }
+
+        long l = 2, h = num / 2, m = 0, pf = 0;
+        while (l <= h) {
+            m = (h - l) / 2 + l;
+            pf = m * m;
+            if (pf == num) {
+                return true;
+            } else if (pf > num) {
+                h = m - 1;
+            } else if (pf < num) {
+                l = m + 1;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 解法二 官方解法 二分法
+     *
+     * @param num
+     * @return
+     */
+    public static boolean isPerfectSquare2(int num) {
+        if (num < 2) {
+            return true;
+        }
+
+        long left = 2, right = num / 2, x, guessSquared;
+        while (left <= right) {
+            x = left + (right - left) / 2;
+            guessSquared = x * x;
+            if (guessSquared == num) {
+                return true;
+            }
+            if (guessSquared > num) {
+                right = x - 1;
+            } else {
+                left = x + 1;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 1346. 检查整数及其两倍数是否存在
+     * 给你一个整数数组 arr，请你检查是否存在两个整数 N 和 M，满足 N 是 M 的两倍（即，N = 2 * M）。
+     * <p>
+     * 更正式地，检查是否存在两个下标 i 和 j 满足：
+     * <p>
+     * i != j
+     * 0 <= i, j < arr.length
+     * arr[i] == 2 * arr[j]
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：arr = [10,2,5,3]
+     * 输出：true
+     * 解释：N = 10 是 M = 5 的两倍，即 10 = 2 * 5 。
+     * 示例 2：
+     * <p>
+     * 输入：arr = [7,1,14,11]
+     * 输出：true
+     * 解释：N = 14 是 M = 7 的两倍，即 14 = 2 * 7 。
+     * 示例 3：
+     * <p>
+     * 输入：arr = [3,1,7,11]
+     * 输出：false
+     * 解释：在该情况下不存在 N 和 M 满足 N = 2 * M 。
+     *
+     * @param arr
+     * @return
+     */
+    public static boolean checkIfExist(int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < arr.length; i++) {
+            map.put(arr[i], i);
+        }
+
+        int p = 0;
+        for (int i = 0; i < arr.length; i++) {
+            p = arr[i] * 2;
+            if (map.containsKey(p)) {
+                Integer j = map.get(p);
+                if (i != j.intValue()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 排序及双指针法
+     *
+     * @param arr
+     * @return
+     */
+    public boolean checkIfExist2(int[] arr) {
+        if (arr == null || arr.length == 0) return false;
+
+        Arrays.sort(arr);
+        int len = arr.length;
+        int pointer = 0;
+        int num = 0;
+
+
+        for (int i = 0; i < len; i++) {
+            num = arr[i] * 2;
+            while (pointer < len && num > arr[pointer]) pointer++;
+            if (pointer < len && pointer != i && num == arr[pointer]) return true;
+            else if (pointer == len) break;
+        }
+        return false;
+    }
+
+    /**
+     * 剑指 Offer 58 - I. 翻转单词顺序
+     * 输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。
+     * 为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入: "the sky is blue"
+     * 输出: "blue is sky the"
+     * 示例 2：
+     * <p>
+     * 输入: "  hello world!  "
+     * 输出: "world! hello"
+     * 解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+     * 示例 3：
+     * <p>
+     * 输入: "a good   example"
+     * 输出: "example good a"
+     * 解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+     *
+     * @param s
+     * @return
+     */
+    public static String reverseWords(String s) {
+        if ("".equals(s.trim())) {
+            return "";
+        }
+
+        StringBuilder st = new StringBuilder();
+        String[] sz = s.split(" ");
+        for (int i = sz.length - 1; i >= 0; i--) {
+            if (!" ".equals(sz[i]) && !"".equals(sz[i])) {
+                st.append(" ");
+                st.append(sz[i]);
+            }
+        }
+        return st.toString().substring(1);
+    }
+
+    /**
+     * 1566. 重复至少 K 次且长度为 M 的模式
+     * 给你一个正整数数组 arr，请你找出一个长度为 m 且在数组中至少重复 k 次的模式。
+     * <p>
+     * 模式 是由一个或多个值组成的子数组（连续的子序列），连续 重复多次但 不重叠 。 模式由其长度和重复次数定义。
+     * <p>
+     * 如果数组中存在至少重复 k 次且长度为 m 的模式，则返回 true ，否则返回  false 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：arr = [1,2,4,4,4,4], m = 1, k = 3
+     * 输出：true
+     * 解释：模式 (4) 的长度为 1 ，且连续重复 4 次。注意，模式可以重复 k 次或更多次，但不能少于 k 次。
+     * 示例 2：
+     * <p>
+     * 输入：arr = [1,2,1,2,1,1,1,3], m = 2, k = 2
+     * 输出：true
+     * 解释：模式 (1,2) 长度为 2 ，且连续重复 2 次。另一个符合题意的模式是 (2,1) ，同样重复 2 次。
+     * 示例 3：
+     * <p>
+     * 输入：arr = [1,2,1,2,1,3], m = 2, k = 3
+     * 输出：false
+     * 解释：模式 (1,2) 长度为 2 ，但是只连续重复 2 次。不存在长度为 2 且至少重复 3 次的模式。
+     * 示例 4：
+     * <p>
+     * 输入：arr = [1,2,3,1,2], m = 2, k = 2
+     * 输出：false
+     * 解释：模式 (1,2) 出现 2 次但并不连续，所以不能算作连续重复 2 次。
+     * 示例 5：
+     * <p>
+     * 输入：arr = [2,2,2,2], m = 2, k = 3
+     * 输出：false
+     * 解释：长度为 2 的模式只有 (2,2) ，但是只连续重复 2 次。注意，不能计算重叠的重复次数。
+     * <p>
+     * 枚举法
+     * 思路与算法
+     * <p>
+     * 题目要求我们找到一个连续出现 kk 次且长度为 mm 的子数组。也就是说如果这个子数组的左端点是 ll，
+     * 那么对于任意 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
+     * 都有 a[l + {\rm offset}] = a[l + ({\rm offset} \bmod m)]a[l+offset]=a[l+(offsetmodm)]。
+     * 因此，我们可以枚举左端点 ll，对于每个 ll 枚举 {\rm offset} \in [0, m \times k)offset∈[0,m×k)，
+     * 判断是否满足条件即可。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/detect-pattern-of-length-m-repeated-k-or-more-times/solution/zhong-fu-zhi-shao-k-ci-qie-chang-du-wei-m-de-mo-2/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param arr
+     * @param m
+     * @param k
+     * @return
+     */
+    public boolean containsPattern(int[] arr, int m, int k) {
+        int n = arr.length;
+        for (int l = 0; l <= n - m * k; ++l) {
+            int offset;
+            for (offset = 0; offset < m * k; ++offset) {
+                if (arr[l + offset] != arr[l + offset % m]) {
+                    break;
+                }
+            }
+            if (offset == m * k) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 剑指 Offer 59 - I. 滑动窗口的最大值
+     * 给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+     * 输出: [3,3,5,5,6,7]
+     * 解释:
+     * <p>
+     * 滑动窗口的位置                最大值
+     * ---------------               -----
+     * [1  3  -1] -3  5  3  6  7       3
+     * 1 [3  -1  -3] 5  3  6  7       3
+     * 1  3 [-1  -3  5] 3  6  7       5
+     * 1  3  -1 [-3  5  3] 6  7       5
+     * 1  3  -1  -3 [5  3  6] 7       6
+     * 1  3  -1  -3  5 [3  6  7]      7
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 你可以假设 k 总是有效的，在输入数组不为空的情况下，1 ≤ k ≤ 输入数组的大小。
+     * <p>
+     * <p>
+     * 算法流程：
+     * 初始化： 双端队列 dequedeque ，结果列表 resres ，数组长度 nn ；
+     * 滑动窗口： 左边界范围 i \in [1 - k, n - k]i∈[1−k,n−k] ，右边界范围 j \in [0, n - 1]j∈[0,n−1] ；
+     * 若 i > 0i>0 且 队首元素 deque[0]deque[0] == 被删除元素 nums[i - 1]nums[i−1] ：则队首元素出队；
+     * 删除 dequedeque 内所有 < nums[j]<nums[j] 的元素，以保持 dequedeque 递减；
+     * 将 nums[j]nums[j] 添加至 dequedeque 尾部；
+     * 若已形成窗口（即 i \geq 0i≥0 ）：将窗口最大值（即队首元素 deque[0]deque[0] ）添加至列表 resres ；
+     * <p>
+     * dequedeque 内 仅包含窗口内的元素 \Rightarrow⇒ 每轮窗口滑动移除了元素 nums[i - 1]nums[i−1] ，需将 dequedeque 内的对应元素一起删除。
+     * dequedeque 内的元素 非严格递减 \Rightarrow⇒ 每轮窗口滑动添加了元素 nums[j + 1]nums[j+1] ，需将 dequedeque 内所有 < nums[j + 1]<nums[j+1] 的元素删除。
+     * <p>
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/solution/mian-shi-ti-59-i-hua-dong-chuang-kou-de-zui-da-1-6/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) return new int[0];
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[nums.length - k + 1];
+        for (int j = 0, i = 1 - k; j < nums.length; i++, j++) {
+            // 删除 deque 中对应的 nums[i-1]
+            if (i > 0 && deque.peekFirst() == nums[i - 1])
+                deque.removeFirst();
+            // 保持 deque 递减
+            while (!deque.isEmpty() && deque.peekLast() < nums[j])
+                deque.removeLast();
+            deque.addLast(nums[j]);
+            // 记录窗口最大值
+            if (i >= 0)
+                res[i] = deque.peekFirst();
+        }
+        return res;
+    }
+
+
+    /**
+     * 面试题 16.11. 跳水板
+     * 你正在使用一堆木板建造跳水板。有两种类型的木板，其中长度较短的木板长度为shorter，
+     * 长度较长的木板长度为longer。你必须正好使用k块木板。编写一个方法，生成跳水板所有可能的长度。
+     * <p>
+     * 返回的长度需要从小到大排列。
+     * <p>
+     * 示例 1
+     * <p>
+     * 输入：
+     * shorter = 1
+     * longer = 2
+     * k = 3
+     * 输出： [3,4,5,6]
+     * 解释：
+     * 可以使用 3 次 shorter，得到结果 3；使用 2 次 shorter 和 1 次 longer，得到结果 4 。以此类推，得到最终结果。
+     *
+     * @param shorter
+     * @param longer
+     * @param k
+     * @return
+     */
+    public int[] divingBoard(int shorter, int longer, int k) {
+        if (k == 0) {
+            return new int[]{};
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+
+        int[] lengths = new int[k + 1];
+        for (int i = 0; i <= k; i++) {
+            lengths[i] = shorter * (k - i) + longer * i;
+        }
+
+        return lengths;
+    }
+
+    /**
+     * 剑指 Offer 29. 顺时针打印矩阵
+     * 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * 输出：[1,2,3,6,9,8,7,4,5]
+     * 示例 2：
+     * <p>
+     * 输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+     * 输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new int[0];
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        boolean[][] visited = new boolean[rows][columns];
+        int total = rows * columns;
+        int[] order = new int[total];
+        int row = 0, column = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int directionIndex = 0;
+        for (int i = 0; i < total; i++) {
+            order[i] = matrix[row][column];
+            visited[row][column] = true;
+            int nextRow = row + directions[directionIndex][0], nextColumn = column + directions[directionIndex][1];
+            if (nextRow < 0 || nextRow >= rows || nextColumn < 0 || nextColumn >= columns || visited[nextRow][nextColumn]) {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+            row += directions[directionIndex][0];
+            column += directions[directionIndex][1];
+        }
+        return order;
+    }
+
+    /**
+     * 直接法
+     * 空值处理： 当 matrix 为空时，直接返回空列表 [] 即可。
+     * 初始化： 矩阵 左、右、上、下 四个边界 l , r , t , b ，用于打印的结果列表 res 。
+     * 循环打印： “从左向右、从上向下、从右向左、从下向上” 四个方向循环，每个方向打印中做以下三件事 （各方向的具体信息见下表） ；
+     * 根据边界打印，即将元素按顺序添加至列表 res 尾部；
+     * 边界向内收缩 11 （代表已被打印）；
+     * 判断是否打印完毕（边界是否相遇），若打印完毕则跳出。
+     * <p>
+     * 打印方向	1. 根据边界打印	2. 边界向内收缩	3. 是否打印完毕
+     * 从左向右	左边界l ，右边界 r	上边界 t 加 11	是否 t > b
+     * 从上向下	上边界 t ，下边界b	右边界 r 减 11	是否 l > r
+     * 从右向左	右边界 r ，左边界l	下边界 b 减 11	是否 t > b
+     * 从下向上	下边界 b ，上边界t	左边界 l 加 11	是否 l > r
+     * <p>
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/solution/mian-shi-ti-29-shun-shi-zhen-da-yin-ju-zhen-she-di/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] spiralOrder2(int[][] matrix) {
+        if (matrix.length == 0) return new int[0];
+        int l = 0, r = matrix[0].length - 1, t = 0, b = matrix.length - 1, x = 0;
+        int[] res = new int[(r + 1) * (b + 1)];
+        while (true) {
+            for (int i = l; i <= r; i++) res[x++] = matrix[t][i]; // left to right.
+            if (++t > b) break;
+            for (int i = t; i <= b; i++) res[x++] = matrix[i][r]; // top to bottom.
+            if (l > --r) break;
+            for (int i = r; i >= l; i--) res[x++] = matrix[b][i]; // right to left.
+            if (t > --b) break;
+            for (int i = b; i >= t; i--) res[x++] = matrix[i][l]; // bottom to top.
+            if (++l > r) break;
+        }
+        return res;
+    }
+
+
+    /**
+     * 1037. 有效的回旋镖
+     * 回旋镖定义为一组三个点，这些点各不相同且不在一条直线上。
+     * <p>
+     * 给出平面上三个点组成的列表，判断这些点是否可以构成回旋镖。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[[1,1],[2,3],[3,2]]
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * 输入：[[1,1],[2,2],[3,3]]
+     * 输出：false
+     * <p>
+     * 计算斜率
+     * 判断三点是否同直线，直接思路就是判断斜率。
+     * 假设三点分别为a(x1, y1), b(x2, y2), c(x3,y3),
+     * a、b两点的斜率为 k1 = (y2 - y1) / (x2 - x1)
+     * a、c两点的斜率为 k2 = (y3 - y1) / (x3 - x1)
+     * 如果在同一直线，则k1 = k2，考虑到分母为0 的情况，可以直接交叉相乘，省去判断0的情况，直接判断
+     * (y2 - y1) * (x3 - x1) 与 (y3 - y1) * (x2 - x1)
+     * 不相等即为不在同一直线上
+     * <p>
+     * 作者：huangyt
+     * 链接：https://leetcode-cn.com/problems/valid-boomerang/solution/qiao-miao-xie-lu-bian-hua-miao-yong-yi-xing-dai-ma/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param points
+     * @return
+     */
+    public boolean isBoomerang(int[][] points) {
+
+        return (points[1][1] - points[0][1]) * (points[2][0] - points[0][0])
+                != (points[2][1] - points[0][1]) * (points[1][0] - points[0][0]);
+    }
+
+
+    /**
+     * 剑指 Offer 53 - II. 0～n-1中缺失的数字
+     * 一个长度为n-1的递增排序数组中的所有数字都是唯一的，
+     * 并且每个数字都在范围0～n-1之内。
+     * 在范围0～n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [0,1,3]
+     * 输出: 2
+     * 示例 2:
+     * <p>
+     * 输入: [0,1,2,3,4,5,6,7,9]
+     * 输出: 8
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber(int[] nums) {
+        int i = 0, j = nums.length - 1;
+        while (i <= j) {
+            int m = (i + j) / 2;
+            if (nums[m] == m) i = m + 1;
+            else j = m - 1;
+        }
+        return i;
+    }
+
+
+    /**
+     * 1592. 重新排列单词间的空格
+     * 给你一个字符串 text ，该字符串由若干被空格包围的单词组成。
+     * 每个单词由一个或者多个小写英文字母组成，并且两个单词之间至少存在一个空格。
+     * 题目测试用例保证 text 至少包含一个单词 。
+     * <p>
+     * 请你重新排列空格，使每对相邻单词之间的空格数目都 相等 ，并尽可能 最大化 该数目。
+     * 如果不能重新平均分配所有空格，请 将多余的空格放置在字符串末尾 ，
+     * 这也意味着返回的字符串应当与原 text 字符串的长度相等。
+     * <p>
+     * 返回 重新排列空格后的字符串 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：text = "  this   is  a sentence "
+     * 输出："this   is   a   sentence"
+     * 解释：总共有 9 个空格和 4 个单词。可以将 9 个空格平均分配到相邻单词之间，
+     * 相邻单词间空格数为：9 / (4-1) = 3 个。
+     * 示例 2：
+     * <p>
+     * 输入：text = " practice   makes   perfect"
+     * 输出："practice   makes   perfect "
+     * 解释：总共有 7 个空格和 3 个单词。7 / (3-1) = 3 个空格加上 1 个多余的空格。
+     * 多余的空格需要放在字符串的末尾。
+     * 示例 3：
+     * <p>
+     * 输入：text = "hello   world"
+     * 输出："hello   world"
+     * 示例 4：
+     * <p>
+     * 输入：text = "  walks  udp package   into  bar a"
+     * 输出："walks  udp  package  into  bar  a "
+     * 示例 5：
+     * <p>
+     * 输入：text = "a"
+     * 输出："a"
+     *
+     * @param text
+     * @return
+     */
+    public static String reorderSpaces(String text) {
+        // trim去除头尾空格 在JDK11中加入了strip
+        String[] splited = text.trim().split("\\s+");
+        // String[] splited = text.strip().split("\\s+");
+        // System.out.println(Arrays.toString(splited));
+        // 记录多少个单词
+        int wordCnt = splited.length;
+        // 记录单词总长
+        int wordLen = 0;
+        for (String word : splited) {
+            wordLen += word.length();
+        }
+        // 空格数量
+        int spaceCnt = text.length() - wordLen;
+        StringBuilder sb = new StringBuilder();
+
+        StringBuilder sbKg = new StringBuilder();
+        if (wordCnt > 1) {
+            for (int j = 0; j < spaceCnt / (wordCnt - 1); j++) {
+                sbKg.append(" ");
+            }
+        }
+        // 只用在前n-1个单词后面加空格
+        for (int i = 0; i < splited.length - 1; i++) {
+            sb.append(splited[i]);
+            sb.append(sbKg.toString());
+        }
+        // 最后一个单词直接加上去
+        sb.append(splited[splited.length - 1]);
+        // 补齐剩余的空格
+        while (sb.length() < text.length()) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 643. 子数组最大平均数 I
+     * 给定 n 个整数，找出平均数最大且长度为 k 的连续子数组，并输出该最大平均数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：[1,12,-5,-6,50,3], k = 4
+     * 输出：12.75
+     * 解释：最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 1 <= k <= n <= 30,000。
+     * 所给数据范围 [-10,000，10,000]。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static double findMaxAverage(int[] nums, int k) {
+        int sum = 0;
+        for (int i = 0; i < k; i++) {
+            sum = sum + nums[i];
+        }
+        int maxSum = sum;
+        for (int i = k; i < nums.length; i++) {
+            sum = sum - nums[i - k] + nums[i];
+            maxSum = Math.max(sum, maxSum);
+        }
+
+        return 1.0 * maxSum / k;
+    }
+
+    /**
+     * 剑指 Offer 61. 扑克牌中的顺子
+     * 从扑克牌中随机抽5张牌，判断是不是一个顺子，
+     * 即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，
+     * 可以看成任意数字。A 不能视为 14。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [1,2,3,4,5]
+     * 输出: True
+     * <p>
+     * <p>
+     * 示例 2:
+     * <p>
+     * 输入: [0,0,1,2,5]
+     * 输出: True
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight(int[] nums) {
+        Set<Integer> repeat = new HashSet<>();
+        int max = 0, min = 14;
+        for (int num : nums) {
+            if (num == 0) continue;
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+            if (repeat.contains(num)) return false;
+            repeat.add(num);
+        }
+        return max - min < 5;
+    }
+
+    /**
+     * 排序 遍历
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight2(int[] nums) {
+        int joker = 0;
+        Arrays.sort(nums); // 数组排序
+        for (int i = 0; i < 4; i++) {
+            if (nums[i] == 0) joker++; // 统计大小王数量
+            else if (nums[i] == nums[i + 1]) return false; // 若有重复，提前返回 false
+        }
+        return nums[4] - nums[joker] < 5; // 最大牌 - 最小牌 < 5 则可构成顺子
+    }
+
+
+    /**
+     * 206. 反转链表
+     * 反转一个单链表。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: 1->2->3->4->5->NULL
+     * 输出: 5->4->3->2->1->NULL
+     * <p>
+     * 指针画图解决
+     * https://leetcode-cn.com/problems/reverse-linked-list/solution/dong-hua-yan-shi-206-fan-zhuan-lian-biao-by-user74/
+     * <p>
+     * 迭代法
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    /**
+     * 作者：wang_ni_ma
+     * 链接：https://leetcode-cn.com/problems/reverse-linked-list/solution/dong-hua-yan-shi-206-fan-zhuan-lian-biao-by-user74/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * <p>
+     * 递归解法
+     *
+     * @param head
+     * @return
+     */
+    public static ListNode reverseList2(ListNode head) {
+        //递归终止条件是当前为空，或者下一个节点为空
+        if (head == null || head.next == null) {
+            return head;
+        }
+        //这里的cur就是最后一个节点
+        ListNode cur = reverseList2(head.next);
+        //这里请配合动画演示理解
+        //如果链表是 1->2->3->4->5，那么此时的cur就是5
+        //而head是4，head的下一个是5，下下一个是空
+        //所以head.next.next 就是5->4
+        head.next.next = head;
+        //防止链表循环，需要将head.next设置为空
+        head.next = null;
+        //每层递归函数都返回cur，也就是最后一个节点
+        return cur;
+    }
+
+    /**
+     * 217. 存在重复元素
+     * 给定一个整数数组，判断是否存在重复元素。
+     * <p>
+     * 如果存在一值在数组中出现至少两次，函数返回 true 。
+     * 如果数组中每个元素都不相同，则返回 false 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [1,2,3,1]
+     * 输出: true
+     * 示例 2:
+     * <p>
+     * 输入: [1,2,3,4]
+     * 输出: false
+     * 示例 3:
+     * <p>
+     * 输入: [1,1,1,3,3,4,3,2,4,2]
+     * 输出: true
+     * <p>
+     * 排序迭代
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate(int[] nums) {
+        Arrays.sort(nums);
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 哈希法
+     *
+     * @param nums
+     * @return
+     */
+    public boolean containsDuplicate2(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (!set.add(nums[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 226. 翻转二叉树
+     * 翻转一棵二叉树。
+     * <p>
+     * 示例：
+     * <p>
+     * 输入：
+     * <p>
+     * 4
+     * /   \
+     * 2     7
+     * / \   / \
+     * 1   3 6   9
+     * 输出：
+     * <p>
+     * 4
+     * /   \
+     * 7     2
+     * / \   / \
+     * 9   6 3   1
+     * <p>
+     * 递归
+     * <p>
+     * 递归实现也就是深度优先遍历的方式，那么对应的就是广度优先遍历。
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        //递归函数的终止条件，节点为空时返回
+        if (root == null) {
+            return null;
+        }
+        //下面三句是将当前节点的左右子树交换
+        TreeNode tmp = root.right;
+        root.right = root.left;
+        root.left = tmp;
+        //递归交换当前节点的 左子树
+        invertTree(root.left);
+        //递归交换当前节点的 右子树
+        invertTree(root.right);
+        //函数返回时就表示当前这个节点，以及它的左右子树
+        //都已经交换完了
+        return root;
+    }
+
+    /**
+     * 广度优先
+     * <p>
+     * 递归实现也就是深度优先遍历的方式，那么对应的就是广度优先遍历。
+     * 广度优先遍历需要额外的数据结构--队列，来存放临时遍历到的元素。
+     * 深度优先遍历的特点是一竿子插到底，不行了再退回来继续；而广度优先遍历的特点是层层扫荡。
+     * 所以，我们需要先将根节点放入到队列中，然后不断的迭代队列中的元素。
+     * 对当前元素调换其左右子树的位置，然后：
+     * <p>
+     * 判断其左子树是否为空，不为空就放入队列中
+     * 判断其右子树是否为空，不为空就放入队列中
+     * <p>
+     * 作者：wang_ni_ma
+     * 链接：https://leetcode-cn.com/problems/invert-binary-tree/solution/dong-hua-yan-shi-liang-chong-shi-xian-226-fan-zhua/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree2(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        //将二叉树中的节点逐层放入队列中，再迭代处理队列中的元素
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            //每次都从队列中拿一个节点，并交换这个节点的左右子树
+            TreeNode tmp = queue.poll();
+            TreeNode left = tmp.left;
+            tmp.left = tmp.right;
+            tmp.right = left;
+            //如果当前节点的左子树不为空，则放入队列等待后续处理
+            if (tmp.left != null) {
+                queue.add(tmp.left);
+            }
+            //如果当前节点的右子树不为空，则放入队列等待后续处理
+            if (tmp.right != null) {
+                queue.add(tmp.right);
+            }
+        }
+        //返回处理完的根节点
+        return root;
+    }
+
 
     public static void main(String[] args) {
-//        System.out.println((int)'A');
-//        System.out.println((int)'Z');
-        System.out.println(hammingWeight3(932132132));
+        ListNode head = new ListNode(1);
+        ListNode cur = head;
+
+        for (int i = 0; i < 4; i++) {
+            ListNode t = new ListNode(2 + i);
+            cur.next = t;
+            cur = t;
+        }
+
+        reverseList2(head);
     }
 }

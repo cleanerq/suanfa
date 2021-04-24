@@ -7,23 +7,6 @@ import java.util.Stack;
 
 public class Solution {
 
-    public class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-    }
-
     /**
      * 编写一个函数来查找字符串数组中的最长公共前缀。
      * <p>
