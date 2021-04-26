@@ -376,6 +376,7 @@ public class Solution6 {
 
     /**
      * java api法
+     *
      * @param nums
      * @return
      */
@@ -408,7 +409,155 @@ public class Solution6 {
         return result;
     }
 
+    /**
+     * 509. 斐波那契数
+     * 斐波那契数，通常用 F(n) 表示，形成的序列称为 斐波那契数列 。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。也就是：
+     * <p>
+     * F(0) = 0，F(1) = 1
+     * F(n) = F(n - 1) + F(n - 2)，其中 n > 1
+     * 给你 n ，请计算 F(n) 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：2
+     * 输出：1
+     * 解释：F(2) = F(1) + F(0) = 1 + 0 = 1
+     * 示例 2：
+     * <p>
+     * 输入：3
+     * 输出：2
+     * 解释：F(3) = F(2) + F(1) = 1 + 1 = 2
+     * 示例 3：
+     * <p>
+     * 输入：4
+     * 输出：3
+     * 解释：F(4) = F(3) + F(2) = 2 + 1 = 3
+     *
+     * @param n
+     * @return
+     */
+    public static int fib(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int a1 = 0;
+        int a2 = 1;
+        int a3 = 0;
+        for (int i = 2; i <= n; i++) {
+            a3 = a1 + a2;
+            a1 = a2;
+            a2 = a3;
+        }
+        return a3;
+    }
+
+    /**
+     * 520. 检测大写字母
+     * 给定一个单词，你需要判断单词的大写使用是否正确。
+     * <p>
+     * 我们定义，在以下情况时，单词的大写用法是正确的：
+     * <p>
+     * 全部字母都是大写，比如"USA"。
+     * 单词中所有字母都不是大写，比如"leetcode"。
+     * 如果单词不只含有一个字母，只有首字母大写， 比如 "Google"。
+     * 否则，我们定义这个单词没有正确使用大写字母。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: "USA"
+     * 输出: True
+     * 示例 2:
+     * <p>
+     * 输入: "FlaG"
+     * 输出: False
+     * 注意: 输入是由大写和小写拉丁字母组成的非空单词。
+     *
+     * @param word
+     * @return
+     */
+    public static boolean detectCapitalUse(String word) {
+        char[] check = new char[128];
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            check[chars[i]]++;
+        }
+        int count = 0;
+        for (int i = 65; i <= 90; i++) {
+            if (check[i] >= 1) {
+                count += check[i];
+            }
+        }
+        boolean flg = false;
+        if (count == chars.length || count == 0) {
+            flg = true;
+        } else if (count == 1 && chars[0] >= 65 && chars[0] <= 90) {
+            flg = true;
+        }
+
+        return flg;
+    }
+
+    public boolean detectCapitalUse2(String word) {
+        boolean res = false;
+        int count = 0;
+        char x;
+        for (int i = 0; i < word.length(); i++) {
+            x = word.charAt(i);
+            if (x >= 65 && x <= 90) {
+                count++;
+            }
+        }
+        if ((count == 1 && (word.charAt(0) >= 65 && word.charAt(0) <= 90)) || (count == word.length())) {
+            res = true;
+        } else if (count == 0) {
+            res = true;
+        }
+        return res;
+    }
+
+    /**
+     * 521. 最长特殊序列 Ⅰ
+     * 给你两个字符串，请你从这两个字符串中找出最长的特殊序列。
+     * <p>
+     * 「最长特殊序列」定义如下：该序列为某字符串独有的最长子序列（即不能是其他字符串的子序列）。
+     * <p>
+     * 子序列 可以通过删去字符串中的某些字符实现，但不能改变剩余字符的相对顺序。空序列为所有字符串的子序列，任何字符串为其自身的子序列。
+     * <p>
+     * 输入为两个字符串，输出最长特殊序列的长度。如果不存在，则返回 -1。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入: "aba", "cdc"
+     * 输出: 3
+     * 解释: 最长特殊序列可为 "aba" (或 "cdc")，两者均为自身的子序列且不是对方的子序列。
+     * 示例 2：
+     * <p>
+     * 输入：a = "aaa", b = "bbb"
+     * 输出：3
+     * 示例 3：
+     * <p>
+     * 输入：a = "aaa", b = "aaa"
+     * 输出：-1
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public int findLUSlength(String a, String b) {
+        if (a.equals(b)) {
+            return -1;
+        }
+        return Math.max(a.length(), b.length());
+    }
+
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(findRelativeRanks(new int[]{10, 3, 8, 9, 4})));
+        System.out.println(detectCapitalUse("FFFFFFFFFFFFFFFFFFFFf"));
     }
 }
