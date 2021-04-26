@@ -305,9 +305,110 @@ public class Solution6 {
         return num >= 0 ? Integer.toUnsignedString(num, 7) : "-" + Integer.toUnsignedString(num * -1, 7);
     }
 
-    public static void main(String[] args) {
-        System.out.println(convertToBase7(0));
 
-        System.out.println(Integer.toUnsignedString(10, 7));
+    /**
+     * 506. 相对名次
+     * 给出 N 名运动员的成绩，找出他们的相对名次并授予前三名对应的奖牌。前三名运动员将会被分别授予 “金牌”，“银牌”
+     * 和“ 铜牌”（"Gold Medal", "Silver Medal", "Bronze Medal"）。
+     * <p>
+     * (注：分数越高的选手，排名越靠前。)
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: [5, 4, 3, 2, 1]
+     * 输出: ["Gold Medal", "Silver Medal", "Bronze Medal", "4", "5"]
+     * 解释: 前三名运动员的成绩为前三高的，因此将会分别被授予 “金牌”，“银牌”和“铜牌” ("Gold Medal", "Silver Medal" and "Bronze Medal").
+     * 余下的两名运动员，我们只需要通过他们的成绩计算将其相对名次即可。
+     * <p>
+     * 首先寻找数组中最大的值（成绩最高的），创建一个 int[] array = new int[max + 1];
+     * 的数组用来实现计数排序。array 数组的下标对应成绩，值为该成绩所在的原数组的下标。
+     * 由于 array 数组的值默认为 0，所以在存储成绩的下标时，应对下标加 1，取时减 1 即可。
+     * <p>
+     * 执行用时：2 ms, 在所有 Java 提交中击败了100.00%的用户
+     * 内存消耗：39.3 MB, 在所有 Java 提交中击败了89.32%的用户
+     * <p>
+     * 作者：yixingzhang
+     * 链接：https://leetcode-cn.com/problems/relative-ranks/solution/san-chong-jie-fa-ji-shu-pai-xu-2-ms10000-ml6v/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @return
+     */
+    public static String[] findRelativeRanks(int[] nums) {
+        int n = nums.length;
+        String[] result = new String[n];
+        int max = 0;
+        // 找出找出最高的成绩
+        for (int num : nums) {
+            if (max < num) {
+                max = num;
+            }
+        }
+        // 下标为成绩，值为成绩在 nums 数组的下标
+        int[] array = new int[max + 1];
+        for (int i = 0; i < n; i++) {
+            array[nums[i]] = i + 1;
+        }
+        // 记录当前成绩的排名
+        int count = 1;
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (array[i] != 0) {
+                // 根据排名进行赋值
+                switch (count) {
+                    case 1:
+                        result[array[i] - 1] = "Gold Medal";
+                        break;
+                    case 2:
+                        result[array[i] - 1] = "Silver Medal";
+                        break;
+                    case 3:
+                        result[array[i] - 1] = "Bronze Medal";
+                        break;
+                    default:
+                        result[array[i] - 1] = String.valueOf(count);
+                }
+                count++;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * java api法
+     * @param nums
+     * @return
+     */
+    public String[] findRelativeRanks2(int[] nums) {
+        int n = nums.length;
+        String[] result = new String[n];
+        // key 为成绩，value 为成绩在数组中的下标，TreeMap 是按照升序进行排序的
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int i = 0; i < n; i++) {
+            map.put(nums[i], i);
+        }
+        int count = 0;
+        for (Map.Entry<Integer, Integer> set : map.entrySet()) {
+            // 计算成绩的排名
+            int ranking = n - count++;
+            switch (ranking) {
+                case 1:
+                    result[set.getValue()] = "Gold Medal";
+                    break;
+                case 2:
+                    result[set.getValue()] = "Silver Medal";
+                    break;
+                case 3:
+                    result[set.getValue()] = "Bronze Medal";
+                    break;
+                default:
+                    result[set.getValue()] = String.valueOf(ranking);
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(findRelativeRanks(new int[]{10, 3, 8, 9, 4})));
     }
 }
