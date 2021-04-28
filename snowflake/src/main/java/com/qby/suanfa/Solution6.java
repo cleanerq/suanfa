@@ -618,12 +618,54 @@ public class Solution6 {
      * @param s
      * @return
      */
-    public boolean checkRecord(String s) {
+    public static boolean checkRecord(String s) {
+        int count = 0;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++)
+            if (chars[i] == 'A')
+                count++;
+        return count < 2 && s.indexOf("LLL") < 0;
+    }
 
-        return false;
+    /**
+     * 557. 反转字符串中的单词 III
+     * 给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入："Let's take LeetCode contest"
+     * 输出："s'teL ekat edoCteeL tsetnoc"
+     *
+     * @param s
+     * @return
+     */
+    public static String reverseWords(String s) {
+        char[] chars = s.toCharArray();
+        int j = 0;
+        for (int i = 0; i < chars.length; i++) {
+            j = i;
+            if (Character.isWhitespace(chars[i])) {
+                continue;
+            } else {
+                // 不是空格时
+                while (j < chars.length && !Character.isWhitespace(chars[j])) {
+                    j++;
+                }
+                int l = i, h = j -1;
+                i = j - 1;
+                while (l < h) {
+                    char tmp = chars[l];
+                    chars[l++] = chars[h];
+                    chars[h--] = tmp;
+                }
+            }
+        }
+        return new String(chars);
     }
 
     public static void main(String[] args) {
-        System.out.println(detectCapitalUse("FFFFFFFFFFFFFFFFFFFFf"));
+        System.out.println(reverseWords("Let's take LeetCode contest"));
     }
 }
