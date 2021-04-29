@@ -1,6 +1,8 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.Node;
 import com.qby.suanfa.basic.TreeNode;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -763,8 +765,170 @@ public class Solution6 {
         return ret.toString();
     }
 
+    /**
+     * 559. N 叉树的最大深度
+     * 给定一个 N 叉树，找到其最大深度。
+     * <p>
+     * 最大深度是指从根节点到最远叶子节点的最长路径上的节点总数。
+     * <p>
+     * N 叉树输入按层序遍历序列化表示，每组子节点由空值分隔（请参见示例）。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * <p>
+     * 输入：root = [1,null,3,2,4,null,5,6]
+     * 输出：3
+     * 示例 2：
+     * <p>
+     * <p>
+     * <p>
+     * 输入：root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+     * 输出：5
+     * 迭代方法
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth2(Node root) {
+        Queue<Pair<Node, Integer>> stack = new LinkedList<>();
+        if (root != null) {
+            stack.add(new Pair(root, 1));
+        }
+
+        int depth = 0;
+        while (!stack.isEmpty()) {
+            Pair<Node, Integer> current = stack.poll();
+            root = current.getKey();
+            int currentDepth = current.getValue();
+            if (root != null) {
+                depth = Math.max(depth, currentDepth);
+                for (Node c : root.children) {
+                    stack.add(new Pair(c, currentDepth + 1));
+                }
+            }
+        }
+        return depth;
+    }
+
+    /**
+     * 递归方法
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(Node root) {
+        if (root == null) {
+            return 0;
+        } else if (root.children.isEmpty()) {
+            return 1;
+        } else {
+            List<Integer> heights = new LinkedList<>();
+            for (Node item : root.children) {
+                heights.add(maxDepth(item));
+            }
+            return Collections.max(heights) + 1;
+        }
+    }
+
+    /**
+     * 561. 数组拆分 I
+     * 给定长度为 2n 的整数数组 nums ，你的任务是将这些数分成 n 对, 例如 (a1, b1), (a2, b2), ..., (an, bn) ，使得从 1 到 n 的 min(ai, bi) 总和最大。
+     * <p>
+     * 返回该 最大总和 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1,4,3,2]
+     * 输出：4
+     * 解释：所有可能的分法（忽略元素顺序）为：
+     * 1. (1, 4), (2, 3) -> min(1, 4) + min(2, 3) = 1 + 2 = 3
+     * 2. (1, 3), (2, 4) -> min(1, 3) + min(2, 4) = 1 + 2 = 3
+     * 3. (1, 2), (3, 4) -> min(1, 2) + min(3, 4) = 1 + 3 = 4
+     * 所以最大总和为 4
+     * 示例 2：
+     * <p>
+     * 输入：nums = [6,2,6,5,1,2]
+     * 输出：9
+     * 解释：最优的分法为 (2, 1), (2, 5), (6, 6). min(2, 1) + min(2, 5) + min(6, 6) = 1 + 2 + 6 = 9
+     *
+     * @param nums
+     * @return
+     */
+    public static int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        int sum = 0;
+        for (int i = 0; i < nums.length; i += 2) {
+            sum = sum + nums[i];
+        }
+        return sum;
+    }
+
+    /**
+     * 563. 二叉树的坡度
+     * 给定一个二叉树，计算 整个树 的坡度 。
+     * <p>
+     * 一个树的 节点的坡度 定义即为，该节点左子树的节点之和和右子树节点之和的 差的绝对值 。
+     * 如果没有左子树的话，左子树的节点之和为 0 ；没有右子树的话也是一样。空结点的坡度是 0 。
+     * <p>
+     * 整个树 的坡度就是其所有节点的坡度之和。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * 输入：root = [1,2,3]
+     * 输出：1
+     * 解释：
+     * 节点 2 的坡度：|0-0| = 0（没有子节点）
+     * 节点 3 的坡度：|0-0| = 0（没有子节点）
+     * 节点 1 的坡度：|2-3| = 1（左子树就是左子节点，所以和是 2 ；右子树就是右子节点，所以和是 3 ）
+     * 坡度总和：0 + 0 + 1 = 1
+     * 示例 2：
+     * <p>
+     * <p>
+     * 输入：root = [4,2,9,3,5,null,7]
+     * 输出：15
+     * 解释：
+     * 节点 3 的坡度：|0-0| = 0（没有子节点）
+     * 节点 5 的坡度：|0-0| = 0（没有子节点）
+     * 节点 7 的坡度：|0-0| = 0（没有子节点）
+     * 节点 2 的坡度：|3-5| = 2（左子树就是左子节点，所以和是 3 ；右子树就是右子节点，所以和是 5 ）
+     * 节点 9 的坡度：|0-7| = 7（没有左子树，所以和是 0 ；右子树正好是右子节点，所以和是 7 ）
+     * 节点 4 的坡度：|(3+5+2)-(9+7)| = |10-16| = 6（左子树值为 3、5 和 2 ，和是 10 ；右子树值为 9 和 7 ，
+     * 和是 16 ）
+     * 坡度总和：0 + 0 + 0 + 2 + 7 + 6 = 15
+     * 示例 3：
+     * <p>
+     * <p>
+     * 输入：root = [21,7,14,1,1,2,2,3,3]
+     * 输出：9
+     *
+     * @param root
+     * @return
+     */
+    int tilt = 0;
+
+    public int findTilt(TreeNode root) {
+        traverse(root);
+        return tilt;
+    }
+
+    public int traverse(TreeNode root) {
+        if (root == null)
+            return 0;
+        int left = traverse(root.left);
+        int right = traverse(root.right);
+        tilt += Math.abs(left - right);
+        return left + right + root.val;
+    }
 
     public static void main(String[] args) {
-        System.out.println(detectCapitalUse("FFFFFFFFFFFFFFFFFFFFf"));
+        System.out.println(arrayPairSum(new int[]{6, 2, 6, 5, 1, 2}));
     }
 }
