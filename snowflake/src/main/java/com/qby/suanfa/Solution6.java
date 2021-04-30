@@ -928,7 +928,352 @@ public class Solution6 {
         return left + right + root.val;
     }
 
+    /**
+     * 566. 重塑矩阵
+     * 在MATLAB中，有一个非常有用的函数 reshape，它可以将一个矩阵重塑为另一个大小不同的新矩阵，但保留其原始数据。
+     * <p>
+     * 给出一个由二维数组表示的矩阵，以及两个正整数r和c，分别表示想要的重构的矩阵的行数和列数。
+     * <p>
+     * 重构后的矩阵需要将原始矩阵的所有元素以相同的行遍历顺序填充。
+     * <p>
+     * 如果具有给定参数的reshape操作是可行且合理的，则输出新的重塑矩阵；否则，输出原始矩阵。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * nums =
+     * [[1,2],
+     * [3,4]]
+     * r = 1, c = 4
+     * 输出:
+     * [[1,2,3,4]]
+     * 解释:
+     * 行遍历nums的结果是 [1,2,3,4]。新的矩阵是 1 * 4 矩阵, 用之前的元素值一行一行填充新矩阵。
+     * 示例 2:
+     * <p>
+     * 输入:
+     * nums =
+     * [[1,2],
+     * [3,4]]
+     * r = 2, c = 4
+     * 输出:
+     * [[1,2],
+     * [3,4]]
+     * 解释:
+     * 没有办法将 2 * 2 矩阵转化为 2 * 4 矩阵。 所以输出原矩阵。
+     *
+     * @param mat
+     * @param r
+     * @param c
+     * @return
+     */
+    public static int[][] matrixReshape(int[][] mat, int r, int c) {
+        int newM = r * c;
+        int oriM = mat[0].length * mat.length;
+        if (newM != oriM) {
+            return mat;
+        }
+
+        // 转换后的新矩阵
+        int[][] newH = new int[r][c];
+        int h = 0;
+        int l = 0;
+
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[i].length; j++) {
+                if (h < r && l < c) {
+                    newH[h][l] = mat[i][j];
+                }
+                l++;
+                if (l >= c) {
+                    // 如果列大于列数 则行数加1
+                    h++;
+                    l = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i < newH.length; i++) {
+            for (int j = 0; j < newH[i].length; j++) {
+                System.out.println(newH[i][j]);
+            }
+        }
+        return newH;
+    }
+
+    /**
+     * 对于一个行数为 mm，列数为 nn，行列下标都从 00 开始编号的二维数组，我们可以通过下面的方式，
+     * 将其中的每个元素 (i, j)(i,j) 映射到整数域内，并且它们按照行优先的顺序一一对应着 [0, mn)[0,mn)
+     * 中的每一个整数。形象化地来说，我们把这个二维数组「排扁」成了一个一维数组。如果读者对机器学习有一定了解，
+     * 可以知道这就是 flatten 操作。
+     * <p>
+     * 这样的映射即为：
+     * <p>
+     * (i, j) \to i \times n+j
+     * (i,j)→i×n+j
+     * <p>
+     * 同样地，我们可以将整数 xx 映射回其在矩阵中的下标，即
+     * <p>
+     * \begin{cases} i = x ~/~ n \\ j = x ~\%~ n \end{cases}
+     * {
+     * i=x/n
+     * j=x%n
+     * <p>
+     * <p>
+     * <p>
+     * 其中 // 表示整数除法，\%% 表示取模运算。
+     * <p>
+     * 那么题目需要我们做的事情相当于：
+     * <p>
+     * 将二维数组 \textit{nums}nums 映射成一个一维数组；
+     * <p>
+     * 将这个一维数组映射回 rr 行 cc 列的二维数组。
+     * <p>
+     * 我们当然可以直接使用一个一维数组进行过渡，但我们也可以直接从二维数组 \textit{nums}nums 得到 rr 行 cc 列的重塑矩阵：
+     * <p>
+     * 设 \textit{nums}nums 本身为 mm 行 nn 列，如果 mn \neq rcmn
+     * 
+     * <p>
+     * =rc，那么二者包含的元素个数不相同，因此无法进行重塑；
+     * <p>
+     * 否则，对于 x \in [0, mn)x∈[0,mn)，第 xx 个元素在 \textit{nums}nums 中对应的下标为 (x ~/~ n, x~\%~ n)(x/n,x%n)，而在新的重塑矩阵中对应的下标为 (x ~/~ c, x~\%~ c)(x/c,x%c)。我们直接进行赋值即可。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/reshape-the-matrix/solution/zhong-su-ju-zhen-by-leetcode-solution-gt0g/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * <p>
+     * 行数为 m，列数为 n
+     * (i,j)→i×n+j
+     * <p>
+     * i=x / n
+     * j=x % n
+     * <p>
+     * 其中 / 表示整数除法，\% 表示取模运算。
+     *
+     * @param nums
+     * @param r
+     * @param c
+     * @return
+     */
+    public int[][] matrixReshape2(int[][] nums, int r, int c) {
+        int m = nums.length;
+        int n = nums[0].length;
+        if (m * n != r * c) {
+            return nums;
+        }
+        // x = i×n+j
+        int[][] ans = new int[r][c];
+        for (int x = 0; x < m * n; ++x) {
+            ans[x / c][x % c] = nums[x / n][x % n];
+        }
+        return ans;
+    }
+
+    /**
+     * 572. 另一个树的子树
+     * 给定两个非空二叉树 s 和 t，检验 s 中是否包含和 t 具有相同结构和节点值的子树。
+     * s 的一个子树包括 s 的一个节点和这个节点的所有子孙。s 也可以看做它自身的一棵子树。
+     * <p>
+     * 示例 1:
+     * 给定的树 s:
+     * <p>
+     * 3
+     * / \
+     * 4   5
+     * / \
+     * 1   2
+     * 给定的树 t：
+     * <p>
+     * 4
+     * / \
+     * 1   2
+     * 返回 true，因为 t 与 s 的一个子树拥有相同的结构和节点值。
+     * <p>
+     * 示例 2:
+     * 给定的树 s：
+     * <p>
+     * 3
+     * / \
+     * 4   5
+     * / \
+     * 1   2
+     * /
+     * 0
+     * 给定的树 t：
+     * <p>
+     * 4
+     * / \
+     * 1   2
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        return dfs(s, t);
+    }
+
+    public boolean dfs(TreeNode s, TreeNode t) {
+        if (s == null) {
+            return false;
+        }
+        return check(s, t) || dfs(s.left, t) || dfs(s.right, t);
+    }
+
+    public boolean check(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null || s.val != t.val) {
+            return false;
+        }
+        return check(s.left, t.left) && check(s.right, t.right);
+    }
+
+
+    List<Integer> sOrder = new ArrayList<Integer>();
+    List<Integer> tOrder = new ArrayList<Integer>();
+    int maxElement, lNull, rNull;
+
+    /**
+     * 深度优先搜索序列上做串匹配
+     * 假设 ss 由两个点组成，11 是根，22 是 11 的左孩子；tt 也由两个点组成，11 是根，22 是 11 的右孩子。
+     * 这样一来 ss 和 tt 的深度优先搜索序列相同，可是 tt 并不是 ss 的某一棵子树。
+     * 由此可见「ss 的深度优先搜索序列包含 tt 的深度优先搜索序列」是「tt 是 ss 子树」的必要不充分条件，
+     * 所以单纯这样做是不正确的。
+     * <p>
+     * 为了解决这个问题，我们可以引入两个空值 lNull 和 rNull，当一个节点的左孩子或者右孩子为空的时候，
+     * 就插入这两个空值，这样深度优先搜索序列就唯一对应一棵树。处理完之后，
+     * 就可以通过判断「ss 的深度优先搜索序列包含 tt 的深度优先搜索序列」来判断答案。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubtree2(TreeNode s, TreeNode t) {
+        maxElement = Integer.MIN_VALUE;
+        getMaxElement(s);
+        getMaxElement(t);
+        lNull = maxElement + 1;
+        rNull = maxElement + 2;
+
+        getDfsOrder(s, sOrder);
+        getDfsOrder(t, tOrder);
+
+        return kmp();
+    }
+
+    public void getMaxElement(TreeNode t) {
+        if (t == null) {
+            return;
+        }
+        maxElement = Math.max(maxElement, t.val);
+        getMaxElement(t.left);
+        getMaxElement(t.right);
+    }
+
+    public void getDfsOrder(TreeNode t, List<Integer> tar) {
+        if (t == null) {
+            return;
+        }
+        tar.add(t.val);
+        if (t.left != null) {
+            getDfsOrder(t.left, tar);
+        } else {
+            tar.add(lNull);
+        }
+        if (t.right != null) {
+            getDfsOrder(t.right, tar);
+        } else {
+            tar.add(rNull);
+        }
+    }
+
+    public boolean kmp() {
+        int sLen = sOrder.size(), tLen = tOrder.size();
+        int[] fail = new int[tOrder.size()];
+        Arrays.fill(fail, -1);
+        for (int i = 1, j = -1; i < tLen; ++i) {
+            while (j != -1 && !(tOrder.get(i).equals(tOrder.get(j + 1)))) {
+                j = fail[j];
+            }
+            if (tOrder.get(i).equals(tOrder.get(j + 1))) {
+                ++j;
+            }
+            fail[i] = j;
+        }
+        for (int i = 0, j = -1; i < sLen; ++i) {
+            while (j != -1 && !(sOrder.get(i).equals(tOrder.get(j + 1)))) {
+                j = fail[j];
+            }
+            if (sOrder.get(i).equals(tOrder.get(j + 1))) {
+                ++j;
+            }
+            if (j == tLen - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 575. 分糖果
+     * 给定一个偶数长度的数组，其中不同的数字代表着不同种类的糖果，每一个数字代表一个糖果。
+     * 你需要把这些糖果平均分给一个弟弟和一个妹妹。返回妹妹可以获得的最大糖果的种类数。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: candies = [1,1,2,2,3,3]
+     * 输出: 3
+     * 解析: 一共有三种种类的糖果，每一种都有两个。
+     * 最优分配方案：妹妹获得[1,2,3],弟弟也获得[1,2,3]。这样使妹妹获得糖果的种类数最多。
+     * 示例 2 :
+     * <p>
+     * 输入: candies = [1,1,2,3]
+     * 输出: 2
+     * 解析: 妹妹获得糖果[2,3],弟弟获得糖果[1,1]，妹妹有两种不同的糖果，弟弟只有一种。
+     * 这样使得妹妹可以获得的糖果种类数最多。
+     * <p>
+     * 排序法
+     *
+     * @param candyType
+     * @return
+     */
+    public int distributeCandies(int[] candyType) {
+        Arrays.sort(candyType);
+        int m = 0;
+        for (int i = 0; i < candyType.length; i++) {
+            if (i == 0) {
+                m++;
+            } else if (candyType[i] != candyType[i - 1]) {
+                m++;
+            }
+            if (m >= candyType.length / 2) {
+                break;
+            }
+        }
+        return m;
+    }
+
+    /**
+     * 找到唯一元素数量的另一种方法是遍历给定 candiescandies 数组的所有元素，并继续将元素放入集合中。
+     * 通过集合的属性，它将只包含唯一的元素。最后，我们可以计算集合中元素的数量，例如 countcount。
+     * 要返回的值将再次由 \text{min}(count, n/2)min(count,n/2) 给出，如前面的方法所述。
+     * 其中 nn 表示 candiescandies 数组的大小。
+     *
+     * @param candies
+     * @return
+     */
+    public int distributeCandies2(int[] candies) {
+        HashSet<Integer> set = new HashSet<>();
+        for (int candy : candies) {
+            set.add(candy);
+        }
+        return Math.min(set.size(), candies.length / 2);
+    }
+
     public static void main(String[] args) {
-        System.out.println(arrayPairSum(new int[]{6, 2, 6, 5, 1, 2}));
+        System.out.println(Arrays.toString(matrixReshape(new int[][]{{1, 2}, {3, 4}}, 4, 1)));
     }
 }
