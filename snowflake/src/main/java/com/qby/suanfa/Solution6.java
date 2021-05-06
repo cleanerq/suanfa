@@ -1273,7 +1273,242 @@ public class Solution6 {
         return Math.min(set.size(), candies.length / 2);
     }
 
+
+    /**
+     * 589. N 叉树的前序遍历
+     * 给定一个 N 叉树，返回其节点值的 前序遍历 。
+     * <p>
+     * N 叉树 在输入中按层序遍历进行序列化表示，每组子节点由空值 null 分隔（请参见示例）。
+     * <p>
+     * <p>
+     * <p>
+     * 进阶：
+     * <p>
+     * 递归法很简单，你可以使用迭代法完成此题吗?
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorder(Node root) {
+        List<Integer> list = new ArrayList<>();
+        preorder(root, list);
+        return list;
+    }
+
+    /**
+     * 深度优先前序遍历
+     *
+     * @param root
+     * @param list
+     */
+    public void preorder(Node root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+        list.add(root.val);
+        if (root.children != null && !root.children.isEmpty()) {
+            for (Node child : root.children) {
+                preorder(child, list);
+            }
+        }
+    }
+
+    /**
+     * 使用迭代法 广度优先遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorder2(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        LinkedList<Integer> output = new LinkedList<>();
+        if (root == null) {
+            return output;
+        }
+
+        stack.add(root);
+        while (!stack.isEmpty()) {
+            Node node = stack.pollLast();
+            output.add(node.val);
+            Collections.reverse(node.children);
+            for (Node item : node.children) {
+                stack.add(item);
+            }
+        }
+        return output;
+    }
+
+    /**
+     * 590. N 叉树的后序遍历
+     * 给定一个 N 叉树，返回其节点值的 后序遍历 。
+     * <p>
+     * N 叉树 在输入中按层序遍历进行序列化表示，每组子节点由空值 null 分隔（请参见示例）。
+     * <p>
+     * <p>
+     * <p>
+     * 进阶：
+     * <p>
+     * 递归法很简单，你可以使用迭代法完成此题吗?
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorder(Node root) {
+        List<Integer> list = new ArrayList<>();
+        postorderR(root, list);
+        return list;
+    }
+
+    public void postorderR(Node root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+        if (root.children != null && !root.children.isEmpty()) {
+            for (Node child : root.children) {
+                postorderR(child, list);
+            }
+        }
+        list.add(root.val);
+    }
+
+    /**
+     * 迭代后序遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorder2(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        LinkedList<Integer> output = new LinkedList<>();
+        if (root == null) {
+            return output;
+        }
+
+        stack.add(root);
+        while (!stack.isEmpty()) {
+            Node node = stack.pollLast();
+            output.addFirst(node.val);
+            for (Node item : node.children) {
+                if (item != null) {
+                    stack.add(item);
+                }
+            }
+        }
+        return output;
+    }
+
+    /**
+     * 594. 最长和谐子序列
+     * 和谐数组是指一个数组里元素的最大值和最小值之间的差别 正好是 1 。
+     * <p>
+     * 现在，给你一个整数数组 nums ，请你在所有可能的子序列中找到最长的和谐子序列的长度。
+     * <p>
+     * 数组的子序列是一个由数组派生出来的序列，它可以通过删除一些元素或不删除元素、且不改变其余元素的顺序而得到。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1,3,2,2,5,2,3,7]
+     * 输出：5
+     * 解释：最长的和谐子序列是 [3,2,2,2,3]
+     * 示例 2：
+     * <p>
+     * 输入：nums = [1,2,3,4]
+     * 输出：2
+     * 示例 3：
+     * <p>
+     * 输入：nums = [1,1,1,1]
+     * 输出：0
+     *
+     * @param nums
+     * @return
+     */
+    public int findLHS(int[] nums) {
+        int res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int count = 0;
+            boolean flag = false;
+            for (int j = 0; j < nums.length; j++) {
+                if (nums[j] == nums[i])
+                    count++;
+                else if (nums[j] + 1 == nums[i]) {
+                    count++;
+                    flag = true;
+                }
+            }
+            if (flag)
+                res = Math.max(count, res);
+        }
+        return res;
+    }
+
+    /**
+     * 方法二：哈希映射
+     * 在方法一中，我们枚举了 x 后，遍历数组找出所有的 x 和 x + 1。我们也可以用一个哈希映射（HashMap）
+     * 来存储每个数出现的次数，这样就能在 O(1)O(1) 的时间内得到 x 和 x + 1 出现的次数。
+     * <p>
+     * 我们首先遍历一遍数组，得到哈希映射。随后遍历哈希映射，设当前遍历到的键值对为 (x, value)，
+     * 那么我们就查询 x + 1 在哈希映射中对应的值，就得到了 x 和 x + 1 出现的次数。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/longest-harmonious-subsequence/solution/zui-chang-he-xie-zi-xu-lie-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @return
+     */
+    public int findLHS2(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int res = 0;
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        for (int key : map.keySet()) {
+            if (map.containsKey(key + 1))
+                res = Math.max(res, map.get(key) + map.get(key + 1));
+        }
+        return res;
+    }
+
+    /**
+     * 方法三：哈希映射 + 单次扫描
+     * 在方法二中，我们需要对数组进行一次扫描，再对哈希映射进行一次扫描。事实上，
+     * 我们也可以设计出只进行一次扫描的算法。
+     * <p>
+     * 我们扫描一次数组，当扫描到元素 x 时，我们首先将 x 加入哈希映射，随后获取哈希映射中 x - 1,
+     * x, x + 1 三者出现的次数 u, v, w，那么 u + v 即为 x - 1, x 组成的和谐子序列的长度，v + w
+     * 即为 x, x + 1 组成的和谐子序列的长度。假设数组中最长的和谐子序列的最后一个元素在数组中的位置为 i，
+     * 那么在扫描到 nums[i] 时，u + v 和 v + w 中一定有一个就是答案。因此这种方法可以找到最长的和谐子序列的长度。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/longest-harmonious-subsequence/solution/zui-chang-he-xie-zi-xu-lie-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param nums
+     * @return
+     */
+    public int findLHS3(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int res = 0;
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+            if (map.containsKey(num + 1))
+                res = Math.max(res, map.get(num) + map.get(num + 1));
+            if (map.containsKey(num - 1))
+                res = Math.max(res, map.get(num) + map.get(num - 1));
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(matrixReshape(new int[][]{{1, 2}, {3, 4}}, 4, 1)));
+        LinkedList<Integer> output = new LinkedList<>();
+        output.addFirst(1);
+        output.addFirst(2);
+        output.addFirst(3);
+        output.addFirst(4);
+        System.out.println(output);
     }
 }
