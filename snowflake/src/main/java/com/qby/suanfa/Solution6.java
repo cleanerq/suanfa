@@ -1503,6 +1503,135 @@ public class Solution6 {
         return res;
     }
 
+
+    /**
+     * 598. 范围求和 II
+     * 给定一个初始元素全部为 0，大小为 m*n 的矩阵 M 以及在 M 上的一系列更新操作。
+     * <p>
+     * 操作用二维数组表示，其中的每个操作用一个含有两个正整数 a 和 b 的数组表示，
+     * 含义是将所有符合 0 <= i < a 以及 0 <= j < b 的元素 M[i][j] 的值都增加 1。
+     * <p>
+     * 在执行给定的一系列操作后，你需要返回矩阵中含有最大整数的元素个数。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * m = 3, n = 3
+     * operations = [[2,2],[3,3]]
+     * 输出: 4
+     * 解释:
+     * 初始状态, M =
+     * [[0, 0, 0],
+     * [0, 0, 0],
+     * [0, 0, 0]]
+     * <p>
+     * 执行完操作 [2,2] 后, M =
+     * [[1, 1, 0],
+     * [1, 1, 0],
+     * [0, 0, 0]]
+     * <p>
+     * 执行完操作 [3,3] 后, M =
+     * [[2, 2, 1],
+     * [2, 2, 1],
+     * [1, 1, 1]]
+     * <p>
+     * M 中最大的整数是 2, 而且 M 中有4个值为2的元素。因此返回 4。
+     *
+     * @param m
+     * @param n
+     * @param ops
+     * @return
+     */
+    public int maxCount(int m, int n, int[][] ops) {
+        for (int[] op : ops) {
+            m = Math.min(m, op[0]);
+            n = Math.min(n, op[1]);
+        }
+        return m * n;
+    }
+
+    /**
+     * 599. 两个列表的最小索引总和
+     * 假设Andy和Doris想在晚餐时选择一家餐厅，并且他们都有一个表示最喜爱餐厅的列表，每个餐厅的名字用字符串表示。
+     * <p>
+     * 你需要帮助他们用最少的索引和找出他们共同喜爱的餐厅。 如果答案不止一个，则输出所有答案并且不考虑顺序。 你可以假设总是存在一个答案。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * ["Shogun", "Tapioca Express", "Burger King", "KFC"]
+     * ["Piatti", "The Grill at Torrey Pines", "Hungry Hunter Steakhouse", "Shogun"]
+     * 输出: ["Shogun"]
+     * 解释: 他们唯一共同喜爱的餐厅是“Shogun”。
+     * 示例 2:
+     * <p>
+     * 输入:
+     * ["Shogun", "Tapioca Express", "Burger King", "KFC"]
+     * ["KFC", "Shogun", "Burger King"]
+     * 输出: ["Shogun"]
+     * 解释: 他们共同喜爱且具有最小索引和的餐厅是“Shogun”，它有最小的索引和1(0+1)。
+     *
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public String[] findRestaurant(String[] list1, String[] list2) {
+        HashMap<Integer, List<String>> map = new HashMap<>();
+        for (int i = 0; i < list1.length; i++) {
+            for (int j = 0; j < list2.length; j++) {
+                if (list1[i].equals(list2[j])) {
+                    if (!map.containsKey(i + j))
+                        map.put(i + j, new ArrayList<String>());
+                    map.get(i + j).add(list1[i]);
+                }
+            }
+        }
+        int min_index_sum = Integer.MAX_VALUE;
+        for (int key : map.keySet())
+            min_index_sum = Math.min(min_index_sum, key);
+        String[] res = new String[map.get(min_index_sum).size()];
+        return map.get(min_index_sum).toArray(res);
+    }
+
+    /**
+     * 这个方法中我们换一种方法使用哈希表。首先我们遍历 list1list1 一遍并为每个元素在哈希表 mapmap 中创建一个条目，格式为 (list[i], i)(list[i],i)。这里 ii 是第 ii 个元素的下标，list[i]list[i] 就是第 ii 个元素本身。这样我们就创建了一个从 list1list1 中元素到它们下标的映射表。
+     * <p>
+     * 现在我们遍历 list2list2，对于每一个元素 list2[j]list2[j]，我们检查在 mapmap 中是否已经存在相同元素的键。如果已经存在，说明这一元素在 list1list1 和 list2list2 中都存在。这样我们就知道了这一元素在 list1list1 和 list2list2 中的下标，将它们求和 sum = map.get(list[j]) + jsum=map.get(list[j])+j，如果这一 sumsum 比之前记录的最小值要小，我们更新返回的结果列表 resres，里面只保存 list2[j]list2[j] 作为里面唯一的条目。
+     * <p>
+     * 如果 suMsuM 与之前获得的最小值相等，那么我们将 list2[j]list2[j] 放入结果列表 resres。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/minimum-index-sum-of-two-lists/solution/liang-ge-lie-biao-de-zui-xiao-suo-yin-zong-he-by-l/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public String[] findRestaurant2(String[] list1, String[] list2) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for (int i = 0; i < list1.length; i++)
+            map.put(list1[i], i);
+        List<String> res = new ArrayList<>();
+
+        int min_sum = Integer.MAX_VALUE, sum;
+
+        for (int j = 0; j < list2.length && j <= min_sum; j++) {
+            if (map.containsKey(list2[j])) {
+                sum = j + map.get(list2[j]);
+                if (sum < min_sum) {
+                    res.clear();
+                    res.add(list2[j]);
+                    min_sum = sum;
+                } else if (sum == min_sum)
+                    res.add(list2[j]);
+            }
+        }
+        return res.toArray(new String[res.size()]);
+    }
+
+
     public static void main(String[] args) {
         LinkedList<Integer> output = new LinkedList<>();
         output.addFirst(1);
