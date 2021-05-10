@@ -4,6 +4,8 @@ import com.qby.suanfa.basic.Node;
 import com.qby.suanfa.basic.TreeNode;
 import javafx.util.Pair;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class Solution6 {
@@ -1835,13 +1837,251 @@ public class Solution6 {
         return merged;
     }
 
+    /**
+     * 628. 三个数的最大乘积
+     * 给你一个整型数组 nums ，在数组中找出由三个数组成的最大乘积，
+     * 并输出这个乘积。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1,2,3]
+     * 输出：6
+     * 示例 2：
+     * <p>
+     * 输入：nums = [1,2,3,4]
+     * 输出：24
+     * 示例 3：
+     * <p>
+     * 输入：nums = [-1,-2,-3]
+     * 输出：-6
+     *
+     * @param nums
+     * @return
+     */
+    public int maximumProduct(int[] nums) {
+        Arrays.sort(nums);
+        if (nums.length < 3) {
+            return 0;
+        }
+        int n = nums.length;
+        return Math.max(nums[0] * nums[1] * nums[n - 1],
+                nums[n - 1] * nums[n - 2] * nums[n - 3]);
+    }
+
+    /**
+     * 线性扫描
+     *
+     * @param nums
+     * @return
+     */
+    public int maximumProduct2(int[] nums) {
+        // 最小的和第二小的
+        int min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
+        // 最大的、第二大的和第三大的
+        int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+
+            if (x < min1) {
+                min2 = min1;
+                min1 = x;
+            } else if (x < min2) {
+                min2 = x;
+            }
+
+            if (x > max1) {
+                max3 = max2;
+                max2 = max1;
+                max1 = x;
+            } else if (x > max2) {
+                max3 = max2;
+                max2 = x;
+            } else if (x > max3) {
+                max3 = x;
+            }
+        }
+
+        return Math.max(min1 * min2 * max1,
+                max1 * max2 * max3);
+    }
+
+    /**
+     * 637. 二叉树的层平均值
+     * 给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：
+     * 3
+     * / \
+     * 9  20
+     * /  \
+     * 15   7
+     * 输出：[3, 14.5, 11]
+     * 解释：
+     * 第 0 层的平均值是 3 ,  第1层是 14.5 , 第2层是 11 。因此返回 [3, 14.5, 11] 。
+     *
+     * @param root
+     * @return
+     */
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Integer> counts = new ArrayList<Integer>();
+        List<Double> sums = new ArrayList<Double>();
+        dfs(root, 0, counts, sums);
+        List<Double> averages = new ArrayList<Double>();
+        int size = sums.size();
+        for (int i = 0; i < size; i++) {
+            averages.add(sums.get(i) / counts.get(i));
+        }
+        return averages;
+    }
+
+    public void dfs(TreeNode root, int level, List<Integer> counts, List<Double> sums) {
+        if (root == null) {
+            return;
+        }
+        if (level < sums.size()) {
+            sums.set(level, sums.get(level) + root.val);
+            counts.set(level, counts.get(level) + 1);
+        } else {
+            sums.add(1.0 * root.val);
+            counts.add(1);
+        }
+        dfs(root.left, level + 1, counts, sums);
+        dfs(root.right, level + 1, counts, sums);
+    }
+
+    public List<Double> averageOfLevels3(TreeNode root) {
+        List<Double> averages = new ArrayList<Double>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            double sum = 0;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sum += node.val;
+                TreeNode left = node.left, right = node.right;
+                if (left != null) {
+                    queue.offer(left);
+                }
+                if (right != null) {
+                    queue.offer(right);
+                }
+            }
+            averages.add(sum / size);
+        }
+        return averages;
+    }
+
+    /**
+     * 653. 两数之和 IV - 输入 BST
+     * 给定一个二叉搜索树和一个目标结果，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。
+     * <p>
+     * 案例 1:
+     * <p>
+     * 输入:
+     * 5
+     * / \
+     * 3   6
+     * / \   \
+     * 2   4   7
+     * <p>
+     * Target = 9
+     * <p>
+     * 输出: True
+     * <p>
+     * <p>
+     * 案例 2:
+     * <p>
+     * 输入:
+     * 5
+     * / \
+     * 3   6
+     * / \   \
+     * 2   4   7
+     * <p>
+     * Target = 28
+     * <p>
+     * 输出: False
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public boolean findTarget(TreeNode root, int k) {
+        HashSet<Integer> hashSet = new HashSet<>();
+        return findTargetDsp(root, hashSet, k);
+    }
+
+    public boolean findTargetDsp(TreeNode root, HashSet<Integer> hashSet, int k) {
+        if (root == null) {
+            return false;
+        }
+
+        int val = root.val;
+        if (hashSet.contains(k - val)) {
+            return true;
+        } else {
+            hashSet.add(val);
+            return findTargetDsp(root.left, hashSet, k) ||
+                    findTargetDsp(root.right, hashSet, k);
+        }
+    }
+
+    public boolean findTarget2(TreeNode root, int k) {
+        Set<Integer> set = new HashSet();
+        Queue<TreeNode> queue = new LinkedList();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            if (queue.peek() != null) {
+                TreeNode node = queue.remove();
+                if (set.contains(k - node.val))
+                    return true;
+                set.add(node.val);
+                queue.add(node.right);
+                queue.add(node.left);
+            } else
+                queue.remove();
+        }
+        return false;
+    }
+
+    /**
+     * 先中序遍历
+     * @param root
+     * @param k
+     * @return
+     */
+    public boolean findTarget3(TreeNode root, int k) {
+        List<Integer> list = new ArrayList();
+        inorder(root, list);
+        int l = 0, r = list.size() - 1;
+        while (l < r) {
+            int sum = list.get(l) + list.get(r);
+            if (sum == k)
+                return true;
+            if (sum < k)
+                l++;
+            else
+                r--;
+        }
+        return false;
+    }
+
+    public void inorder(TreeNode root, List<Integer> list) {
+        if (root == null)
+            return;
+        inorder(root.left, list);
+        list.add(root.val);
+        inorder(root.right, list);
+    }
 
     public static void main(String[] args) {
-        LinkedList<Integer> output = new LinkedList<>();
-        output.addFirst(1);
-        output.addFirst(2);
-        output.addFirst(3);
-        output.addFirst(4);
-        System.out.println(output);
+        double sum = 4;
+        int c = 2;
+        System.out.println(sum / c);
     }
 }
