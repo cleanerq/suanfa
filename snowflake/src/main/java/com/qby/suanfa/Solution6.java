@@ -2051,6 +2051,7 @@ public class Solution6 {
 
     /**
      * 先中序遍历
+     *
      * @param root
      * @param k
      * @return
@@ -2079,9 +2080,233 @@ public class Solution6 {
         inorder(root.right, list);
     }
 
+    /**
+     * 657. 机器人能否返回原点
+     * 在二维平面上，有一个机器人从原点 (0, 0) 开始。给出它的移动顺序，判断这个机器人在完成移动后是否在 (0, 0) 处结束。
+     * <p>
+     * 移动顺序由字符串表示。字符 move[i] 表示其第 i 次移动。机器人的有效动作有 R（右），L（左），U（上）和 D（下）。如果机器人在完成所有动作后返回原点，则返回 true。否则，返回 false。
+     * <p>
+     * 注意：机器人“面朝”的方向无关紧要。 “R” 将始终使机器人向右移动一次，“L” 将始终向左移动等。此外，假设每次移动机器人的移动幅度相同。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: "UD"
+     * 输出: true
+     * 解释：机器人向上移动一次，然后向下移动一次。所有动作都具有相同的幅度，因此它最终回到它开始的原点。因此，我们返回 true。
+     * 示例 2:
+     * <p>
+     * 输入: "LL"
+     * 输出: false
+     * 解释：机器人向左移动两次。它最终位于原点的左侧，距原点有两次 “移动” 的距离。我们返回 false，因为它在移动结束时没有返回原点。
+     *
+     * @param moves
+     * @return
+     */
+    public boolean judgeCircle(String moves) {
+        char[] chars = moves.toCharArray();
+        int uC = 0;
+        int dC = 0;
+        int lC = 0;
+        int rC = 0;
+
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (c == 'U') {
+                uC++;
+            } else if (c == 'D') {
+                dC++;
+            } else if (c == 'L') {
+                lC++;
+            } else if (c == 'R') {
+                rC++;
+            }
+        }
+
+        return (uC == dC) && (lC == rC);
+    }
+
+    /**
+     * 官方解法
+     *
+     * @param moves
+     * @return
+     */
+    public boolean judgeCircle2(String moves) {
+        int x = 0, y = 0;
+        int length = moves.length();
+        for (int i = 0; i < length; i++) {
+            char move = moves.charAt(i);
+            if (move == 'U') {
+                y--;
+            } else if (move == 'D') {
+                y++;
+            } else if (move == 'L') {
+                x--;
+            } else if (move == 'R') {
+                x++;
+            }
+        }
+        return x == 0 && y == 0;
+    }
+
+    /**
+     * 661. 图片平滑器
+     * 包含整数的二维矩阵 M 表示一个图片的灰度。你需要设计一个平滑器来让每一个单元的灰度成为平均灰度 (向下舍入) ，平均灰度的计算是周围的8个单元和它本身的值求平均，如果周围的单元格不足八个，则尽可能多的利用它们。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * [[1,1,1],
+     * [1,0,1],
+     * [1,1,1]]
+     * 输出:
+     * [[0, 0, 0],
+     * [0, 0, 0],
+     * [0, 0, 0]]
+     * 解释:
+     * 对于点 (0,0), (0,2), (2,0), (2,2): 平均(3/4) = 平均(0.75) = 0
+     * 对于点 (0,1), (1,0), (1,2), (2,1): 平均(5/6) = 平均(0.83333333) = 0
+     * 对于点 (1,1): 平均(8/9) = 平均(0.88888889) = 0
+     *
+     * @param M
+     * @return
+     */
+    public int[][] imageSmoother(int[][] M) {
+        int R = M.length, C = M[0].length;
+        int[][] ans = new int[R][C];
+
+        for (int r = 0; r < R; ++r)
+            for (int c = 0; c < C; ++c) {
+                int count = 0;
+                for (int nr = r - 1; nr <= r + 1; ++nr)
+                    for (int nc = c - 1; nc <= c + 1; ++nc) {
+                        if (0 <= nr && nr < R && 0 <= nc && nc < C) {
+                            ans[r][c] += M[nr][nc];
+                            count++;
+                        }
+                    }
+                ans[r][c] /= count;
+            }
+        return ans;
+    }
+
+    /**
+     * 671. 二叉树中第二小的节点
+     * 给定一个非空特殊的二叉树，每个节点都是正数，并且每个节点的子节点数量只能为 2 或 0。
+     * 如果一个节点有两个子节点的话，那么该节点的值等于两个子节点中较小的一个。
+     * <p>
+     * 更正式地说，root.val = min(root.left.val, root.right.val) 总成立。
+     * <p>
+     * 给出这样的一个二叉树，你需要输出所有节点中的第二小的值。如果第二小的值不存在的话，输出 -1 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * 输入：root = [2,2,5,null,null,5,7]
+     * 输出：5
+     * 解释：最小的值是 2 ，第二小的值是 5 。
+     * 示例 2：
+     * <p>
+     * <p>
+     * 输入：root = [2,2,2]
+     * 输出：-1
+     * 解释：最小的值是 2, 但是不存在第二小的值。
+     *
+     * @param root
+     * @return
+     */
+    public static int findSecondMinimumValue(TreeNode root) {
+        int r = -1;
+        if (root == null) {
+            return r;
+        }
+        int min1 = root.val;
+        int min2 = Integer.MAX_VALUE;
+        boolean flg = false;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            int val = node.val;
+
+            if (node.left != null) {
+                int lVal = node.left.val;
+                if (lVal == val) {
+                    queue.offer(node.left);
+                } else {
+                    if (min1 < lVal && lVal <= min2) {
+                        min2 = lVal;
+                        flg = true;
+                    }
+                }
+            }
+            if (node.right != null) {
+                int rVal = node.right.val;
+                if (rVal == val) {
+                    queue.offer(node.right);
+                } else if (rVal > val) {
+                    if (min1 < rVal && rVal <= min2) {
+                        min2 = rVal;
+                        flg = true;
+                    }
+                }
+            }
+        }
+
+        if (min1 == min2) {
+            return -1;
+        } else if (min2 == Integer.MAX_VALUE && flg) {
+            return min2;
+        } else if (min2 == Integer.MAX_VALUE && !flg) {
+            return -1;
+        } else {
+            return min2;
+        }
+    }
+
+    int res = -1;
+
+    public int findSecondMinimumValue2(TreeNode root) {
+        if (root == null) {
+            return res;
+        }
+        //如果存在子树并且值不相等，那么较大的值就有可能是第二小的
+        if (root.left != null && root.left.val != root.right.val) {
+            //获取左右子树中将较大的值
+            int bigger = root.left.val > root.right.val ? root.left.val : root.right.val;
+            //如果返回值没有被更改过，则bigger有可能就是第二小的，如果返回值被更改过，则比较当前的res和bigger哪个更小
+            res = res == -1 ? bigger : Math.min(res, bigger);
+            //将左右子树中值更小的树进行递归，查找是否有更小的值（即为了上一步判断）
+            findSecondMinimumValue2(root.left.val > root.right.val ? root.right : root.left);
+        }
+        //如果左右子树相等或为空，分别递归
+        else {
+            findSecondMinimumValue2(root.left);
+            findSecondMinimumValue2(root.right);
+        }
+        return res;
+    }
+
+
     public static void main(String[] args) {
-        double sum = 4;
-        int c = 2;
-        System.out.println(sum / c);
+        TreeNode root = new TreeNode(2);
+        TreeNode left = new TreeNode(2);
+        root.left = left;
+
+        TreeNode right = new TreeNode(Integer.MAX_VALUE);
+//        TreeNode left1 = new TreeNode(5);
+//        TreeNode right2 = new TreeNode(7);
+//        right.left = left1;
+//        right.right = right2;
+
+        root.right = right;
+
+        System.out.println(findSecondMinimumValue(root));
     }
 }
