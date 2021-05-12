@@ -1,5 +1,6 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.Employee;
 import com.qby.suanfa.basic.Node;
 import com.qby.suanfa.basic.TreeNode;
 import javafx.util.Pair;
@@ -2293,6 +2294,197 @@ public class Solution6 {
         return res;
     }
 
+    /**
+     * 674. 最长连续递增序列
+     * 给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。
+     * <p>
+     * 连续递增的子序列 可以由两个下标 l 和 r（l < r）确定，如果对于每个 l <= i < r，
+     * 都有 nums[i] < nums[i + 1] ，那么子序列 [nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]
+     * 就是连续递增子序列。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [1,3,5,4,7]
+     * 输出：3
+     * 解释：最长连续递增序列是 [1,3,5], 长度为3。
+     * 尽管 [1,3,5,7] 也是升序的子序列, 但它不是连续的，因为 5 和 7 在原数组里被 4 隔开。
+     * 示例 2：
+     * <p>
+     * 输入：nums = [2,2,2,2,2]
+     * 输出：1
+     * 解释：最长连续递增序列是 [2], 长度为1。
+     *
+     * @param nums
+     * @return
+     */
+    public static int findLengthOfLCIS(int[] nums) {
+        int count = 1;
+        int mCount = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > nums[i - 1]) {
+                count++;
+                mCount = Math.max(count, mCount);
+            } else {
+                count = 1;
+            }
+        }
+
+        return mCount;
+    }
+
+    public int findLengthOfLCIS2(int[] nums) {
+        int ans = 0;
+        int n = nums.length;
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] <= nums[i - 1]) {
+                start = i;
+            }
+            ans = Math.max(ans, i - start + 1);
+        }
+        return ans;
+    }
+
+    /**
+     * 682. 棒球比赛
+     * 你现在是一场采用特殊赛制棒球比赛的记录员。这场比赛由若干回合组成，过去几回合的得分可能会影响以后几回合的得分。
+     * <p>
+     * 比赛开始时，记录是空白的。你会得到一个记录操作的字符串列表 ops，其中 ops[i] 是你需要记录的第 i 项操作，
+     * ops 遵循下述规则：
+     * <p>
+     * 整数 x - 表示本回合新获得分数 x
+     * "+" - 表示本回合新获得的得分是前两次得分的总和。题目数据保证记录此操作时前面总是存在两个有效的分数。
+     * "D" - 表示本回合新获得的得分是前一次得分的两倍。题目数据保证记录此操作时前面总是存在一个有效的分数。
+     * "C" - 表示前一次得分无效，将其从记录中移除。题目数据保证记录此操作时前面总是存在一个有效的分数。
+     * 请你返回记录中所有得分的总和。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：ops = ["5","2","C","D","+"]
+     * 输出：30
+     * 解释：
+     * "5" - 记录加 5 ，记录现在是 [5]
+     * "2" - 记录加 2 ，记录现在是 [5, 2]
+     * "C" - 使前一次得分的记录无效并将其移除，记录现在是 [5].
+     * "D" - 记录加 2 * 5 = 10 ，记录现在是 [5, 10].
+     * "+" - 记录加 5 + 10 = 15 ，记录现在是 [5, 10, 15].
+     * 所有得分的总和 5 + 10 + 15 = 30
+     * 示例 2：
+     * <p>
+     * 输入：ops = ["5","-2","4","C","D","9","+","+"]
+     * 输出：27
+     * 解释：
+     * "5" - 记录加 5 ，记录现在是 [5]
+     * "-2" - 记录加 -2 ，记录现在是 [5, -2]
+     * "4" - 记录加 4 ，记录现在是 [5, -2, 4]
+     * "C" - 使前一次得分的记录无效并将其移除，记录现在是 [5, -2]
+     * "D" - 记录加 2 * -2 = -4 ，记录现在是 [5, -2, -4]
+     * "9" - 记录加 9 ，记录现在是 [5, -2, -4, 9]
+     * "+" - 记录加 -4 + 9 = 5 ，记录现在是 [5, -2, -4, 9, 5]
+     * "+" - 记录加 9 + 5 = 14 ，记录现在是 [5, -2, -4, 9, 5, 14]
+     * 所有得分的总和 5 + -2 + -4 + 9 + 5 + 14 = 27
+     * 示例 3：
+     * <p>
+     * 输入：ops = ["1"]
+     * 输出：1
+     *
+     * @param ops
+     * @return
+     */
+    public static int calPoints(String[] ops) {
+        int ans = 0;
+        Stack<Integer> stack = new Stack();
+        for (int i = 0; i < ops.length; i++) {
+            String op = ops[i];
+            if ("+".equals(op)) {
+                int a = stack.pop();
+                int b = stack.pop();
+                stack.push(b);
+                stack.push(a);
+                stack.push(a + b);
+            } else if ("C".equals(op)) {
+                stack.pop();
+            } else if ("D".equals(op)) {
+                Integer a = stack.pop();
+                stack.push(a);
+                stack.push(a * 2);
+            } else {
+                stack.push(Integer.parseInt(op));
+            }
+        }
+        while (!stack.isEmpty()) {
+            ans += stack.pop();
+        }
+        return ans;
+    }
+
+    public int calPoints2(String[] ops) {
+        Stack<Integer> s = new Stack<>();
+        int top = 0, tmp = 0, sum = 0;
+        for (String str : ops) {
+            if (str.equals("C")) {
+                sum -= s.pop();
+            } else if (str.equals("D")) {
+                sum += s.push(2 * s.peek());
+            } else if (str.equals("+")) {
+                top = s.pop();
+                tmp = top + s.peek();
+                s.push(top);
+                sum += s.push(tmp);
+            } else {
+                s.push(Integer.parseInt(str));
+                sum += Integer.parseInt(str);
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 690. 员工的重要性
+     * 给定一个保存员工信息的数据结构，它包含了员工 唯一的 id ，重要度 和 直系下属的 id 。
+     *
+     * 比如，员工 1 是员工 2 的领导，员工 2 是员工 3 的领导。他们相应的重要度为 15 , 10 , 5 。
+     * 那么员工 1 的数据结构是 [1, 15, [2]] ，
+     * 员工 2的 数据结构是 [2, 10, [3]] ，员工 3 的数据结构是 [3, 5, []] 。
+     * 注意虽然员工 3 也是员工 1 的一个下属，但是由于 并不是直系 下属，因此没有体现在员工 1 的数据结构中。
+     *
+     * 现在输入一个公司的所有员工信息，以及单个员工 id ，返回这个员工和他所有下属的重要度之和。
+     *
+     *
+     *
+     * 示例：
+     *
+     * 输入：[[1, 5, [2, 3]], [2, 3, []], [3, 3, []]], 1
+     * 输出：11
+     * 解释：
+     * 员工 1 自身的重要度是 5 ，他有两个直系下属 2 和 3 ，而且 2 和 3 的重要度均为 3 。
+     * 因此员工 1 的总重要度是 5 + 3 + 3 = 11 。
+     * @param employees
+     * @param id
+     * @return
+     */
+    Map<Integer, Employee> employeeMap = new HashMap<>();
+    public int getImportance(List<Employee> employees, int id) {
+        for (Employee employee : employees) {
+            employeeMap.put(employee.id, employee);
+        }
+        return dfsEmployee(id);
+    }
+
+    public int dfsEmployee(int id) {
+        Employee employee = employeeMap.get(id);
+        int total = employee.importance;
+        for (Integer subordinate : employee.subordinates) {
+            total += dfsEmployee(subordinate);
+        }
+        return total;
+    }
+
+
 
     public static void main(String[] args) {
         TreeNode root = new TreeNode(2);
@@ -2307,6 +2499,6 @@ public class Solution6 {
 
         root.right = right;
 
-        System.out.println(findSecondMinimumValue(root));
+        System.out.println(calPoints(new String[]{"5", "-2", "4", "C", "D", "9", "+", "+"}));
     }
 }
