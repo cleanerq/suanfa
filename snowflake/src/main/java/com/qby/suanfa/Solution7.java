@@ -1,5 +1,7 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.TreeNode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.Map;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(findShortestSubArray(new int[]{1, 2, 2, 3, 1, 4, 2}));
+        System.out.println(search(new int[]{-1, 0, 3, 5, 9, 12}, 13));
     }
 
     /**
@@ -188,4 +190,95 @@ public class Solution7 {
         return minLen;
     }
 
+    /**
+     * 700. 二叉搜索树中的搜索
+     * 给定二叉搜索树（BST）的根节点和一个值。 你需要在BST中找到节点值等于给定值的节点。
+     * 返回以该节点为根的子树。 如果节点不存在，则返回 NULL。
+     * <p>
+     * 例如，
+     * <p>
+     * 给定二叉搜索树:
+     * <p>
+     * 4
+     * / \
+     * 2   7
+     * / \
+     * 1   3
+     * <p>
+     * 和值: 2
+     * 你应该返回如下子树:
+     * <p>
+     * 2
+     * / \
+     * 1   3
+     * 在上述示例中，如果要找的值是 5，但因为没有节点值为 5，我们应该返回 NULL。
+     *
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root == null) {
+            return null;
+        }
+        int nodeV = root.val;
+        if (nodeV == val) {
+            return root;
+        }
+        if (val < nodeV) {
+            return searchBST(root.left, val);
+        } else {
+            return searchBST(root.right, val);
+        }
+    }
+
+    /**
+     * 迭代法
+     *
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode searchBST2(TreeNode root, int val) {
+        while (root != null && val != root.val)
+            root = val < root.val ? root.left : root.right;
+        return root;
+    }
+
+    /**
+     * 704. 二分查找
+     * 给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，
+     * 写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。
+     * <p>
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: nums = [-1,0,3,5,9,12], target = 9
+     * 输出: 4
+     * 解释: 9 出现在 nums 中并且下标为 4
+     * 示例 2:
+     * <p>
+     * 输入: nums = [-1,0,3,5,9,12], target = 2
+     * 输出: -1
+     * 解释: 2 不存在 nums 中因此返回 -1
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int search(int[] nums, int target) {
+        int l = 0, r = nums.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (nums[m] == target) {
+                return m;
+            }
+            if (nums[m] < target) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return -1;
+    }
 }
