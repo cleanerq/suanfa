@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(isOneBitCharacter3(new int[]{1, 1, 1, 0}));
+        System.out.println(isOneBitCharacter3(new int[]{1, 0, 0}));
     }
 
     /**
