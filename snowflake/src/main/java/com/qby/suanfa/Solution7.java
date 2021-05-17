@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(search(new int[]{-1, 0, 3, 5, 9, 12}, 13));
+        System.out.println(isOneBitCharacter3(new int[]{1, 1, 1, 0}));
     }
 
     /**
@@ -280,5 +280,126 @@ public class Solution7 {
             }
         }
         return -1;
+    }
+
+    /**
+     * 709. 转换成小写字母
+     * 实现函数 ToLowerCase()，该函数接收一个字符串参数 str，并将该字符串中的大写字母转换成小写字母，
+     * 之后返回新的字符串。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入: "Hello"
+     * 输出: "hello"
+     * 示例 2：
+     * <p>
+     * 输入: "here"
+     * 输出: "here"
+     * 示例 3：
+     * <p>
+     * 输入: "LOVELY"
+     * 输出: "lovely"
+     *
+     * @param str
+     * @return
+     */
+    public static String toLowerCase(String str) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char aChar = chars[i];
+            if (aChar >= 65 && aChar <= 90) {
+                chars[i] = (char) (aChar + 32);
+            }
+        }
+        return new String(chars);
+    }
+
+    public static String toLowerCase2(String str) {
+        char[] chars = str.toCharArray();
+        StringBuilder stb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            char aChar = chars[i];
+            if (aChar >= 'A' && aChar <= 'Z') {
+                stb.append((char) (aChar - 'A' + 'a'));
+            } else {
+                stb.append(aChar);
+            }
+        }
+        return stb.toString();
+    }
+
+    /**
+     * 717. 1比特与2比特字符
+     * 有两种特殊字符。第一种字符可以用一比特0来表示。第二种字符可以用两比特(10 或 11)来表示。
+     * <p>
+     * 现给一个由若干比特组成的字符串。问最后一个字符是否必定为一个一比特字符。给定的字符串总是由0结束。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * bits = [1, 0, 0]
+     * 输出: True
+     * 解释:
+     * 唯一的编码方式是一个两比特字符和一个一比特字符。所以最后一个字符是一比特字符。
+     * 示例 2:
+     * <p>
+     * 输入:
+     * bits = [1, 1, 1, 0]
+     * 输出: False
+     * 解释:
+     * 唯一的编码方式是两比特字符和两比特字符。所以最后一个字符不是一比特字符。
+     *
+     * @param bits
+     * @return
+     */
+    public static boolean isOneBitCharacter(int[] bits) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bits.length; i++) {
+            if (sb.toString().equals("10")
+                    || sb.toString().equals("11")
+                    || "0".equals(sb.toString())) {
+                sb = new StringBuilder();
+            }
+            sb.append(bits[i]);
+        }
+        return "0".equals(sb.toString());
+    }
+
+    /**
+     * 线性扫描
+     *
+     * @param bits
+     * @return
+     */
+    public boolean isOneBitCharacter2(int[] bits) {
+        int i = 0;
+        while (i < bits.length - 1) {
+            i += bits[i] + 1;
+        }
+        return i == bits.length - 1;
+    }
+
+    /**
+     * 三种字符分别为 0，10 和 11，那么 \mathrm{bits}bits 数组中出现的所有 0
+     * 都表示一个字符的结束位置（无论其为一比特还是两比特）。因此最后一位是否为一比特字符，
+     * 只和他左侧出现的连续的 1 的个数（即它与倒数第二个 0 出现的位置之间的 1 的个数，
+     * 如果 \mathrm{bits}bits 数组中只有 1 个 0，那么就是整个数组的长度减一）有关。
+     * 如果 1 的个数为偶数个，那么最后一位是一比特字符，如果 1 的个数为奇数个，那么最后一位不是一比特字符
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/1-bit-and-2-bit-characters/solution/1bi-te-yu-2bi-te-zi-fu-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param bits
+     * @return
+     */
+    public static boolean isOneBitCharacter3(int[] bits) {
+        int i = bits.length - 2;
+        while (i >= 0 && bits[i] > 0) i--;
+        return (bits.length - i) % 2 == 0;
     }
 }
