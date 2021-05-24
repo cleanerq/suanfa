@@ -2,14 +2,11 @@ package com.qby.suanfa;
 
 import com.qby.suanfa.basic.TreeNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(isOneBitCharacter3(new int[]{1, 0, 0}));
+        System.out.println(selfDividingNumbers(66, 708));
     }
 
     /**
@@ -401,5 +398,257 @@ public class Solution7 {
         int i = bits.length - 2;
         while (i >= 0 && bits[i] > 0) i--;
         return (bits.length - i) % 2 == 0;
+    }
+
+    /**
+     * 720. 词典中最长的单词
+     * 给出一个字符串数组words组成的一本英语词典。从中找出最长的一个单词，
+     * 该单词是由words词典中其他单词逐步添加一个字母组成。若其中有多个可行的答案，
+     * 则返回答案中字典序最小的单词。
+     * <p>
+     * 若无答案，则返回空字符串。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：
+     * words = ["w","wo","wor","worl", "world"]
+     * 输出："world"
+     * 解释：
+     * 单词"world"可由"w", "wo", "wor", 和 "worl"添加一个字母组成。
+     * 示例 2：
+     * <p>
+     * 输入：
+     * words = ["a", "banana", "app", "appl", "ap", "apply", "apple"]
+     * 输出："apple"
+     * 解释：
+     * "apply"和"apple"都能由词典中的单词组成。但是"apple"的字典序小于"apply"。
+     *
+     * @param words
+     * @return
+     */
+    public String longestWord(String[] words) {
+        String ans = "";
+        Set<String> wordset = new HashSet();
+        for (String word : words) wordset.add(word);
+        for (String word : words) {
+            if (word.length() > ans.length() ||
+                    word.length() == ans.length() && word.compareTo(ans) < 0) {
+                boolean good = true;
+                for (int k = 1; k < word.length(); ++k) {
+                    if (!wordset.contains(word.substring(0, k))) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) ans = word;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 前缀树 + 深度优先搜索
+     *
+     * @param words
+     * @return
+     */
+    public String longestWord2(String[] words) {
+        Trie trie = new Trie();
+        int index = 0;
+        for (String word : words) {
+            trie.insert(word, ++index); //indexed by 1
+        }
+        trie.words = words;
+        return trie.dfs();
+    }
+
+    class Node {
+        char c;
+        HashMap<Character, Node> children = new HashMap();
+        int end;
+
+        public Node(char c) {
+            this.c = c;
+        }
+    }
+
+    class Trie {
+        Node root;
+        String[] words;
+
+        public Trie() {
+            root = new Node('0');
+        }
+
+        public void insert(String word, int index) {
+            Node cur = root;
+            for (char c : word.toCharArray()) {
+                cur.children.putIfAbsent(c, new Node(c));
+                cur = cur.children.get(c);
+            }
+            cur.end = index;
+        }
+
+        public String dfs() {
+            String ans = "";
+            Stack<Node> stack = new Stack();
+            stack.push(root);
+            while (!stack.empty()) {
+                Node node = stack.pop();
+                if (node.end > 0 || node == root) {
+                    if (node != root) {
+                        String word = words[node.end - 1];
+                        if (word.length() > ans.length() ||
+                                word.length() == ans.length() && word.compareTo(ans) < 0) {
+                            ans = word;
+                        }
+                    }
+                    for (Node nei : node.children.values()) {
+                        stack.push(nei);
+                    }
+                }
+            }
+            return ans;
+        }
+    }
+
+    /**
+     * 728. 自除数
+     * 自除数 是指可以被它包含的每一位数除尽的数。
+     * <p>
+     * 例如，128 是一个自除数，因为 128 % 1 == 0，128 % 2 == 0，128 % 8 == 0。
+     * <p>
+     * 还有，自除数不允许包含 0 。
+     * <p>
+     * 给定上边界和下边界数字，输出一个列表，列表的元素是边界（含边界）内所有的自除数。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：
+     * 上边界left = 1, 下边界right = 22
+     * 输出： [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static List<Integer> selfDividingNumbers(int left, int right) {
+        List<Integer> rList = new ArrayList<>();
+        int l = left, r = right;
+        while (l <= r) {
+            if (l > 0) {
+                if (l < 10) {
+                    rList.add(l);
+                } else if (l % 10 != 0) {
+                    boolean flg = true;
+                    int tmpL = l;
+                    System.out.println(l);
+                    while (tmpL > 0) {
+                        int div = tmpL % 10;
+                        if (div == 0 || l % div != 0) {
+                            flg = false;
+                            break;
+                        }
+                        tmpL /= 10;
+                    }
+                    if (flg) {
+                        rList.add(l);
+                    }
+                }
+            }
+            l++;
+        }
+
+        return rList;
+    }
+
+    /**
+     * 733. 图像渲染
+     * 有一幅以二维整数数组表示的图画，每一个整数表示该图画的像素值大小，数值在 0 到 65535 之间。
+     * <p>
+     * 给你一个坐标 (sr, sc) 表示图像渲染开始的像素值（行 ，列）和一个新的颜色值 newColor，
+     * 让你重新上色这幅图像。
+     * <p>
+     * 为了完成上色工作，从初始坐标开始，记录初始坐标的上下左右四个方向上像素值与初始坐标相同的相连像素点，
+     * 接着再记录这四个方向上符合条件的像素点与他们对应四个方向上像素值与初始坐标相同的相连像素点，……，
+     * 重复该过程。将所有有记录的像素点的颜色值改为新的颜色值。
+     * <p>
+     * 最后返回经过上色渲染后的图像。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入:
+     * image = [[1,1,1],[1,1,0],[1,0,1]]
+     * sr = 1, sc = 1, newColor = 2
+     * 输出: [[2,2,2],[2,2,0],[2,0,1]]
+     * 解析:
+     * 在图像的正中间，(坐标(sr,sc)=(1,1)),
+     * 在路径上所有符合条件的像素点的颜色都被更改成2。
+     * 注意，右下角的像素没有更改为2，
+     * 因为它不是在上下左右四个方向上与初始点相连的像素点。
+     *
+     * @param image
+     * @param sr
+     * @param sc
+     * @param newColor
+     * @return
+     */
+    int[] dx = {1, 0, 0, -1};
+    int[] dy = {0, 1, -1, 0};
+
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int currColor = image[sr][sc];
+        if (currColor == newColor) {
+            return image;
+        }
+        int n = image.length, m = image[0].length;
+        Queue<int[]> queue = new LinkedList<int[]>();
+        queue.offer(new int[]{sr, sc});
+        image[sr][sc] = newColor;
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int x = cell[0], y = cell[1];
+            for (int i = 0; i < 4; i++) {
+                int mx = x + dx[i], my = y + dy[i];
+                if (mx >= 0 && mx < n && my >= 0 && my < m && image[mx][my] == currColor) {
+                    queue.offer(new int[]{mx, my});
+                    image[mx][my] = newColor;
+                }
+            }
+        }
+        return image;
+    }
+
+    /**
+     * 深度优先算法
+     *
+     * @param image
+     * @param sr
+     * @param sc
+     * @param newColor
+     * @return
+     */
+    public int[][] floodFill2(int[][] image, int sr, int sc, int newColor) {
+        int currColor = image[sr][sc];
+        if (currColor == newColor) {
+            return image;
+        }
+        dfsColor(image, sr, sc, currColor, newColor);
+        return image;
+    }
+
+    public void dfsColor(int[][] image, int x, int y, int color, int newColor) {
+        if (image[x][y] == color) {
+            image[x][y] = newColor;
+            for (int i = 0; i < 4; i++) {
+                int xn = x + dx[i];
+                int yn = y + dy[i];
+                if (xn >= 0 && xn < image.length && yn >= 0 && yn < image[0].length) {
+                    dfsColor(image, xn, yn, color, newColor);
+                }
+            }
+        }
     }
 }
