@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(selfDividingNumbers(66, 708));
+        System.out.println(nextGreatestLetter2(new char[]{'c', 'f', 'j'}, 'g'));
     }
 
     /**
@@ -650,5 +650,256 @@ public class Solution7 {
                 }
             }
         }
+    }
+
+    /**
+     * 744. 寻找比目标字母大的最小字母
+     * 给你一个排序后的字符列表 letters ，列表中只包含小写英文字母。
+     * 另给出一个目标字母 target，请你寻找在这一有序列表里比目标字母大的最小字母。
+     * <p>
+     * 在比较时，字母是依序循环出现的。举个例子：
+     * <p>
+     * 如果目标字母 target = 'z' 并且字符列表为 letters = ['a', 'b']，则答案返回 'a'
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "a"
+     * 输出: "c"
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "c"
+     * 输出: "f"
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "d"
+     * 输出: "f"
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "g"
+     * 输出: "j"
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "j"
+     * 输出: "c"
+     * <p>
+     * 输入:
+     * letters = ["c", "f", "j"]
+     * target = "k"
+     * 输出: "c"
+     *
+     * @param letters
+     * @param target
+     * @return
+     */
+    public static char nextGreatestLetter(char[] letters, char target) {
+        if (letters[letters.length - 1] <= target) {
+            return letters[0];
+        }
+        if (letters[0] > target) {
+            return letters[0];
+        }
+
+        char a = '0';
+        for (int i = 0; i < letters.length; i++) {
+            if (letters[i] > target) {
+                a = letters[i];
+                break;
+            }
+        }
+        return a;
+    }
+
+    /**
+     * 二分法
+     *
+     * @param letters
+     * @param target
+     * @return
+     */
+    public static char nextGreatestLetter2(char[] letters, char target) {
+        int lo = 0, hi = letters.length;
+        while (lo < hi) {
+            int mi = lo + (hi - lo) / 2;
+            if (letters[mi] <= target) lo = mi + 1;
+            else hi = mi;
+        }
+        return letters[lo % letters.length];
+    }
+
+    /**
+     * 746. 使用最小花费爬楼梯
+     * 数组的每个下标作为一个阶梯，第 i 个阶梯对应着一个非负数的体力花费值 cost[i]（下标从 0 开始）。
+     * <p>
+     * 每当你爬上一个阶梯你都要花费对应的体力值，一旦支付了相应的体力值，你就可以选择向上爬一个阶梯或者爬两个阶梯。
+     * <p>
+     * 请你找出达到楼层顶部的最低花费。在开始时，你可以选择从下标为 0 或 1 的元素作为初始阶梯。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：cost = [10, 15, 20]
+     * 输出：15
+     * 解释：最低花费是从 cost[1] 开始，然后走两步即可到阶梯顶，一共花费 15 。
+     * 示例 2：
+     * <p>
+     * 输入：cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+     * 输出：6
+     * 解释：最低花费方式是从 cost[0] 开始，逐个经过那些 1 ，跳过 cost[3] ，一共花费 6 。
+     *
+     * @param cost
+     * @return
+     */
+    public int minCostClimbingStairs(int[] cost) {
+        int n = cost.length;
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 0;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+        }
+        return dp[n];
+    }
+
+    /**
+     * 748. 最短补全词
+     * 给定一个字符串牌照 licensePlate 和一个字符串数组 words ，请你找出并返回 words 中的 最短补全词 。
+     * <p>
+     * 如果单词列表（words）中的一个单词包含牌照（licensePlate）中所有的字母，那么我们称之为 补全词 。
+     * 在所有完整词中，最短的单词我们称之为 最短补全词 。
+     * <p>
+     * 单词在匹配牌照中的字母时要：
+     * <p>
+     * 忽略牌照中的数字和空格。
+     * 不区分大小写，比如牌照中的 "P" 依然可以匹配单词中的 "p" 字母。
+     * 如果某个字母在牌照中出现不止一次，那么该字母在补全词中的出现次数应当一致或者更多。
+     * 例如：licensePlate = "aBc 12c"，那么它由字母 'a'、'b' （忽略大写）和两个 'c' 。
+     * 可能的 补全词 是 "abccdef"、"caaacab" 以及 "cbca" 。
+     * <p>
+     * 题目数据保证一定存在一个最短补全词。当有多个单词都符合最短补全词的匹配条件时取单词列表中最靠前的一个。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：licensePlate = "1s3 PSt", words = ["step", "steps", "stripe", "stepple"]
+     * 输出："steps"
+     * 说明：最短补全词应该包括 "s"、"p"、"s" 以及 "t"。在匹配过程中我们忽略牌照中的大小写。
+     * "step" 包含 "t"、"p"，但只包含一个 "s"，所以它不符合条件。
+     * "steps" 包含 "t"、"p" 和两个 "s"。
+     * "stripe" 缺一个 "s"。
+     * "stepple" 缺一个 "s"。
+     * 因此，"steps" 是唯一一个包含所有字母的单词，也是本样例的答案。
+     * 示例 2：
+     * <p>
+     * 输入：licensePlate = "1s3 456", words = ["looks", "pest", "stew", "show"]
+     * 输出："pest"
+     * 说明：存在 3 个包含字母 "s" 且有着最短长度的补全词，"pest"、"stew"、和 "show"
+     * 三者长度相同，但我们返回最先出现的补全词 "pest" 。
+     * 示例 3：
+     * <p>
+     * 输入：licensePlate = "Ah71752", words = ["suggest","letter","of","husband",
+     * "easy","education","drug","prevent","writer","old"]
+     * 输出："husband"
+     * 示例 4：
+     * <p>
+     * 输入：licensePlate = "OgEu755", words = ["enough","these","play","wide",
+     * "wonder","box","arrive","money","tax","thus"]
+     * 输出："enough"
+     * 示例 5：
+     * <p>
+     * 输入：licensePlate = "iMSlpe4", words = ["claim","consumer","student",
+     * "camera","public","never","wonder","simple","thought","use"]
+     * 输出："simple"
+     *
+     * @param licensePlate
+     * @param words
+     * @return
+     */
+    public String shortestCompletingWord(String licensePlate, String[] words) {
+        int[] target = count(licensePlate);
+        String ans = "";
+        for (String word : words) {
+            if ((word.length() < ans.length() || ans.length() == 0) &&
+                    dominates(count(word.toLowerCase()), target))
+                ans = word;
+        }
+        return ans;
+    }
+
+    public boolean dominates(int[] count1, int[] count2) {
+        for (int i = 0; i < 26; ++i)
+            if (count1[i] < count2[i])
+                return false;
+        return true;
+    }
+
+    public int[] count(String word) {
+        int[] ans = new int[26];
+        char[] chars = word.toCharArray();
+        for (char aChar : chars) {
+            int idx = Character.toLowerCase(aChar) - 'a';
+            if (idx >= 0 && idx < 26) {
+                ans[idx]++;
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 762. 二进制表示中质数个计算置位
+     * 给定两个整数 L 和 R ，找到闭区间 [L, R] 范围内，计算置位位数为质数的整数个数。
+     * <p>
+     * （注意，计算置位代表二进制表示中1的个数。例如 21 的二进制表示 10101 有 3 个计算置位。还有，1 不是质数。）
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: L = 6, R = 10
+     * 输出: 4
+     * 解释:
+     * 6 -> 110 (2 个计算置位，2 是质数)
+     * 7 -> 111 (3 个计算置位，3 是质数)
+     * 9 -> 1001 (2 个计算置位，2 是质数)
+     * 10-> 1010 (2 个计算置位，2 是质数)
+     * 示例 2:
+     * <p>
+     * 输入: L = 10, R = 15
+     * 输出: 5
+     * 解释:
+     * 10 -> 1010 (2 个计算置位, 2 是质数)
+     * 11 -> 1011 (3 个计算置位, 3 是质数)
+     * 12 -> 1100 (2 个计算置位, 2 是质数)
+     * 13 -> 1101 (3 个计算置位, 3 是质数)
+     * 14 -> 1110 (3 个计算置位, 3 是质数)
+     * 15 -> 1111 (4 个计算置位, 4 不是质数)
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public int countPrimeSetBits(int left, int right) {
+        int ans = 0;
+        for (int i = left; i <= right; i++) {
+            int tmp = Integer.bitCount(i);
+            if (isSmallPrime(tmp)) {
+                ans++;
+            }
+        }
+
+
+        return ans;
+    }
+
+    public boolean isSmallPrime(int x) {
+        return (x == 2 || x == 3 || x == 5 || x == 7 ||
+                x == 11 || x == 13 || x == 17 || x == 19);
     }
 }
