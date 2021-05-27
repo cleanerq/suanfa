@@ -3,10 +3,14 @@ package com.qby.suanfa;
 import com.qby.suanfa.basic.TreeNode;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(nextGreatestLetter2(new char[]{'c', 'f', 'j'}, 'g'));
+//        System.out.println(numJewelsInStones2("aA", "aAAbbbb"));
+        String pattern = "[2569]";
+
+        System.out.println(Pattern.matches(pattern, "2569"));
     }
 
     /**
@@ -901,5 +905,238 @@ public class Solution7 {
     public boolean isSmallPrime(int x) {
         return (x == 2 || x == 3 || x == 5 || x == 7 ||
                 x == 11 || x == 13 || x == 17 || x == 19);
+    }
+
+    /**
+     * 766. 托普利茨矩阵
+     * 给你一个 m x n 的矩阵 matrix 。如果这个矩阵是托普利茨矩阵，返回 true ；否则，返回 false 。
+     * <p>
+     * 如果矩阵上每一条由左上到右下的对角线上的元素都相同，那么这个矩阵是 托普利茨矩阵 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * 输入：matrix = [[1,2,3,4],[5,1,2,3],[9,5,1,2]]
+     * 输出：true
+     * 解释：
+     * 在上述矩阵中, 其对角线为:
+     * "[9]", "[5, 5]", "[1, 1, 1]", "[2, 2, 2]", "[3, 3]", "[4]"。
+     * 各条对角线上的所有元素均相同, 因此答案是 True 。
+     * 示例 2：
+     * <p>
+     * <p>
+     * 输入：matrix = [[1,2],[2,2]]
+     * 输出：false
+     * 解释：
+     * 对角线 "[1, 2]" 上的元素不同。
+     *
+     * @param matrix
+     * @return
+     */
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][j] != matrix[i - 1][j - 1]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 771. 宝石与石头
+     * 给定字符串J 代表石头中宝石的类型，和字符串 S代表你拥有的石头。
+     * S 中每个字符代表了一种你拥有的石头的类型，你想知道你拥有的石头中有多少是宝石。
+     * <p>
+     * J 中的字母不重复，J 和 S中的所有字符都是字母。字母区分大小写，因此"a"和"A"是不同类型的石头。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: J = "aA", S = "aAAbbbb"
+     * 输出: 3
+     * 示例 2:
+     * <p>
+     * 输入: J = "z", S = "ZZ"
+     * 输出: 0
+     *
+     * @param jewels
+     * @param stones
+     * @return
+     */
+    public static int numJewelsInStones(String jewels, String stones) {
+        HashSet<Character> hashSet = new HashSet<>();
+        for (char c : jewels.toCharArray()) {
+            hashSet.add(c);
+        }
+        int count = 0;
+        for (char c : stones.toCharArray()) {
+            if (hashSet.contains(c)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * @param jewels
+     * @param stones
+     * @return
+     */
+    public static int numJewelsInStones2(String jewels, String stones) {
+        int ans = 0;
+        int[] sz = new int[128];
+        for (char c : jewels.toCharArray()) {
+            sz[c]++;
+        }
+        for (char c : stones.toCharArray()) {
+            if (sz[c] != 0) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 783. 二叉搜索树节点最小距离
+     * 给你一个二叉搜索树的根节点 root ，返回树中任意两不同节点值之间的最小差值 。
+     * <p>
+     * 注意：本题与 530：https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/ 相同
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * 输入：root = [4,2,6,1,3]
+     * 输出：1
+     * 示例 2：
+     * <p>
+     * <p>
+     * 输入：root = [1,0,48,null,null,12,49]
+     * 输出：1
+     *
+     * @param root
+     * @return
+     */
+    public int minDiffInBST(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        dfsMinDiff(root, list);
+        int mVal = Integer.MAX_VALUE;
+        for (int i = 1; i < list.size(); i++) {
+            mVal = Math.min(list.get(i) - list.get(i - 1), mVal);
+        }
+        return mVal;
+    }
+
+    public void dfsMinDiff(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+        dfsMinDiff(root.left, list);
+        list.add(root.val);
+        dfsMinDiff(root.right, list);
+    }
+
+    int pre;
+    int ans;
+
+    public int minDiffInBST2(TreeNode root) {
+        ans = Integer.MAX_VALUE;
+        pre = -1;
+        dfs(root);
+        return ans;
+    }
+
+    public void dfs(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        dfs(root.left);
+        if (pre == -1) {
+            pre = root.val;
+        } else {
+            ans = Math.min(ans, root.val - pre);
+            pre = root.val;
+        }
+        dfs(root.right);
+    }
+
+    /**
+     * 788. 旋转数字
+     * 我们称一个数 X 为好数, 如果它的每位数字逐个地被旋转 180 度后，我们仍可以得到一个有效的，
+     * 且和 X 不同的数。要求每位数字都要被旋转。
+     * <p>
+     * 如果一个数的每位数字被旋转以后仍然还是一个数字， 则这个数是有效的。0, 1,
+     * 和 8 被旋转后仍然是它们自己；2 和 5 可以互相旋转成对方（在这种情况下，它们以不同的方向旋转，
+     * 换句话说，2 和 5 互为镜像）；6 和 9 同理，除了这些以外其他的数字旋转以后都不再是有效的数字。
+     * <p>
+     * 现在我们有一个正整数 N, 计算从 1 到 N 中有多少个数 X 是好数？
+     * <p>
+     * <p>
+     * <p>
+     * 示例：
+     * <p>
+     * 输入: 10
+     * 输出: 4
+     * 解释:
+     * 在[1, 10]中有四个好数： 2, 5, 6, 9。
+     * 注意 1 和 10 不是好数, 因为他们在旋转之后不变。
+     *
+     * @param N
+     * @return
+     */
+    public int rotatedDigits(int N) {
+        // Count how many n in [1, N] are good.
+        int ans = 0;
+        for (int n = 1; n <= N; ++n)
+            if (good(n, false)) ans++;
+        return ans;
+    }
+
+    // Return true if n is good.
+    // The flag is true iff we have an occurrence of 2, 5, 6, 9.
+    public boolean good(int n, boolean flag) {
+        if (n == 0) return flag;
+
+        int d = n % 10;
+        if (d == 3 || d == 4 || d == 7) return false;
+        if (d == 0 || d == 1 || d == 8) return good(n / 10, flag);
+        return good(n / 10, true);
+    }
+
+    public int rotatedDigits2(int N) {
+        char[] A = String.valueOf(N).toCharArray();
+        int K = A.length;
+
+        int[][][] memo = new int[K + 1][2][2];
+        memo[K][0][1] = memo[K][1][1] = 1;
+        for (int i = K - 1; i >= 0; --i) {
+            for (int eqf = 0; eqf <= 1; ++eqf)
+                for (int invf = 0; invf <= 1; ++invf) {
+                    // We will compute ans = memo[i][eqf][invf],
+                    // the number of good numbers with respect to N = A[i:].
+                    // If eqf is true, we must stay below N, otherwise
+                    // we can use any digits.
+                    // Invf becomes true when we write a 2569, and it
+                    // must be true by the end of our writing as all
+                    // good numbers have a digit in 2569.
+                    int ans = 0;
+                    for (char d = '0'; d <= (eqf == 1 ? A[i] : '9'); ++d) {
+                        if (d == '3' || d == '4' || d == '7') continue;
+                        boolean invo = (d == '2' || d == '5' || d == '6' || d == '9');
+                        ans += memo[i + 1][d == A[i] ? eqf : 0][invo ? 1 : invf];
+                    }
+                    memo[i][eqf][invf] = ans;
+                }
+        }
+
+        return memo[0][1][0];
     }
 }
