@@ -3,14 +3,27 @@ package com.qby.suanfa;
 import com.qby.suanfa.basic.TreeNode;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class Solution7 {
     public static void main(String[] args) {
-//        System.out.println(numJewelsInStones2("aA", "aAAbbbb"));
-        String pattern = "[2569]";
+//        System.out.println(rotateString("bbbacddceeb", "ceebbbbacdd"));
+        String str1 = "chenheqin,gaoya,jiangwenxin,lidi,lifei,lihuining,linchang,liujingjing,liujunyue,liyongxiang,songqian,tongxinru,wangmengtian,wangweiquan,wangxue,yandongyan,yanmengyao,zhaoqing,zhaoshuang,zhoumin";
+        String str2 = "changxiaojuan,chenheqin,dingyang,ducaiyun,gaoya,guoyuqin,huangrui,hujuanjuan,jiangwenxin,lidi,lifei,lihuining,linchang,liujingjing,liujunyue,liyongxiang,songqian,tianning,tongxinru,wangjing,wangmengtian,wangweiquan,wangxue,wangyujia,xuzhongdan,yandongyan,yanmengyao,zhangboya,zhangfuming,zhanglin,zhangshuang,zhaolei,zhaoqing,zhaoshuang,zhaoyanxin,zhaoyaping,zhoumin";
 
-        System.out.println(Pattern.matches(pattern, "2569"));
+        String[] sz1 = str1.split(",");
+        String[] sz2 = str2.split(",");
+
+        HashSet<String> hashSet = new HashSet<>();
+        for (String s : sz1) {
+            hashSet.add(s);
+        }
+
+        for (String s : sz2) {
+            if (!hashSet.contains(s)) {
+                System.out.print(s + ",");
+            }
+        }
+
     }
 
     /**
@@ -1138,5 +1151,155 @@ public class Solution7 {
         }
 
         return memo[0][1][0];
+    }
+
+    /**
+     * 144. 二叉树的前序遍历
+     * 给你二叉树的根节点 root ，返回它节点值的 前序 遍历。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <p>
+     * 输入：root = [1,null,2,3]
+     * 输出：[1,2,3]
+     * 示例 2：
+     * <p>
+     * 输入：root = []
+     * 输出：[]
+     * 示例 3：
+     * <p>
+     * 输入：root = [1]
+     * 输出：[1]
+     * 示例 4：
+     * <p>
+     * <p>
+     * 输入：root = [1,2]
+     * 输出：[1,2]
+     * 示例 5：
+     * <p>
+     * <p>
+     * 输入：root = [1,null,2]
+     * 输出：[1,2]
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        preorderTraversalDfs(root, list);
+        return list;
+    }
+
+
+    public void preorderTraversalDfs(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+        list.add(root.val);
+        preorderTraversalDfs(root.left, list);
+        preorderTraversalDfs(root.right, list);
+    }
+
+    /**
+     * 94. 二叉树的中序遍历
+     * 给定一个二叉树的根节点 root ，返回它的 中序 遍历。
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        inorderTraversalDfs(root, list);
+        return list;
+    }
+
+    public void inorderTraversalDfs(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+
+        inorderTraversalDfs(root.left, list);
+        list.add(root.val);
+        inorderTraversalDfs(root.right, list);
+    }
+
+    /**
+     * 145. 二叉树的后序遍历
+     * 给定一个二叉树，返回它的 后序 遍历。
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        postorderTraversalDfs(root, list);
+        return list;
+    }
+
+    public void postorderTraversalDfs(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+
+        postorderTraversalDfs(root.left, list);
+        postorderTraversalDfs(root.right, list);
+        list.add(root.val);
+    }
+
+
+    /**
+     * 796. 旋转字符串
+     * 给定两个字符串, A 和 B。
+     * <p>
+     * A 的旋转操作就是将 A 最左边的字符移动到最右边。 例如, 若 A = 'abcde'，
+     * 在移动一次之后结果就是'bcdea' 。如果在若干次旋转操作之后，A 能变成B，那么返回True。
+     * <p>
+     * 示例 1:
+     * 输入: A = 'abcde', B = 'cdeab'
+     * 输出: true
+     * <p>
+     * 示例 2:
+     * 输入: A = 'abcde', B = 'abced'
+     * 输出: false
+     * 注意：
+     * <p>
+     * A 和 B 长度不超过 100。
+     * "bbbacddceeb"
+     * "ceebbbbacdd"
+     *
+     * @param s
+     * @param goal
+     * @return
+     */
+    public static boolean rotateString(String s, String goal) {
+        int length = s.length();
+        if (length != goal.length()) {
+            return false;
+        }
+        if (s.equals(goal)) {
+            return true;
+        } else {
+            char[] chars = s.toCharArray();
+            char[] charsGoal = goal.toCharArray();
+            int iGoal = goal.indexOf(chars[0]);
+            if (iGoal == -1) {
+                return false;
+            }
+
+            for (int i = 0; i < length; i++) {
+                if (chars[i] != charsGoal[iGoal]) {
+                    return false;
+                }
+                iGoal++;
+                if (iGoal >= length) {
+                    iGoal = iGoal % length;
+                }
+            }
+        }
+
+
+        return true;
     }
 }
