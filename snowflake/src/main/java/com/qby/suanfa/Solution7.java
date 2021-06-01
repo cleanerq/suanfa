@@ -6,24 +6,7 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-//        System.out.println(rotateString("bbbacddceeb", "ceebbbbacdd"));
-        String str1 = "chenheqin,gaoya,jiangwenxin,lidi,lifei,lihuining,linchang,liujingjing,liujunyue,liyongxiang,songqian,tongxinru,wangmengtian,wangweiquan,wangxue,yandongyan,yanmengyao,zhaoqing,zhaoshuang,zhoumin";
-        String str2 = "changxiaojuan,chenheqin,dingyang,ducaiyun,gaoya,guoyuqin,huangrui,hujuanjuan,jiangwenxin,lidi,lifei,lihuining,linchang,liujingjing,liujunyue,liyongxiang,songqian,tianning,tongxinru,wangjing,wangmengtian,wangweiquan,wangxue,wangyujia,xuzhongdan,yandongyan,yanmengyao,zhangboya,zhangfuming,zhanglin,zhangshuang,zhaolei,zhaoqing,zhaoshuang,zhaoyanxin,zhaoyaping,zhoumin";
-
-        String[] sz1 = str1.split(",");
-        String[] sz2 = str2.split(",");
-
-        HashSet<String> hashSet = new HashSet<>();
-        for (String s : sz1) {
-            hashSet.add(s);
-        }
-
-        for (String s : sz2) {
-            if (!hashSet.contains(s)) {
-                System.out.print(s + ",");
-            }
-        }
-
+        System.out.println(Arrays.toString(numberOfLines(new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, "abcdefghijklmnopqrstuvwxyz")));
     }
 
     /**
@@ -1301,6 +1284,9 @@ public class Solution7 {
 
     /**
      * kmp算法
+     * <p>
+     * 判断一个串是否为另一个串的子串的最优时间复杂度的算法是 KMP 算法。
+     * 和方法二相同，我们只需要用 KMP 算法判断 B 是否为 A + A 的子串即可。
      *
      * @param A
      * @param B
@@ -1317,11 +1303,11 @@ public class Solution7 {
         int left = -1;
         for (int right = 0; right < N; ++right) {
             while (left >= 0 && (B.charAt(left) != B.charAt(right)))
-                left -= shifts[left];
+                left = left - shifts[left];
             shifts[right + 1] = right - left++;
         }
 
-        //Find match of B in A+A
+        // Find match of B in A+A
         int matchLen = 0;
         for (char c : (A + A).toCharArray()) {
             while (matchLen >= 0 && B.charAt(matchLen) != c)
@@ -1330,5 +1316,93 @@ public class Solution7 {
         }
 
         return false;
+    }
+
+    /**
+     * 804. 唯一摩尔斯密码词
+     * 国际摩尔斯密码定义一种标准编码方式，将每个字母对应于一个由一系列点和短线组成的字符串，
+     * 比如: "a" 对应 ".-", "b" 对应 "-...", "c" 对应 "-.-.", 等等。
+     * <p>
+     * 为了方便，所有26个英文字母对应摩尔斯密码表如下：
+     * <p>
+     * [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+     * 给定一个单词列表，每个单词可以写成每个字母对应摩尔斯密码的组合。例如，"cab" 可以写成 "-.-..--..."，(即 "-.-." + ".-" + "-..." 字符串的结合)。我们将这样一个连接过程称作单词翻译。
+     * <p>
+     * 返回我们可以获得所有词不同单词翻译的数量。
+     * <p>
+     * 例如:
+     * 输入: words = ["gin", "zen", "gig", "msg"]
+     * 输出: 2
+     * 解释:
+     * 各单词翻译如下:
+     * "gin" -> "--...-."
+     * "zen" -> "--...-."
+     * "gig" -> "--...--."
+     * "msg" -> "--...--."
+     * <p>
+     * 共有 2 种不同翻译, "--...-." 和 "--...--.".
+     *
+     * @param words
+     * @return
+     */
+    public static int uniqueMorseRepresentations(String[] words) {
+        String[] mos = new String[]{".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."};
+        HashSet<String> hashSet = new HashSet<>();
+
+        StringBuilder stb = null;
+        for (int i = 0; i < words.length; i++) {
+            stb = new StringBuilder();
+            char[] chars = words[i].toCharArray();
+            for (char aChar : chars) {
+                stb.append(mos[aChar - 'a']);
+            }
+            hashSet.add(stb.toString());
+        }
+        return hashSet.size();
+    }
+
+    /**
+     * 806. 写字符串需要的行数
+     * 我们要把给定的字符串 S 从左到右写到每一行上，每一行的最大宽度为100个单位，
+     * 如果我们在写某个字母的时候会使这行超过了100 个单位，那么我们应该把这个字母写到下一行。
+     * 我们给定了一个数组 widths ，这个数组 widths[0] 代表 'a' 需要的单位，
+     * widths[1] 代表 'b' 需要的单位，...， widths[25] 代表 'z' 需要的单位。
+     * <p>
+     * 现在回答两个问题：至少多少行能放下S，以及最后一行使用的宽度是多少个单位？将你的答案作为长度为2的整数列表返回。
+     * <p>
+     * 示例 1:
+     * 输入:
+     * widths = [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10]
+     * S = "abcdefghijklmnopqrstuvwxyz"
+     * 输出: [3, 60]
+     * 解释:
+     * 所有的字符拥有相同的占用单位10。所以书写所有的26个字母，
+     * 我们需要2个整行和占用60个单位的一行。
+     * 示例 2:
+     * 输入:
+     * widths = [4,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10]
+     * S = "bbbcccdddaaa"
+     * 输出: [2, 4]
+     * 解释:
+     * 除去字母'a'所有的字符都是相同的单位10，并且字符串 "bbbcccdddaa" 将会覆盖 9 * 10 + 2 * 4 = 98 个单位.
+     * 最后一个字母 'a' 将会被写到第二行，因为第一行只剩下2个单位了。
+     * 所以，这个答案是2行，第二行有4个单位宽度。
+     *
+     * @param widths
+     * @param s
+     * @return
+     */
+    public static int[] numberOfLines(int[] widths, String s) {
+        int lines = 1, width = 0;
+        for (char c : s.toCharArray()) {
+            int w = widths[c - 'a'];
+            width += w;
+            if (width > 100) {
+                lines++;
+                width = w;
+            }
+        }
+
+        return new int[]{lines, width};
     }
 }
