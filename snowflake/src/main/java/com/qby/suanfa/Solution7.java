@@ -1269,37 +1269,66 @@ public class Solution7 {
      * "bbbacddceeb"
      * "ceebbbbacdd"
      *
-     * @param s
-     * @param goal
+     * @param A
+     * @param B
      * @return
      */
-    public static boolean rotateString(String s, String goal) {
-        int length = s.length();
-        if (length != goal.length()) {
+    public static boolean rotateString(String A, String B) {
+        if (A.length() != B.length())
             return false;
-        }
-        if (s.equals(goal)) {
+        if (A.length() == 0)
             return true;
-        } else {
-            char[] chars = s.toCharArray();
-            char[] charsGoal = goal.toCharArray();
-            int iGoal = goal.indexOf(chars[0]);
-            if (iGoal == -1) {
-                return false;
-            }
 
-            for (int i = 0; i < length; i++) {
-                if (chars[i] != charsGoal[iGoal]) {
-                    return false;
-                }
-                iGoal++;
-                if (iGoal >= length) {
-                    iGoal = iGoal % length;
-                }
+        search:
+        for (int s = 0; s < A.length(); ++s) {
+            for (int i = 0; i < A.length(); ++i) {
+                if (A.charAt((s + i) % A.length()) != B.charAt(i))
+                    continue search;
             }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param A
+     * @param B
+     * @return
+     */
+    public static boolean rotateString2(String A, String B) {
+        return A.length() == B.length() && (A + A).contains(B);
+    }
+
+    /**
+     * kmp算法
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    public boolean rotateString3(String A, String B) {
+        int N = A.length();
+        if (N != B.length()) return false;
+        if (N == 0) return true;
+
+        //Compute shift table
+        int[] shifts = new int[N + 1];
+        Arrays.fill(shifts, 1);
+        int left = -1;
+        for (int right = 0; right < N; ++right) {
+            while (left >= 0 && (B.charAt(left) != B.charAt(right)))
+                left -= shifts[left];
+            shifts[right + 1] = right - left++;
         }
 
+        //Find match of B in A+A
+        int matchLen = 0;
+        for (char c : (A + A).toCharArray()) {
+            while (matchLen >= 0 && B.charAt(matchLen) != c)
+                matchLen -= shifts[matchLen];
+            if (++matchLen == N) return true;
+        }
 
-        return true;
+        return false;
     }
 }
