@@ -6,7 +6,8 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(numberOfLines(new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, "abcdefghijklmnopqrstuvwxyz")));
+        System.out.println(subdomainVisits(new String[]{"900 google.mail.com",
+                "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"}));
     }
 
     /**
@@ -1404,5 +1405,196 @@ public class Solution7 {
         }
 
         return new int[]{lines, width};
+    }
+
+    /**
+     * 811. 子域名访问计数
+     * 一个网站域名，如"discuss.leetcode.com"，包含了多个子域名。作为顶级域名，常用的有"com"，
+     * 下一级则有"leetcode.com"，最低的一级为"discuss.leetcode.com"。
+     * 当我们访问域名"discuss.leetcode.com"时，也同时访问了其父域名"leetcode.com"以及顶级域名 "com"。
+     * <p>
+     * 给定一个带访问次数和域名的组合，要求分别计算每个域名被访问的次数。其格式为访问次数+空格+地址，
+     * 例如："9001 discuss.leetcode.com"。
+     * <p>
+     * 接下来会给出一组访问次数和域名组合的列表cpdomains 。要求解析出所有域名的访问次数，
+     * 输出格式和输入格式相同，不限定先后顺序。
+     * <p>
+     * 示例 1:
+     * 输入:
+     * ["9001 discuss.leetcode.com"]
+     * 输出:
+     * ["9001 discuss.leetcode.com", "9001 leetcode.com", "9001 com"]
+     * 说明:
+     * 例子中仅包含一个网站域名："discuss.leetcode.com"。按照前文假设，
+     * 子域名"leetcode.com"和"com"都会被访问，所以它们都被访问了9001次。
+     * 示例 2
+     * 输入:
+     * ["900 google.mail.com", "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"]
+     * 输出:
+     * ["901 mail.com","50 yahoo.com","900 google.mail.com","5 wiki.org",
+     * "5 org","1 intel.mail.com","951 com"]
+     * 说明:
+     * 按照假设，会访问"google.mail.com" 900次，"yahoo.com" 50次，"intel.mail.com" 1次，"wiki.org" 5次。
+     * 而对于父域名，会访问"mail.com" 900+1 = 901次，"com" 900 + 50 + 1 = 951次，和 "org" 5 次。
+     *
+     * @param cpdomains
+     * @return
+     */
+    public static List<String> subdomainVisits(String[] cpdomains) {
+        List<String> rList = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < cpdomains.length; i++) {
+            String str = cpdomains[i];
+            String[] sz = str.split("\\s");
+            String ym = sz[1];
+            int count = Integer.parseInt(sz[0]);
+            if (map.containsKey(ym)) {
+                map.put(ym, count + map.get(ym));
+            } else {
+                map.put(ym, count);
+            }
+            while (ym.indexOf(".") != -1) {
+                ym = ym.substring(ym.indexOf(".") + 1);
+                if (map.containsKey(ym)) {
+                    map.put(ym, count + map.get(ym));
+                } else {
+                    map.put(ym, count);
+                }
+            }
+        }
+        for (Map.Entry<String, Integer> stringIntegerEntry : map.entrySet()) {
+            rList.add(stringIntegerEntry.getValue() + " " + stringIntegerEntry.getKey());
+        }
+        return rList;
+    }
+
+    public static List<String> subdomainVisits2(String[] cpdomains) {
+        Map<String, Integer> counts = new HashMap();
+        for (String domain : cpdomains) {
+            String[] cpinfo = domain.split("\\s+");
+            String[] frags = cpinfo[1].split("\\.");
+            int count = Integer.valueOf(cpinfo[0]);
+            String cur = "";
+            for (int i = frags.length - 1; i >= 0; --i) {
+                cur = frags[i] + (i < frags.length - 1 ? "." : "") + cur;
+                counts.put(cur, counts.getOrDefault(cur, 0) + count);
+            }
+        }
+
+        List<String> ans = new ArrayList();
+        for (String dom : counts.keySet())
+            ans.add("" + counts.get(dom) + " " + dom);
+        return ans;
+    }
+
+    /**
+     * 812. 最大三角形面积
+     * 给定包含多个点的集合，从其中取三个点组成三角形，返回能组成的最大三角形的面积。
+     * <p>
+     * 示例:
+     * 输入: points = [[0,0],[0,1],[1,0],[0,2],[2,0]]
+     * 输出: 2
+     * 解释:
+     * 这五个点如下图所示。组成的橙色三角形是最大的，面积为2。
+     * <p>
+     * 3 <= points.length <= 50.
+     * 不存在重复的点。
+     * -50 <= points[i][j] <= 50.
+     * 结果误差值在10^-6以内都认为是正确答案。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/largest-triangle-area
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param points
+     * @return
+     */
+    public double largestTriangleArea(int[][] points) {
+        int len = points.length;
+        double maxArea = 0;
+
+        // 遍历所有定点
+        for (int i = 0; i < len - 2; i++) {
+            for (int j = i + 1; j < len - 1; j++) {
+                for (int k = j + 1; k < len; k++) {
+
+                    // 利用三阶行列式求解三角形面积
+                    maxArea = Math.max(maxArea, getTriangleArea(points[i], points[j], points[k]));
+                }
+            }
+        }
+        return maxArea;
+    }
+
+    public double getTriangleArea(int[] a, int[] b, int[] c) {
+
+        // 三阶行列式值的1/2的绝对值
+        return Math.abs(a[0] * b[1] + b[0] * c[1] + c[0] * a[1]
+                - a[0] * c[1] - b[0] * a[1] - c[0] * b[1]) / 2.0;
+    }
+
+    /**
+     * 821. 字符的最短距离
+     * 给你一个字符串 s 和一个字符 c ，且 c 是 s 中出现过的字符。
+     * <p>
+     * 返回一个整数数组 answer ，其中 answer.length == s.length 且 answer[i] 是 s 中从下标 i 到离它 最近 的字符 c 的 距离 。
+     * <p>
+     * 两个下标 i 和 j 之间的 距离 为 abs(i - j) ，其中 abs 是绝对值函数。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：s = "loveleetcode", c = "e"
+     * 输出：[3,2,1,0,1,0,0,1,2,2,1,0]
+     * 解释：字符 'e' 出现在下标 3、5、6 和 11 处（下标从 0 开始计数）。
+     * 距下标 0 最近的 'e' 出现在下标 3 ，所以距离为 abs(0 - 3) = 3 。
+     * 距下标 1 最近的 'e' 出现在下标 3 ，所以距离为 abs(1 - 3) = 3 。
+     * 对于下标 4 ，出现在下标 3 和下标 5 处的 'e' 都离它最近，但距离是一样的 abs(4 - 3) == abs(4 - 5) = 1 。
+     * 距下标 8 最近的 'e' 出现在下标 6 ，所以距离为 abs(8 - 6) = 2 。
+     * 示例 2：
+     * <p>
+     * 输入：s = "aaab", c = "b"
+     * 输出：[3,2,1,0]
+     * <p>
+     * 想法
+     * <p>
+     * 对于每个字符 S[i]，试图找出距离向左或者向右下一个字符 C 的距离。答案就是这两个值的较小值。
+     * <p>
+     * 算法
+     * <p>
+     * 从左向右遍历，记录上一个字符 C 出现的位置 prev，那么答案就是 i - prev。
+     * <p>
+     * 从右想做遍历，记录上一个字符 C 出现的位置 prev，那么答案就是 prev - i。
+     * <p>
+     * 这两个值取最小就是答案。
+     * <p>
+     * 作者：LeetCode
+     * 链接：https://leetcode-cn.com/problems/shortest-distance-to-a-character/solution/zi-fu-de-zui-duan-ju-chi-by-leetcode/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     * @param S
+     * @param C
+     * @return
+     */
+    public int[] shortestToChar(String S, char C) {
+        int N = S.length();
+        int[] ans = new int[N];
+        int prev = Integer.MIN_VALUE / 2;
+
+        for (int i = 0; i < N; ++i) {
+            if (S.charAt(i) == C) prev = i;
+            ans[i] = i - prev;
+        }
+
+        prev = Integer.MAX_VALUE / 2;
+        for (int i = N - 1; i >= 0; --i) {
+            if (S.charAt(i) == C) prev = i;
+            ans[i] = Math.min(ans[i], prev - i);
+        }
+
+        return ans;
     }
 }
