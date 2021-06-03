@@ -6,8 +6,7 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(subdomainVisits(new String[]{"900 google.mail.com",
-                "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"}));
+        System.out.println(largeGroupPositions("abbxxxxzzy"));
     }
 
     /**
@@ -1597,4 +1596,178 @@ public class Solution7 {
 
         return ans;
     }
+
+    /**
+     * 824. 山羊拉丁文
+     * 给定一个由空格分割单词的句子 S。每个单词只包含大写或小写字母。
+     * <p>
+     * 我们要将句子转换为 “Goat Latin”（一种类似于 猪拉丁文 - Pig Latin 的虚构语言）。
+     * <p>
+     * 山羊拉丁文的规则如下：
+     * <p>
+     * 如果单词以元音开头（a, e, i, o, u），在单词后添加"ma"。
+     * 例如，单词"apple"变为"applema"。
+     * <p>
+     * 如果单词以辅音字母开头（即非元音字母），移除第一个字符并将它放到末尾，之后再添加"ma"。
+     * 例如，单词"goat"变为"oatgma"。
+     * <p>
+     * 根据单词在句子中的索引，在单词最后添加与索引相同数量的字母'a'，索引从1开始。
+     * 例如，在第一个单词后添加"a"，在第二个单词后添加"aa"，以此类推。
+     * 返回将 S 转换为山羊拉丁文后的句子。
+     * <p>
+     * 示例 1:
+     * <p>
+     * 输入: "I speak Goat Latin"
+     * 输出: "Imaa peaksmaaa oatGmaaaa atinLmaaaaa"
+     * 示例 2:
+     * <p>
+     * 输入: "The quick brown fox jumped over the lazy dog"
+     * 输出: "heTmaa uickqmaaa rownbmaaaa oxfmaaaaa umpedjmaaaaaa overmaaaaaaa
+     * hetmaaaaaaaa azylmaaaaaaaaa ogdmaaaaaaaaaa"
+     *
+     * @param sentence
+     * @return
+     */
+    public static String toGoatLatin(String sentence) {
+        String[] sz = sentence.split("\\s");
+        Set<String> map = new HashSet<>();
+        map.add("a");
+        map.add("e");
+        map.add("i");
+        map.add("o");
+        map.add("u");
+
+        StringBuilder strb = new StringBuilder();
+        for (int i = 0; i < sz.length; i++) {
+            String str = sz[i];
+            String substring = str.substring(0, 1);
+            if (map.contains(substring.toLowerCase())
+                    || map.contains(substring.toUpperCase())) {
+                str += "ma";
+            } else {
+                str = str.substring(1) + substring + "ma";
+            }
+            if (i > 0) {
+                str = str + sz[i - 1].substring(sz[i - 1].length() - i) + "a";
+            } else {
+                str += "a";
+            }
+            sz[i] = str;
+            strb.append(" ");
+            strb.append(str);
+        }
+
+        return strb.toString().substring(1);
+    }
+
+    public static String toGoatLatin2(String S) {
+        Set<Character> vowel = new HashSet();
+        for (char c : new char[]{'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'})
+            vowel.add(c);
+
+        int t = 1;
+        StringBuilder ans = new StringBuilder();
+        for (String word : S.split(" ")) {
+            char first = word.charAt(0);
+            if (vowel.contains(first)) {
+                ans.append(word);
+            } else {
+                ans.append(word.substring(1));
+                ans.append(word.substring(0, 1));
+            }
+            ans.append("ma");
+            for (int i = 0; i < t; i++)
+                ans.append("a");
+            t++;
+            ans.append(" ");
+        }
+
+        ans.deleteCharAt(ans.length() - 1);
+        return ans.toString();
+    }
+
+    /**
+     * 830. 较大分组的位置
+     * 在一个由小写字母构成的字符串 s 中，包含由一些连续的相同字符所构成的分组。
+     * <p>
+     * 例如，在字符串 s = "abbxxxxzyy" 中，就含有 "a", "bb", "xxxx", "z" 和 "yy" 这样的一些分组。
+     * <p>
+     * 分组可以用区间 [start, end] 表示，其中 start 和 end 分别表示该分组的起始和终止位置的下标。
+     * 上例中的 "xxxx" 分组用区间表示为 [3,6] 。
+     * <p>
+     * 我们称所有包含大于或等于三个连续字符的分组为 较大分组 。
+     * <p>
+     * 找到每一个 较大分组 的区间，按起始位置下标递增顺序排序后，返回结果。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：s = "abbxxxxzzy"
+     * 输出：[[3,6]]
+     * 解释："xxxx" 是一个起始于 3 且终止于 6 的较大分组。
+     * 示例 2：
+     * <p>
+     * 输入：s = "abc"
+     * 输出：[]
+     * 解释："a","b" 和 "c" 均不是符合要求的较大分组。
+     * 示例 3：
+     * <p>
+     * 输入：s = "abcdddeeeeaabbbcd"
+     * 输出：[[3,5],[6,9],[12,14]]
+     * 解释：较大分组为 "ddd", "eeee" 和 "bbb"
+     * 示例 4：
+     * <p>
+     * 输入：s = "aba"
+     * 输出：[]
+     *
+     * @param s
+     * @return
+     */
+    public static List<List<Integer>> largeGroupPositions(String s) {
+        List<List<Integer>> rList = new ArrayList<>();
+        char[] chars = s.toCharArray();
+
+        int count = 1;
+        List<Integer> iList = new ArrayList<>();
+        iList.add(0);
+
+        int i = 1;
+        while (i < chars.length) {
+            while (i < chars.length
+                    && chars[i] == chars[i - 1]) {
+                count++;
+                i++;
+            }
+            if (count >= 3) {
+                // 指针向前移动了
+                iList.add(i - 1);
+                rList.add(iList);
+            }
+            // 指针继续向前移动
+            iList = new ArrayList<>();
+            iList.add(i);
+            count = 1;
+            i++;
+        }
+        return rList;
+    }
+
+    public List<List<Integer>> largeGroupPositions2(String s) {
+        List<List<Integer>> ret = new ArrayList<List<Integer>>();
+        int n = s.length();
+        int num = 1;
+        for (int i = 0; i < n; i++) {
+            if (i == n - 1 || s.charAt(i) != s.charAt(i + 1)) {
+                if (num >= 3) {
+                    ret.add(Arrays.asList(i - num + 1, i));
+                }
+                num = 1;
+            } else {
+                num++;
+            }
+        }
+        return ret;
+    }
+
 }
