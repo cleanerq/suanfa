@@ -6,7 +6,8 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(largeGroupPositions("abbxxxxzzy"));
+        flipAndInvertImage(new int[][]{{1, 1, 0, 0}, {1, 0, 0, 1}, {0, 1, 1, 1}, {1, 0, 1, 0}});
+//        System.out.println(flipAndInvertImage(new int[][]{{1, 1, 0}, {1, 0, 1}, {0, 0, 0}}));
     }
 
     /**
@@ -1770,4 +1771,86 @@ public class Solution7 {
         return ret;
     }
 
+    /**
+     * 832. 翻转图像
+     * 给定一个二进制矩阵 A，我们想先水平翻转图像，然后反转图像并返回结果。
+     * <p>
+     * 水平翻转图片就是将图片的每一行都进行翻转，即逆序。
+     * 例如，水平翻转 [1, 1, 0] 的结果是 [0, 1, 1]。
+     * <p>
+     * 反转图片的意思是图片中的 0 全部被 1 替换， 1 全部被 0 替换。
+     * 例如，反转 [0, 1, 1] 的结果是 [1, 0, 0]。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：[[1,1,0],[1,0,1],[0,0,0]]
+     * 输出：[[1,0,0],[0,1,0],[1,1,1]]
+     * 解释：首先翻转每一行: [[0,1,1],[1,0,1],[0,0,0]]；
+     * 然后反转图片: [[1,0,0],[0,1,0],[1,1,1]]
+     * 示例 2：
+     * <p>
+     * 输入：[[1,1,0,0],[1,0,0,1],[0,1,1,1],[1,0,1,0]]
+     * 输出：[[1,1,0,0],[0,1,1,0],[0,0,0,1],[1,0,1,0]]
+     * 解释：首先翻转每一行: [[0,0,1,1],[1,0,0,1],[1,1,1,0],[0,1,0,1]]；
+     * 然后反转图片: [[1,1,0,0],[0,1,1,0],[0,0,0,1],[1,0,1,0]]
+     *
+     * @param image
+     * @return
+     */
+    public static int[][] flipAndInvertImage(int[][] image) {
+        int m = image.length;
+        int n = image[0].length;
+        int[][] ans = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            ans[i] = new int[n];
+            int idx = 0;
+            for (int j = image[i].length - 1; j >= 0; j--) {
+                ans[i][idx] = image[i][j];
+                ans[i][idx] = ans[i][idx] ^ 1;
+                idx++;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 最直观的做法是首先对矩阵 的每一行进行水平翻转操作，
+     * 然后对矩阵中的每个元素进行反转操作。该做法需要遍历矩阵两次。
+     *
+     * 是否可以只遍历矩阵一次就完成上述操作？答案是肯定的。
+     *
+     * 情况一和情况二是 左边=右边 的情况。在进行水平翻转和反转之后，左边和右边 的元素值都发生了改变，即元素值被反转。
+     *
+     * 情况三和情况四是 左边!=右边 的情况。在进行水平翻转和反转之后，左边和右边 的元素值都发生了两次改变，恢复原状。
+     *
+     * 因此，可以遍历矩阵一次即完成水平翻转和反转。
+     *
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/flipping-an-image/solution/fan-zhuan-tu-xiang-by-leetcode-solution-yljd/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * @param image
+     * @return
+     */
+    public int[][] flipAndInvertImage2(int[][] image) {
+        int n = image.length;
+        for (int i = 0; i < n; i++) {
+            int left = 0, right = n - 1;
+            while (left < right) {
+                if (image[i][left] == image[i][right]) {
+                    image[i][left] ^= 1;
+                    image[i][right] ^= 1;
+                }
+                left++;
+                right--;
+            }
+            if (left == right) {
+                image[i][left] ^= 1;
+            }
+        }
+        return image;
+    }
 }
