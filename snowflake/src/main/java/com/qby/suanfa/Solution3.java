@@ -1,5 +1,6 @@
 package com.qby.suanfa;
 
+import com.qby.suanfa.basic.Node;
 import com.qby.suanfa.basic.TreeNode;
 
 import java.util.*;
@@ -1838,15 +1839,38 @@ public class Solution3 {
 
 
     public static void main(String[] args) {
-        ListNode head = new ListNode(1);
-        ListNode cur = head;
+        ListNode node = new ListNode(1);
+        ListNode node2 = new ListNode(2);
+        ListNode node3 = new ListNode(3);
+        ListNode node4 = new ListNode(4);
+        ListNode node5 = new ListNode(5);
+        ListNode node6 = new ListNode(6);
+        node.next =node2;
+        node2.next = node3;
+        node3.next = node4;
+        node4.next = node5;
+        node6.next = null;
 
-        for (int i = 0; i < 4; i++) {
-            ListNode t = new ListNode(2 + i);
-            cur.next = t;
-            cur = t;
+        ListNode head = node;
+        while (head != null) {
+            System.out.println(head);
+            head = head.next;
         }
 
-        reverseList2(head);
+        System.out.println();
+        ListNode cur = node;
+        ListNode pre = null;
+
+        while (cur != null) {
+            ListNode tmp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = tmp;
+        }
+
+        while (pre != null) {
+            System.out.println(pre);
+            pre = pre.next;
+        }
     }
 }
