@@ -18,6 +18,7 @@ public class AQSDemo {
                 System.out.println("-----A thread come in");
                 try {
                     TimeUnit.MINUTES.sleep(20);
+//                    TimeUnit.SECONDS.sleep(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
