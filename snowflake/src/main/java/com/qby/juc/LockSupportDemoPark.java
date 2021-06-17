@@ -30,14 +30,14 @@ public class LockSupportDemoPark {
             LockSupport.park();//阻塞当前线程
             System.out.println(Thread.currentThread().getName() + "\t ----被唤醒" + System.currentTimeMillis());
         }, "t1");
-        t1.start();
-
-
 
         Thread t2 = new Thread(() -> {
             LockSupport.unpark(t1);//唤醒t1线程
             System.out.println(Thread.currentThread().getName() + "\t 通知t1...");
         }, "t2");
+
+        // t1 t2 执行顺序可以颠倒
         t2.start();
+        t1.start();
     }
 }
