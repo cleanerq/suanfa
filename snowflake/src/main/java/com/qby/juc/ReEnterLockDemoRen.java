@@ -21,7 +21,7 @@ public class ReEnterLockDemoRen {
             } finally {
                 //实现加锁次数和释放次数不一样
                 //由于加锁次数和释放次数不一样，第二个线程始终无法获取到锁，导致一直在等待。
-                lock.unlock();
+//                lock.unlock();
                 lock.unlock();    //正在情况，加锁几次就要解锁几次
             }
         }, "t1").start();
