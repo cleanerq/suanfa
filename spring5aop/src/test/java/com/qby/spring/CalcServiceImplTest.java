@@ -28,7 +28,7 @@ public class CalcServiceImplTest {
 
         System.out.println();
 
-        service.div(10, 0);
+        service.div(10, 2);
     }
 
 }
