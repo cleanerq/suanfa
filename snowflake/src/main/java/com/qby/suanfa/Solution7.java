@@ -6,7 +6,13 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-        System.out.println(backspaceCompare("a##c", "#a#c"));
+//        System.out.println(lemonadeChange(new int[]{10, 10}));
+        int[][] ma = transpose(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+
+        for (int i = 0; i < ma.length; i++) {
+            System.out.println(Arrays.toString(ma[i]));
+        }
+
     }
 
     /**
@@ -78,7 +84,7 @@ public class Solution7 {
      * <p>
      * 示例 1 :
      * <p>
-     * 输入: "00110011" {2,2,2,2} "111000111000" {3333} = 9
+     * 输入: "00110011"
      * 输出: 6
      * 解释: 有6个子串具有相同数量的连续1和0：“0011”，“01”，“1100”，“10”，“0011” 和 “01”。
      * <p>
@@ -87,7 +93,7 @@ public class Solution7 {
      * 另外，“00110011”不是有效的子串，因为所有的0（和1）没有组合在一起。
      * 示例 2 :
      * <p>
-     * 输入: "10101" 11111
+     * 输入: "10101"
      * 输出: 4
      * 解释: 有4个子串：“10”，“01”，“10”，“01”，它们具有相同数量的连续1和0。
      *
@@ -1993,5 +1999,191 @@ public class Solution7 {
             }
         }
         return ret.toString();
+    }
+
+    /**
+     * 852. 山脉数组的峰顶索引
+     * 符合下列属性的数组 arr 称为 山脉数组 ：
+     * arr.length >= 3
+     * 存在 i（0 < i< arr.length - 1）使得：
+     * arr[0] < arr[1] < ... arr[i-1] < arr[i]
+     * arr[i] > arr[i+1] > ... > arr[arr.length - 1]
+     * 给你由整数组成的山脉数组 arr ，返回任何满足 arr[0] < arr[1] < ... arr[i - 1] < arr[i] > arr[i + 1] > ... > arr[arr.length - 1] 的下标 i 。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/peak-index-in-a-mountain-array
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param arr
+     * @return
+     */
+    public int peakIndexInMountainArray(int[] arr) {
+        int idx = 0;
+        int max = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+                idx = i;
+            } else if (arr[i] < max) {
+                break;
+            }
+        }
+        return idx;
+    }
+
+    /**
+     * 官方解法
+     *
+     * @param arr
+     * @return
+     */
+    public int peakIndexInMountainArray2(int[] arr) {
+        int n = arr.length;
+        int ans = -1;
+        for (int i = 1; i < n - 1; ++i) {
+            if (arr[i] > arr[i + 1]) {
+                ans = i;
+                break;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 二分查找
+     *
+     * @param arr
+     * @return
+     */
+    public int peakIndexInMountainArray3(int[] arr) {
+        int n = arr.length;
+        int left = 1, right = n - 2, ans = 0;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (arr[mid] > arr[mid + 1]) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 860. 柠檬水找零
+     * 在柠檬水摊上，每一杯柠檬水的售价为5美元。
+     * <p>
+     * 顾客排队购买你的产品，（按账单 bills 支付的顺序）一次购买一杯。
+     * <p>
+     * 每位顾客只买一杯柠檬水，然后向你付 5 美元、10 美元或 20 美元。
+     * 你必须给每个顾客正确找零，也就是说净交易是每位顾客向你支付 5 美元。
+     * <p>
+     * 注意，一开始你手头没有任何零钱。
+     * <p>
+     * 如果你能给每位顾客正确找零，返回true，否则返回 false。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/lemonade-change
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param bills
+     * @return
+     */
+    public static boolean lemonadeChange(int[] bills) {
+        boolean flg = true;
+        // 数组 0 1 分别是 5 10 的个数
+        int[] sz = new int[2];
+
+        for (int i = 0; i < bills.length; i++) {
+            if (bills[i] == 5) {
+                sz[0]++;
+            } else if (bills[i] == 10) {
+                sz[1]++;
+                if (sz[0] >= 1) {
+                    sz[0]--;
+                } else {
+                    flg = false;
+                    break;
+                }
+            } else if (bills[i] == 20) {
+                if (sz[1] >= 1 && sz[0] >= 1) {
+                    sz[0]--;
+                    sz[1]--;
+                } else if (sz[0] >= 3) {
+                    sz[0] = sz[0] - 3;
+                } else {
+                    flg = false;
+                    break;
+                }
+            }
+        }
+        return flg;
+    }
+
+    /**
+     * 解法2
+     *
+     * @param bills
+     * @return
+     */
+    public boolean lemonadeChange2(int[] bills) {
+        int five = 0, ten = 0;
+        for (int bill : bills) {
+            if (bill == 5) {
+                five++;
+            } else if (bill == 10) {
+                if (five == 0) {
+                    return false;
+                }
+                five--;
+                ten++;
+            } else {
+                if (five > 0 && ten > 0) {
+                    five--;
+                    ten--;
+                } else if (five >= 3) {
+                    five -= 3;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 867. 转置矩阵
+     * <p>
+     * 给你一个二维整数数组 matrix， 返回 matrix 的 转置矩阵 。
+     * <p>
+     * 矩阵的 转置 是指将矩阵的主对角线翻转，交换矩阵的行索引与列索引。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * 输出：[[1,4,7],[2,5,8],[3,6,9]]
+     * 示例 2：
+     * <p>
+     * 输入：matrix = [[1,2,3],[4,5,6]]
+     * 输出：[[1,4],[2,5],[3,6]]
+     * <p>
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/transpose-matrix
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     *
+     * @param matrix
+     * @return
+     */
+    public static int[][] transpose(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        int[][] transposed = new int[n][m];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                transposed[j][i] = matrix[i][j];
+            }
+        }
+        return transposed;
     }
 }

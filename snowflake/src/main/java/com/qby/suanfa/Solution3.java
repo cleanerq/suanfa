@@ -1839,38 +1839,44 @@ public class Solution3 {
 
 
     public static void main(String[] args) {
-        ListNode node = new ListNode(1);
-        ListNode node2 = new ListNode(2);
-        ListNode node3 = new ListNode(3);
-        ListNode node4 = new ListNode(4);
-        ListNode node5 = new ListNode(5);
-        ListNode node6 = new ListNode(6);
-        node.next =node2;
-        node2.next = node3;
-        node3.next = node4;
-        node4.next = node5;
-        node6.next = null;
+//        ListNode node = new ListNode(1);
+//        ListNode node2 = new ListNode(2);
+//        ListNode node3 = new ListNode(3);
+//        ListNode node4 = new ListNode(4);
+//        ListNode node5 = new ListNode(5);
+//        ListNode node6 = new ListNode(6);
+//        node.next =node2;
+//        node2.next = node3;
+//        node3.next = node4;
+//        node4.next = node5;
+//        node6.next = null;
+//
+//        ListNode head = node;
+//        while (head != null) {
+//            System.out.println(head);
+//            head = head.next;
+//        }
+//
+//        System.out.println();
+//        ListNode cur = node;
+//        ListNode pre = null;
+//
+//        while (cur != null) {
+//            ListNode tmp = cur.next;
+//            cur.next = pre;
+//            pre = cur;
+//            cur = tmp;
+//        }
+//
+//        while (pre != null) {
+//            System.out.println(pre);
+//            pre = pre.next;
+//        }
 
-        ListNode head = node;
-        while (head != null) {
-            System.out.println(head);
-            head = head.next;
-        }
-
-        System.out.println();
-        ListNode cur = node;
-        ListNode pre = null;
-
-        while (cur != null) {
-            ListNode tmp = cur.next;
-            cur.next = pre;
-            pre = cur;
-            cur = tmp;
-        }
-
-        while (pre != null) {
-            System.out.println(pre);
-            pre = pre.next;
+        String[] sz = new String[] {"abca","abc","abca","abc","abcc"};
+        Arrays.sort(sz);
+        for (String s : sz) {
+            System.out.println(s);
         }
     }
 }

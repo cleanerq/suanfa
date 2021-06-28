@@ -977,6 +977,19 @@ public class Solution {
 
     public static void main(String[] args) {
 
-        System.out.println(mySqrt2(8));
+//        System.out.println(mySqrt2(8));
+        String a = "abcdefg";
+        String b = "abcefg";
+
+        int j = 0;
+        for (; j < a.length() && j < b.length(); j++) {
+            if (a.charAt(j) != b.charAt(j)) {
+                break;
+            }
+        }
+
+        System.out.println(a.substring(0, j));
+
+        System.out.println(a.substring(0, 4));
     }
 }
