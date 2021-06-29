@@ -6,12 +6,12 @@ import java.util.*;
 
 public class Solution7 {
     public static void main(String[] args) {
-//        System.out.println(lemonadeChange(new int[]{10, 10}));
-        int[][] ma = transpose(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
-
-        for (int i = 0; i < ma.length; i++) {
-            System.out.println(Arrays.toString(ma[i]));
-        }
+        System.out.println(search(new int[]{1, 2, 2, 3, 4}, 2));
+//        int[][] ma = transpose(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+//
+//        for (int i = 0; i < ma.length; i++) {
+//            System.out.println(Arrays.toString(ma[i]));
+//        }
 
     }
 
