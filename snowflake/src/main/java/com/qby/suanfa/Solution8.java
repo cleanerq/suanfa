@@ -2,14 +2,16 @@ package com.qby.suanfa;
 
 import com.qby.suanfa.basic.TreeNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Solution8 {
     public static void main(String[] args) {
         //        System.out.println(binaryGap2(1));
         //        [3,5,1,6,2,9,8,null,null,7,14]
         //      [3,5,1,6,71,4,2,null,null,null,null,null,null,9,8]
-        TreeNode root1 = TreeNode.makeTreeNode(new Integer[]{3, 5, 1, 6, 2, 9, 8, null, null, 7, 14});
-        TreeNode root2 = TreeNode.makeTreeNode(new Integer[]{3, 5, 1, 6, 71, 4, 2, null, null, null, null, null, null, 9, 8});
-        System.out.println(leafSimilar(root1, root2));
+        ListNode listNode = ListNode.makeListNode(new Integer[]{1, 2, 3, 4, 5});
+        System.out.println(middleNode(listNode));
     }
 
     /**
@@ -88,22 +90,64 @@ public class Solution8 {
      * @return
      */
     public static boolean leafSimilar(TreeNode root1, TreeNode root2) {
-        StringBuilder strb1 = new StringBuilder();
-        StringBuilder strb2 = new StringBuilder();
-        leafDfs(root1, strb1);
-        leafDfs(root2, strb2);
+        List<Integer> seq1 = new ArrayList<Integer>();
+        if (root1 != null) {
+            dfs(root1, seq1);
+        }
 
-        return strb1.toString().equals(strb2.toString());
+        List<Integer> seq2 = new ArrayList<Integer>();
+        if (root2 != null) {
+            dfs(root2, seq2);
+        }
+
+        return seq1.equals(seq2);
     }
 
-    public static void leafDfs(TreeNode treeNode, StringBuilder strb) {
-        if (treeNode == null) {
-            return;
-        }
-        leafDfs(treeNode.left, strb);
-        leafDfs(treeNode.right, strb);
+    public static void dfs(TreeNode treeNode, List<Integer> strb) {
         if (treeNode.left == null && treeNode.right == null) {
-            strb.append(treeNode.val);
+            strb.add(treeNode.val);
         }
+        if (treeNode.left != null) {
+            dfs(treeNode.left, strb);
+        }
+        if (treeNode.right != null) {
+            dfs(treeNode.right, strb);
+        }
+    }
+
+    /**
+     * 876. 链表的中间结点
+     * 给定一个头结点为 head 的非空单链表，返回链表的中间结点。
+     * <p>
+     * 如果有两个中间结点，则返回第二个中间结点。
+     *
+     * @param head
+     * @return
+     */
+    public static ListNode middleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        if (fast == null) {
+            return slow;
+        } else if (fast.next == null) {
+            return slow.next;
+        } else {
+            return slow;
+        }
+    }
+
+    public ListNode middleNode2(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
     }
 }
