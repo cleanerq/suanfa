@@ -2,10 +2,7 @@ package com.qby.suanfa.tree;
 
 import com.qby.suanfa.basic.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class StackTree {
     public static void main(String[] args) {
@@ -123,6 +120,90 @@ public class StackTree {
             cur = cur.right;
         }
         return output;
+    }
+
+    /**
+     * 前序遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> qxTree(TreeNode root) {
+        List<Integer> rList = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        if (root == null) {
+            return rList;
+        }
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            // 中
+            TreeNode node = stack.pop();
+            if (node != null) {
+                rList.add(node.val);
+                // 右
+                stack.push(node.right);
+                // 左
+                stack.push(node.left);
+            }
+        }
+
+        return rList;
+    }
+
+    /**
+     * 中序遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> zxTree(TreeNode root) {
+        List<Integer> rList = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        // 需要用到辅助指针
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            if (cur != null) {
+                // 指针来访问节点，访问到最底层
+                // 讲访问的节点放进栈
+                stack.push(cur);
+                // 左
+                cur = cur.left;
+            } else {
+                // 从栈里弹出的数据，就是要处理的数据（放进result数组里的数据）
+                cur = stack.pop();
+                rList.add(cur.val);
+                cur = cur.right;
+            }
+        }
+        return rList;
+    }
+
+    /**
+     * 后序遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> hxTree(TreeNode root) {
+        List<Integer> rList = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        if (root == null) {
+            return rList;
+        }
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            // 中
+            TreeNode node = stack.pop();
+            if (node != null) {
+                rList.add(node.val);
+                // 左
+                stack.push(node.left);
+                // 右
+                stack.push(node.right);
+            }
+        }
+        Collections.reverse(rList);
+        return rList;
     }
 
 }
