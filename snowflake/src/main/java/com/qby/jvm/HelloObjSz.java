@@ -3,7 +3,11 @@ package com.qby.jvm;
 import org.openjdk.jol.info.ClassLayout;
 
 /**
- * 普通对象
+ * 二维数组占用字节数
+ * markword 8
+ * classpointer 4
+ * 实例数据 4(标识数组长度)
+ * 一维个数
  *
  * 对象头：markword 8  (锁的标识位：标识对象的状态，GC标记：对象被回收了多少次 分代年龄)
  * ClassPointer指针：-XX:+UseCompressedClassPointers 为4字节(默认开启) 不开启为8字节 (对象属于哪个Class)
