@@ -2,16 +2,13 @@ package com.qby.suanfa;
 
 import com.qby.suanfa.basic.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Solution8 {
     public static void main(String[] args) {
-        //        System.out.println(binaryGap2(1));
-        //        [3,5,1,6,2,9,8,null,null,7,14]
-        //      [3,5,1,6,71,4,2,null,null,null,null,null,null,9,8]
-        ListNode listNode = ListNode.makeListNode(new Integer[]{1, 2, 3, 4, 5});
-        System.out.println(middleNode(listNode));
+        // "this apple is sweet"
+        // "this apple is sour"
+        System.out.println(uncommonFromSentences("this apple is sweet", "this apple is sour"));
     }
 
     /**
@@ -149,5 +146,99 @@ public class Solution8 {
             fast = fast.next.next;
         }
         return slow;
+    }
+
+    /**
+     * 883. 三维形体投影面积
+     * 在 N * N 的网格中，我们放置了一些与 x，y，z 三轴对齐的 1 * 1 * 1 立方体。
+     * <p>
+     * 每个值 v = grid[i][j] 表示 v 个正方体叠放在单元格 (i, j) 上。
+     * <p>
+     * 现在，我们查看这些立方体在 xy、yz 和 zx 平面上的投影。
+     * <p>
+     * 投影就像影子，将三维形体映射到一个二维平面上。
+     * <p>
+     * 在这里，从顶部、前面和侧面看立方体时，我们会看到“影子”。
+     * <p>
+     * 返回所有三个投影的总面积。
+     *
+     * @param grid
+     * @return
+     */
+    public int projectionArea(int[][] grid) {
+        int N = grid.length;
+        int ans = 0;
+
+        for (int i = 0; i < N; ++i) {
+            int bestRow = 0;  // largest of grid[i][j]
+            int bestCol = 0;  // largest of grid[j][i]
+            for (int j = 0; j < N; ++j) {
+                if (grid[i][j] > 0) ans++;  // top shadow
+                bestRow = Math.max(bestRow, grid[i][j]);
+                bestCol = Math.max(bestCol, grid[j][i]);
+            }
+            ans += bestRow + bestCol;
+        }
+
+        return ans;
+    }
+
+    /**
+     *
+     * 884. 两句话中的不常见单词
+     * 给定两个句子 A 和 B 。 （句子是一串由空格分隔的单词。每个单词仅由小写字母组成。）
+     *
+     * 如果一个单词在其中一个句子中只出现一次，在另一个句子中却没有出现，那么这个单词就是不常见的。
+     *
+     * 返回所有不常用单词的列表。
+     *
+     * 您可以按任何顺序返回列表。
+     *
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public static String[] uncommonFromSentences(String s1, String s2) {
+        List<String> rList = new ArrayList();
+        String[] sz1 = s1.split(" ");
+        String[] sz2 = s2.split(" ");
+        Map<String, Integer> map = new HashMap<>();
+        for (String s : sz1) {
+            map.put(s, map.getOrDefault(s, 0) + 1);
+        }
+        for (String s : sz2) {
+            map.put(s, map.getOrDefault(s, 0) + 1);
+        }
+        Set<String> strings = map.keySet();
+        for (String key : strings) {
+            if (map.get(key).intValue() == 1) {
+                rList.add(key);
+            }
+        }
+
+        return rList.toArray(new String[rList.size()]);
+    }
+
+
+    /**
+     * 888. 公平的糖果棒交换
+     * 爱丽丝和鲍勃有不同大小的糖果棒：A[i] 是爱丽丝拥有的第 i 根糖果棒的大小，B[j] 是鲍勃拥有的第 j 根糖果棒的大小。
+     *
+     * 因为他们是朋友，所以他们想交换一根糖果棒，这样交换后，他们都有相同的糖果总量。（一个人拥有的糖果总量是他们拥有的糖果棒大小的总和。）
+     *
+     * 返回一个整数数组 ans，其中 ans[0] 是爱丽丝必须交换的糖果棒的大小，ans[1] 是 Bob 必须交换的糖果棒的大小。
+     *
+     * 如果有多个答案，你可以返回其中任何一个。保证答案存在。
+     *
+     *
+     * @param aliceSizes
+     * @param bobSizes
+     * @return
+     */
+    public int[] fairCandySwap(int[] aliceSizes, int[] bobSizes) {
+        int[] ans = new int[2];
+
+        return ans;
     }
 }
