@@ -124,7 +124,7 @@ public class StackTree {
 
     /**
      * 前序遍历
-     *
+     * 中左右
      * @param root
      * @return
      */
@@ -180,6 +180,7 @@ public class StackTree {
 
     /**
      * 后序遍历
+     * 左右中
      *
      * @param root
      * @return
@@ -195,6 +196,7 @@ public class StackTree {
             // 中
             TreeNode node = stack.pop();
             if (node != null) {
+                // 按照中右左顺序遍历
                 rList.add(node.val);
                 // 左
                 stack.push(node.left);
@@ -202,6 +204,7 @@ public class StackTree {
                 stack.push(node.right);
             }
         }
+        // 翻转后变为 左右中
         Collections.reverse(rList);
         return rList;
     }
