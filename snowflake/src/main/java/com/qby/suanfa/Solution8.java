@@ -241,4 +241,85 @@ public class Solution8 {
 
         return ans;
     }
+
+    /**
+     * 42. 接雨水
+     * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+     *
+     *
+     *
+     * 示例 1：
+     *
+     *
+     *
+     * 输入：height = [0,1,0,2,1,0,1,3,2,1,2,1]
+     * 输出：6
+     * 解释：上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水（蓝色部分表示雨水）。
+     * 示例 2：
+     *
+     * 输入：height = [4,2,0,3,2,5]
+     * 输出：9
+     *
+     *
+     * 如果按照列来计算的话，宽度一定是1了，我们再把每一列的雨水的高度求出来就可以了。
+     * 双指针法
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        int sum = 0;
+
+        for (int i = 0; i < height.length; i++) {
+            // 第一个柱子和最后一个柱子不接雨水
+            if (i == 0 || i == height.length - 1) {
+                continue;
+            }
+            // 在for循环中求左右两边最高柱子
+            int lHeight = height[i];
+            int rHeight = height[i];
+            for (int j = i + 1; j < height.length; j++) {
+                if (height[j] > rHeight) rHeight = height[j];
+            }
+            for (int j = i - 1; j >= 0; j--) {
+                if (height[j] > lHeight) lHeight = height[j];
+            }
+            int h = Math.min(lHeight, rHeight) - height[i];
+            if (h > 0) sum += h;
+        }
+
+        return sum;
+    }
+
+    /**
+     * 动态规划法
+     *
+     * @param height
+     * @return
+     */
+    public int trap2(int[] height) {
+        int sum = 0;
+        if (height.length <= 2) return 0;
+        int size = height.length;
+        int[] maxLeft = new int[size];
+        int[] maxRight = new int[size];
+
+        // 记录每个柱子左边的最大高度
+        maxLeft[0] = height[0];
+        for (int i = 1; i < height.length; i++) {
+            maxLeft[i] = Math.max(height[i], maxLeft[i - 1]);
+        }
+        // 记录每个柱子右边的最大高度
+        maxRight[size - 1] = height[size - 1];
+        for (int i = height.length - 2; i >= 0; i--) {
+            maxRight[i] = Math.max(height[i], maxRight[i + 1]);
+        }
+
+        for (int i = 0; i < height.length; i++) {
+            int count = Math.min(maxLeft[i], maxRight[i]) - height[i];
+            if (count > 0) sum += count;
+        }
+
+        return sum;
+    }
 }

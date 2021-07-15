@@ -40,7 +40,9 @@ public class HelloObjSz {
         String[][] sz1 = new String[10][50];
         String[][] sz2 = new String[50][10];
 
+        // 4+4+4+4+40
         String s1 = ClassLayout.parseInstance(sz1).toPrintable();
+        // 4+4+4+4+200
         String s2 = ClassLayout.parseInstance(sz2).toPrintable();
 
         System.out.println(s1);
