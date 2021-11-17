@@ -35,7 +35,7 @@ public class MyThread {
             super.run();
             try {
                 for (int i = 0; i < 500000; i++) {
-                    if (this.interrupted()) {
+                    if (interrupted()) {
                         System.out.println("should be stopped and exit");
     //                    break;
                         throw new InterruptedException();

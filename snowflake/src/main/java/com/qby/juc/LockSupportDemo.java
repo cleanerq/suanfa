@@ -15,20 +15,20 @@ public class LockSupportDemo {
 
         @Override
         public void run() {
-            synchronized (u) {
+//            synchronized (u) {
                 System.out.println("in " + getName());
                 LockSupport.park();
                 if (Thread.currentThread().isInterrupted()) {
-                    System.out.println("被中断了");
+                    System.out.println(getName() + "被中断了");
                 }
-                System.out.println("继续执行");
-            }
+                System.out.println(getName() + "继续执行");
+//            }
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
         t1.start();
-        Thread.sleep(1000L);
+//        Thread.sleep(1000L);
         t2.start();
         Thread.sleep(3000L);
         t1.interrupt();
